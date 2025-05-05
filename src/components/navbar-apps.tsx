@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "@/lib/auth";
+import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -43,7 +43,7 @@ export function NavbarApps() {
   }, [scrolled]);
 
   const handleLogout = () => {
-    signOut({ redirectTo: "/" });
+    signOut();
   };
 
   const displayName =

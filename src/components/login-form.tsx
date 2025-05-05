@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 // Create a schema for form validation
 const loginSchema = z.object({
@@ -171,13 +172,16 @@ export function LoginForm({
             </div>
           </form>
 
-          <div className="bg-muted relative hidden md:flex justify-center items-center">
+          <Link
+            href="/"
+            className="hover:cursor-pointer bg-muted relative hidden md:flex justify-center items-center"
+          >
             <img
               src="/images/tsi-logo.png"
               alt="Image"
               className="h-32 w-32 dark:brightness-[0.2] dark:grayscale"
             />
-          </div>
+          </Link>
         </CardContent>
       </Card>
 
