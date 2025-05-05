@@ -16,18 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-interface AppsNavbarProps {
-  user?: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    uid?: number;
-    username?: string;
-    partner_name?: string;
-  };
-}
-
-export function NavbarApps({ user }: AppsNavbarProps) {
+export function NavbarApps() {
   const { data: session } = useSession();
   const sessionUser = session?.user;
   const [scrolled, setScrolled] = useState(false);
