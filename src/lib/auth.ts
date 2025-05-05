@@ -1,5 +1,40 @@
 import NextAuth from "next-auth";
 import authConfig from "../../auth.config";
+import { JWT } from "next-auth/jwt";
+
+type TSIUser = {
+  id: string;
+  uid: number;
+  username: string;
+  email: string;
+  partner_name: string;
+  access_token: string;
+};
+
+// Extend the session type
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      uid?: number;
+      username?: string;
+      partner_name?: string;
+      access_token?: string;
+    };
+  }
+}
+
+// Extend the JWT type
+declare module "next-auth/jwt" {
+  interface JWT {
+    uid?: number;
+    username?: string;
+    partner_name?: string;
+    access_token?: string;
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -12,8 +47,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
-    authorized({ auth, request }) {},
-    async jwt({ token, user }) {},
-    async session({ session, token }) {},
+    authorized({ auth, request }) {
+      const isLoggedIn = !!auth?.user;
+      const { pathname } = request.nextUrl;
+      const isProtectedRoute = pathname.startsWith("/dashboard");
+
+      return !isProtectedRoute || isLoggedIn;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        const tsiUser = user as unknown as TSIUser;
+
+        return {
+          ...token,
+          uid: tsiUser.uid,
+          username: tsiUser.username,
+          partner_name: tsiUser.partner_name,
+          access_token: tsiUser.access_token,
+        };
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          uid: token.uid,
+          username: token.username,
+          partner_name: token.partner_name,
+          access_token: token.access_token,
+        },
+      };
+    },
   },
 });

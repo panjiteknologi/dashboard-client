@@ -12,8 +12,10 @@ export default {
       },
       async authorize(credentials, req) {
         try {
+          console.log("CRES : ", credentials);
+
           const response = await axios.post(
-            "https://erp.tsicertification.com",
+            "https://erp.tsicertification.com/client/authenticate",
             {
               params: {
                 username: credentials?.email,
@@ -22,16 +24,23 @@ export default {
             }
           );
 
-          console.log("RES AUth : ", response.data);
+          console.log("RES Auth:", response.data);
 
           if (response.data && response.data.result) {
-            return response.data.result;
+            return {
+              id: String(response.data.result.uid),
+              uid: response.data.result.uid,
+              username: response.data.result.username,
+              email: response.data.result.username,
+              partner_name: response.data.result.partner_name,
+              access_token: response.data.result.access_token,
+            };
           }
 
-          // Return null if user data could not be retrieved
           return null;
         } catch (e: any) {
-          const errorMessage = e?.response.data.message;
+          const errorMessage =
+            e?.response?.data?.message || "Authentication failed";
           throw new Error(errorMessage);
         }
       },
