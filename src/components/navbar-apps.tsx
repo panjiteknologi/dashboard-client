@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 interface AppsNavbarProps {
   user?: {
@@ -29,6 +30,28 @@ interface AppsNavbarProps {
 export function NavbarApps({ user }: AppsNavbarProps) {
   const { data: session } = useSession();
   const sessionUser = session?.user;
+  const [scrolled, setScrolled] = useState(false);
+
+  // Add scroll event listener to detect when page is scrolled
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Check initial scroll position
+    handleScroll();
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
 
   const handleLogout = () => {
     signOut({ redirectTo: "/" });
@@ -44,7 +67,9 @@ export function NavbarApps({ user }: AppsNavbarProps) {
   const initials = displayName.substring(0, 2).toUpperCase();
 
   return (
-    <header className="border-b bg-background">
+    <header
+      className={`sticky top-0 z-50 w-full border-b bg-background transition-shadow duration-200`}
+    >
       <div className="container mx-auto py-3 flex justify-between items-center">
         <Link href="/dashboard" className="flex items-center gap-2">
           <img src="/images/tsi-logo.png" className="h-8 w-8" alt="TSI Logo" />
