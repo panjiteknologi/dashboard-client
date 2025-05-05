@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  MoveLeft,
-  Home,
-  Grid,
-  LayoutDashboard,
-  Search,
-  LogIn,
-} from "lucide-react";
+import { MoveLeft, Home, Grid, LayoutDashboard, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,7 +32,7 @@ export default function NotFound() {
 
           <CardContent className="text-center space-y-4">
             <p className="text-muted-foreground">
-              The page you are looking for doesn't exist or has been moved.
+              The page you are looking for doesn&apos;t exist or has been moved.
             </p>
 
             <div className="relative py-6">
