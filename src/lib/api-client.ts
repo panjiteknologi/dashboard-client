@@ -1,10 +1,10 @@
+import { env } from "@/env";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { getSession } from "next-auth/react";
 
 // Create base axios instance
 const apiClient = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL || "https://erp.tsicertification.com",
+  baseURL: env.NEXT_PUBLIC_ENDPOINT_URL || "https://erp.tsicertification.com",
   headers: {
     "Content-Type": "application/json",
   },
@@ -16,7 +16,8 @@ apiClient.interceptors.request.use(
     const session = await getSession();
 
     if (session?.user?.access_token) {
-      config.headers.Authorization = `Bearer ${session.user.access_token}`;
+      config.headers.Authorization = `${session.user.access_token}`;
+      config.headers["Content-Type"] = "application/json";
     }
 
     return config;
