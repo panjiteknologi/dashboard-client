@@ -10,29 +10,28 @@ export default {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
-          console.log("CRES : ", credentials);
-
           const response = await axios.post(
-            "https://erp.tsicertification.com/client/authenticate",
+            "https://erp.tsicertification.com/session/authenticate",
             {
               params: {
-                username: credentials?.email,
+                db: "Odoo_Tsi_Production",
+                login: credentials?.email,
                 password: credentials?.password,
               },
             }
           );
 
-          console.log("RES Auth:", response.data);
-
-          if (response.data && response.data.result) {
+          if (
+            response.data &&
+            response.data.result &&
+            response.data.result !== "error"
+          ) {
             return {
-              id: String(response.data.result.uid),
-              uid: response.data.result.uid,
-              username: response.data.result.username,
-              email: response.data.result.username,
-              partner_name: response.data.result.partner_name,
+              id: String(response.data.result.user_id),
+              user_id: response.data.result.user_id,
+              username: response.data.result.user_name,
               access_token: response.data.result.access_token,
             };
           }

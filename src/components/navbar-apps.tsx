@@ -21,6 +21,8 @@ export function NavbarApps() {
   const sessionUser = session?.user;
   const [scrolled, setScrolled] = useState(false);
 
+  console.log("DATA User", session);
+
   // Add scroll event listener to detect when page is scrolled
   useEffect(() => {
     const handleScroll = () => {
@@ -46,13 +48,7 @@ export function NavbarApps() {
     signOut();
   };
 
-  const displayName =
-    sessionUser?.name ||
-    sessionUser?.partner_name ||
-    sessionUser?.username ||
-    "User";
-  const email =
-    sessionUser?.email || sessionUser?.username || "user@example.com";
+  const displayName = sessionUser?.name || sessionUser?.username || "User";
   const initials = displayName.substring(0, 2).toUpperCase();
 
   return (
@@ -90,9 +86,9 @@ export function NavbarApps() {
                   <p className="text-sm font-medium leading-none">
                     {displayName}
                   </p>
-                  <p className="text-xs leading-none text-muted-foreground">
+                  {/* <p className="text-xs leading-none text-muted-foreground">
                     {email}
-                  </p>
+                  </p> */}
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
