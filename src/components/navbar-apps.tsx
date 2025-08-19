@@ -21,8 +21,6 @@ export function NavbarApps() {
   const sessionUser = session?.user;
   const [scrolled, setScrolled] = useState(false);
 
-  console.log("DATA User", session);
-
   // Add scroll event listener to detect when page is scrolled
   useEffect(() => {
     const handleScroll = () => {
