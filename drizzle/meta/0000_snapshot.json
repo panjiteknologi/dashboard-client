@@ -1,0 +1,189 @@
+{
+  "id": "b4d0a310-0c9f-4847-bb21-387671cb1178",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.res_users": {
+      "name": "res_users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "login": {
+          "name": "login",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partner_id": {
+          "name": "partner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_date": {
+          "name": "create_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signature": {
+          "name": "signature",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action_id": {
+          "name": "action_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "share": {
+          "name": "share",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_uid": {
+          "name": "create_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_uid": {
+          "name": "write_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_date": {
+          "name": "write_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totp_secret": {
+          "name": "totp_secret",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notification_type": {
+          "name": "notification_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "odoobot_state": {
+          "name": "odoobot_state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "odoobot_failed": {
+          "name": "odoobot_failed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sale_team_id": {
+          "name": "sale_team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sidebar_type": {
+          "name": "sidebar_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chatter_position": {
+          "name": "chatter_position",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website_id": {
+          "name": "website_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "karma": {
+          "name": "karma",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rank_id": {
+          "name": "rank_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "next_rank_id": {
+          "name": "next_rank_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

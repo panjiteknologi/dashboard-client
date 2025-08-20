@@ -1,31 +1,31 @@
 "use client";
 
-import { useDateCustomerQuery } from "@/hooks/use-date-customer";
 import React from "react";
+import { trpc } from "@/trpc/react";
 
 const DashboardView = () => {
-  const { data, isLoading } = useDateCustomerQuery(
-    { staleTime: 5 * 60 * 1000 } // 5 menit
-  );
+  const { data, isLoading, error } = trpc.users.list.useQuery();
 
-  console.log("DATA Cust : ", data);
+  console.log("Fetched Users:", data);
 
-  if (isLoading) {
-    <div>
-      <h1 className="text-teal-800 font-bold">TEST Loading...</h1>
-    </div>;
-  }
+  // if (isLoading) return <div>Loading...</div>;
+  // if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div>
       <h1 className="text-amber-700 font-bold">Real Data : </h1>
       <br />
-      <p className="text-pink-800 font-black">
-        Cust : {data[0]?.customer ?? ""}
-      </p>
-      <p className="text-pink-800 font-black">
-        Sales : {data[0]?.sales_person ?? ""}
-      </p>
+      <div className="space-y-4">
+        {/* <h2 className="text-lg font-semibold">Users ({data?.length})</h2> */}
+        {/* {data?.map((user) => (
+          <div key={user.id} className="border p-4 rounded">
+            <p className="text-pink-800 font-black">ID: {user.id}</p>
+            <p className="text-pink-800 font-black">Login: {user.login}</p>
+            <p className="text-pink-800 font-black">Active: {user.active ? 'Yes' : 'No'}</p>
+            <p className="text-pink-800 font-black">Company ID: {user.companyId}</p>
+          </div>
+        ))} */}
+      </div>
     </div>
   );
 };
