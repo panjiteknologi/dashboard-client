@@ -1,0 +1,2399 @@
+{
+  "id": "b8d9c6ac-9b59-48bf-be44-554c7461cad5",
+  "prevId": "b4d0a310-0c9f-4847-bb21-387671cb1178",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.audit_notification": {
+      "name": "audit_notification",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_reference": {
+          "name": "iso_reference",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales_order_id": {
+          "name": "sales_order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipe_pembayaran": {
+          "name": "tipe_pembayaran",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_uid": {
+          "name": "create_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_date": {
+          "name": "create_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_uid": {
+          "name": "write_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_date": {
+          "name": "write_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_state": {
+          "name": "audit_state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message_main_attachment_id": {
+          "name": "message_main_attachment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer": {
+          "name": "customer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_request_id": {
+          "name": "audit_request_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "global_status": {
+          "name": "global_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tgl_perkiraan_selesai": {
+          "name": "tgl_perkiraan_selesai",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.res_users": {
+      "name": "res_users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "login": {
+          "name": "login",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partner_id": {
+          "name": "partner_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_date": {
+          "name": "create_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signature": {
+          "name": "signature",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action_id": {
+          "name": "action_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "share": {
+          "name": "share",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_uid": {
+          "name": "create_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_uid": {
+          "name": "write_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_date": {
+          "name": "write_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totp_secret": {
+          "name": "totp_secret",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notification_type": {
+          "name": "notification_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "odoobot_state": {
+          "name": "odoobot_state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "odoobot_failed": {
+          "name": "odoobot_failed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sale_team_id": {
+          "name": "sale_team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sidebar_type": {
+          "name": "sidebar_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chatter_position": {
+          "name": "chatter_position",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website_id": {
+          "name": "website_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "karma": {
+          "name": "karma",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rank_id": {
+          "name": "rank_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "next_rank_id": {
+          "name": "next_rank_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.tsi_iso": {
+      "name": "tsi_iso",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "message_main_attachment_id": {
+          "name": "message_main_attachment_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "doctype": {
+          "name": "doctype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "customer": {
+          "name": "customer",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alamat": {
+          "name": "alamat",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "issue_date": {
+          "name": "issue_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "multisite": {
+          "name": "multisite",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_name": {
+          "name": "contact_name",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_name": {
+          "name": "company_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "office_address": {
+          "name": "office_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "invoicing_address": {
+          "name": "invoicing_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_person": {
+          "name": "contact_person",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jabatan": {
+          "name": "jabatan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "telepon": {
+          "name": "telepon",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fax": {
+          "name": "fax",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "name": "website",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cellular": {
+          "name": "cellular",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "certification": {
+          "name": "certification",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_standard_other": {
+          "name": "iso_standard_other",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outsourced_activity": {
+          "name": "outsourced_activity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_associate": {
+          "name": "is_associate",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "associate_id": {
+          "name": "associate_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_hazard_other": {
+          "name": "iso_hazard_other",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_aspect_other": {
+          "name": "iso_aspect_other",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code": {
+          "name": "ea_code",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation": {
+          "name": "accreditation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity": {
+          "name": "complexity",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_14001": {
+          "name": "ea_code_14001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_14001": {
+          "name": "accreditation_14001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_14001": {
+          "name": "complexity_14001",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_27001": {
+          "name": "ea_code_27001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_27001": {
+          "name": "accreditation_27001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_27001": {
+          "name": "complexity_27001",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_45001": {
+          "name": "ea_code_45001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_45001": {
+          "name": "accreditation_45001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_45001": {
+          "name": "complexity_45001",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_22000": {
+          "name": "ea_code_22000",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_22000": {
+          "name": "accreditation_22000",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_22000": {
+          "name": "complexity_22000",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_haccp": {
+          "name": "ea_code_haccp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_haccp": {
+          "name": "accreditation_haccp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_haccp": {
+          "name": "complexity_haccp",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "boundaries": {
+          "name": "boundaries",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cause": {
+          "name": "cause",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isms_doc": {
+          "name": "isms_doc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "head_office": {
+          "name": "head_office",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "site_office": {
+          "name": "site_office",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "off_location": {
+          "name": "off_location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "part_time": {
+          "name": "part_time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "subcon": {
+          "name": "subcon",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unskilled": {
+          "name": "unskilled",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "seasonal": {
+          "name": "seasonal",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_emp": {
+          "name": "total_emp",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shift_number": {
+          "name": "shift_number",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "number_site": {
+          "name": "number_site",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outsource_proc": {
+          "name": "outsource_proc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_audit": {
+          "name": "last_audit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_review": {
+          "name": "last_review",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tx_site_count": {
+          "name": "tx_site_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tx_remarks": {
+          "name": "tx_remarks",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "start_implement": {
+          "name": "start_implement",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mat_consultancy": {
+          "name": "mat_consultancy",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mat_certified": {
+          "name": "mat_certified",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "txt_mat_consultancy": {
+          "name": "txt_mat_consultancy",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "txt_mat_certified": {
+          "name": "txt_mat_certified",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_review": {
+          "name": "int_review",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_internal": {
+          "name": "int_internal",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_policy": {
+          "name": "int_policy",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_system": {
+          "name": "int_system",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_instruction": {
+          "name": "int_instruction",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_improvement": {
+          "name": "int_improvement",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "int_planning": {
+          "name": "int_planning",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_14001_environmental": {
+          "name": "iso_14001_environmental",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_14001_legal": {
+          "name": "iso_14001_legal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_45001_ohs": {
+          "name": "iso_45001_ohs",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_45001_legal": {
+          "name": "iso_45001_legal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_total_emp": {
+          "name": "iso_27001_total_emp",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_bisnistype": {
+          "name": "iso_27001_bisnistype",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_process": {
+          "name": "iso_27001_process",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_mgmt_system": {
+          "name": "iso_27001_mgmt_system",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_number_process": {
+          "name": "iso_27001_number_process",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_infra": {
+          "name": "iso_27001_infra",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_sourcing": {
+          "name": "iso_27001_sourcing",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itdevelopment": {
+          "name": "iso_27001_itdevelopment",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itsecurity": {
+          "name": "iso_27001_itsecurity",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_asset": {
+          "name": "iso_27001_asset",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_drc": {
+          "name": "iso_27001_drc",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_hazard_no": {
+          "name": "iso_22000_hazard_no",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_hazard_desc": {
+          "name": "iso_22000_hazard_desc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_process_no": {
+          "name": "iso_22000_process_no",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_process_desc": {
+          "name": "iso_22000_process_desc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_tech_no": {
+          "name": "iso_22000_tech_no",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_22000_tech_desc": {
+          "name": "iso_22000_tech_desc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "site_name": {
+          "name": "site_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "site_address": {
+          "name": "site_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "site_emp_total": {
+          "name": "site_emp_total",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "site_activity": {
+          "name": "site_activity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state": {
+          "name": "state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_stage": {
+          "name": "audit_stage",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_similarities": {
+          "name": "audit_similarities",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lingkup": {
+          "name": "lingkup",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kepemilikan": {
+          "name": "kepemilikan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count_review": {
+          "name": "count_review",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count_quotation": {
+          "name": "count_quotation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count_sales": {
+          "name": "count_sales",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count_invoice": {
+          "name": "count_invoice",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "permohonan": {
+          "name": "permohonan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipe_tanah": {
+          "name": "tipe_tanah",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sebaran_tanah": {
+          "name": "sebaran_tanah",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tipe_kegiatan": {
+          "name": "tipe_kegiatan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "topografi": {
+          "name": "topografi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_kebun_pabrik": {
+          "name": "is_kebun_pabrik",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_lokasi": {
+          "name": "legal_lokasi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_iup": {
+          "name": "legal_iup",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_spup": {
+          "name": "legal_spup",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_itubp": {
+          "name": "legal_itubp",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_prinsip": {
+          "name": "legal_prinsip",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_menteri": {
+          "name": "legal_menteri",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_bkpm": {
+          "name": "legal_bkpm",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "perolehan_a": {
+          "name": "perolehan_a",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "perolehan_b": {
+          "name": "perolehan_b",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "perolehan_c": {
+          "name": "perolehan_c",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "perolehan_d": {
+          "name": "perolehan_d",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_hgu": {
+          "name": "legal_hgu",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_amdal": {
+          "name": "legal_amdal",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_plasma_swadaya": {
+          "name": "is_plasma_swadaya",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_sertifikat": {
+          "name": "kebun_sertifikat",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_penetapan": {
+          "name": "kebun_penetapan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_std": {
+          "name": "kebun_std",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_pembentukan": {
+          "name": "kebun_pembentukan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_konversi": {
+          "name": "kebun_konversi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebun_kesepakatan": {
+          "name": "kebun_kesepakatan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sertifikat_ispo": {
+          "name": "sertifikat_ispo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_nama": {
+          "name": "tani_nama",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_adrt": {
+          "name": "tani_adrt",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_pembentukan": {
+          "name": "tani_pembentukan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_rko": {
+          "name": "tani_rko",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_kegiatan": {
+          "name": "tani_kegiatan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_jumlah": {
+          "name": "tani_jumlah",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_area": {
+          "name": "tani_area",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_tertanam": {
+          "name": "tani_tertanam",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tani_tbs": {
+          "name": "tani_tbs",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peta_lokasi": {
+          "name": "peta_lokasi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_nama_perusahaan": {
+          "name": "add_nama_perusahaan",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_sertifikasi": {
+          "name": "add_sertifikasi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_pic": {
+          "name": "add_pic",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_kendali": {
+          "name": "add_kendali",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_kendali_jml": {
+          "name": "add_kendali_jml",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_auditor": {
+          "name": "add_auditor",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "add_auditor_jml": {
+          "name": "add_auditor_jml",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_salesinfo": {
+          "name": "show_salesinfo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_14001": {
+          "name": "show_14001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_14001_env_aspect": {
+          "name": "iso_14001_env_aspect",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_14001_obligation": {
+          "name": "iso_14001_obligation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_45001": {
+          "name": "show_45001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_45001_key_hazard": {
+          "name": "iso_45001_key_hazard",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_45001_obligation": {
+          "name": "iso_45001_obligation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_27001": {
+          "name": "show_27001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_haccp": {
+          "name": "show_haccp",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_22000": {
+          "name": "show_22000",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kategori": {
+          "name": "kategori",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "declaration": {
+          "name": "declaration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_uid": {
+          "name": "create_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_date": {
+          "name": "create_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_uid": {
+          "name": "write_uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "write_date": {
+          "name": "write_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_integreted_yes": {
+          "name": "show_integreted_yes",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_integreted_no": {
+          "name": "show_integreted_no",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "integreted_audit": {
+          "name": "integreted_audit",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "company_id": {
+          "name": "company_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "other_system": {
+          "name": "other_system",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_number_site1": {
+          "name": "hazard_number_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_number_site2": {
+          "name": "hazard_number_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_number_site3": {
+          "name": "hazard_number_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_describe_site1": {
+          "name": "hazard_describe_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_describe_site2": {
+          "name": "hazard_describe_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hazard_describe_site3": {
+          "name": "hazard_describe_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_number_site1": {
+          "name": "process_number_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_number_site2": {
+          "name": "process_number_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_number_site3": {
+          "name": "process_number_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_describe_site1": {
+          "name": "process_describe_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_describe_site2": {
+          "name": "process_describe_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "process_describe_site3": {
+          "name": "process_describe_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_number_site1": {
+          "name": "tech_number_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_number_site2": {
+          "name": "tech_number_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_number_site3": {
+          "name": "tech_number_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_describe_site1": {
+          "name": "tech_describe_site1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_describe_site2": {
+          "name": "tech_describe_site2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tech_describe_site3": {
+          "name": "tech_describe_site3",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales_person": {
+          "name": "sales_person",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_franchise": {
+          "name": "is_franchise",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "franchise_id": {
+          "name": "franchise_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pic_id": {
+          "name": "pic_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_37001": {
+          "name": "show_37001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_37001": {
+          "name": "accreditation_37001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_37001": {
+          "name": "notes_37001",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_13485": {
+          "name": "show_13485",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_13485": {
+          "name": "ea_code_13485",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_13485": {
+          "name": "accreditation_13485",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_13485": {
+          "name": "complexity_13485",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cause_13485": {
+          "name": "cause_13485",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legalitas_type": {
+          "name": "legalitas_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hgu": {
+          "name": "hgu",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hgb": {
+          "name": "hgb",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iup": {
+          "name": "iup",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pup": {
+          "name": "pup",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "izin_lingkungan_integrasi": {
+          "name": "izin_lingkungan_integrasi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "luas_lahan": {
+          "name": "luas_lahan",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kapasitas_pabrik": {
+          "name": "kapasitas_pabrik",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "izin_lokasi": {
+          "name": "izin_lokasi",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "apl": {
+          "name": "apl",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "risalah_panitia": {
+          "name": "risalah_panitia",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lahan_gambut": {
+          "name": "lahan_gambut",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peta": {
+          "name": "peta",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hgu_kebun": {
+          "name": "hgu_kebun",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iupb": {
+          "name": "iupb",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "izin_lingkungan_kebun": {
+          "name": "izin_lingkungan_kebun",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hgb_pabrik": {
+          "name": "hgb_pabrik",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kapasitas_pabrik_pabrik": {
+          "name": "kapasitas_pabrik_pabrik",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shm": {
+          "name": "shm",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stdb": {
+          "name": "stdb",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sppl": {
+          "name": "sppl",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "akta_pendirian": {
+          "name": "akta_pendirian",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_37301": {
+          "name": "show_37301",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_27001_2022": {
+          "name": "ea_code_27001_2022",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_27001_2022": {
+          "name": "accreditation_27001_2022",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_27001_2022": {
+          "name": "complexity_27001_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_27017": {
+          "name": "ea_code_27017",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_27017": {
+          "name": "accreditation_27017",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_27017": {
+          "name": "complexity_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_27018": {
+          "name": "ea_code_27018",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_27018": {
+          "name": "accreditation_27018",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_27018": {
+          "name": "complexity_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ea_code_27701": {
+          "name": "ea_code_27701",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_27701": {
+          "name": "accreditation_27701",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_27701": {
+          "name": "complexity_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_bisnistype_2022": {
+          "name": "iso_27001_bisnistype_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_process_2022": {
+          "name": "iso_27001_process_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_mgmt_system_2022": {
+          "name": "iso_27001_mgmt_system_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_number_process_2022": {
+          "name": "iso_27001_number_process_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_infra_2022": {
+          "name": "iso_27001_infra_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_sourcing_2022": {
+          "name": "iso_27001_sourcing_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itdevelopment_2022": {
+          "name": "iso_27001_itdevelopment_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itsecurity_2022": {
+          "name": "iso_27001_itsecurity_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_asset_2022": {
+          "name": "iso_27001_asset_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_drc_2022": {
+          "name": "iso_27001_drc_2022",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_bisnistype_27018": {
+          "name": "iso_27001_bisnistype_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_process_27018": {
+          "name": "iso_27001_process_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_mgmt_system_27018": {
+          "name": "iso_27001_mgmt_system_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_number_process_27018": {
+          "name": "iso_27001_number_process_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_infra_27018": {
+          "name": "iso_27001_infra_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_sourcing_27018": {
+          "name": "iso_27001_sourcing_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itdevelopment_27018": {
+          "name": "iso_27001_itdevelopment_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itsecurity_27018": {
+          "name": "iso_27001_itsecurity_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_asset_27018": {
+          "name": "iso_27001_asset_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_drc_27018": {
+          "name": "iso_27001_drc_27018",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_bisnistype_27017": {
+          "name": "iso_27001_bisnistype_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_process_27017": {
+          "name": "iso_27001_process_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_mgmt_system_27017": {
+          "name": "iso_27001_mgmt_system_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_number_process_27017": {
+          "name": "iso_27001_number_process_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_infra_27017": {
+          "name": "iso_27001_infra_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_sourcing_27017": {
+          "name": "iso_27001_sourcing_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itdevelopment_27017": {
+          "name": "iso_27001_itdevelopment_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itsecurity_27017": {
+          "name": "iso_27001_itsecurity_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_asset_27017": {
+          "name": "iso_27001_asset_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_drc_27017": {
+          "name": "iso_27001_drc_27017",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_bisnistype_27701": {
+          "name": "iso_27001_bisnistype_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_process_27701": {
+          "name": "iso_27001_process_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_mgmt_system_27701": {
+          "name": "iso_27001_mgmt_system_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_number_process_27701": {
+          "name": "iso_27001_number_process_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_infra_27701": {
+          "name": "iso_27001_infra_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_sourcing_27701": {
+          "name": "iso_27001_sourcing_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itdevelopment_27701": {
+          "name": "iso_27001_itdevelopment_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_itsecurity_27701": {
+          "name": "iso_27001_itsecurity_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_asset_27701": {
+          "name": "iso_27001_asset_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iso_27001_drc_27701": {
+          "name": "iso_27001_drc_27701",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_27701": {
+          "name": "show_27701",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_27017": {
+          "name": "show_27017",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_27018": {
+          "name": "show_27018",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_27001_2022": {
+          "name": "show_27001_2022",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_31000": {
+          "name": "show_31000",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_9994": {
+          "name": "show_9994",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_smk": {
+          "name": "show_smk",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_21000": {
+          "name": "show_21000",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_13485": {
+          "name": "notes_13485",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "akre": {
+          "name": "akre",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "specific": {
+          "name": "specific",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "additional": {
+          "name": "additional",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_22301": {
+          "name": "show_22301",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_22301": {
+          "name": "accreditation_22301",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_22301": {
+          "name": "notes_22301",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state_sales": {
+          "name": "state_sales",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audit_status": {
+          "name": "audit_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_associate": {
+          "name": "email_associate",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone_associate": {
+          "name": "phone_associate",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_franchise": {
+          "name": "email_franchise",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone_franchise": {
+          "name": "phone_franchise",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sale_order_id": {
+          "name": "sale_order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nomor_kontrak": {
+          "name": "nomor_kontrak",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_klien": {
+          "name": "status_klien",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_leads": {
+          "name": "is_leads",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leads_selection": {
+          "name": "leads_selection",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leads_description": {
+          "name": "leads_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "global_status": {
+          "name": "global_status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transport_by": {
+          "name": "transport_by",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hotel_by": {
+          "name": "hotel_by",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_gdp": {
+          "name": "show_gdp",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_gdp": {
+          "name": "accreditation_gdp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_gdp": {
+          "name": "complexity_gdp",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_56001": {
+          "name": "show_56001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_56001": {
+          "name": "accreditation_56001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "complexity_56001": {
+          "name": "complexity_56001",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_fscc": {
+          "name": "show_fscc",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_ce": {
+          "name": "show_ce",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_ce": {
+          "name": "accreditation_ce",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_ce": {
+          "name": "notes_ce",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_19650": {
+          "name": "show_19650",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_196502": {
+          "name": "show_196502",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_196503": {
+          "name": "show_196503",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_196504": {
+          "name": "show_196504",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_196505": {
+          "name": "show_196505",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_19650": {
+          "name": "accreditation_19650",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_196502": {
+          "name": "accreditation_196502",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_196503": {
+          "name": "accreditation_196503",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_196504": {
+          "name": "accreditation_196504",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_196505": {
+          "name": "accreditation_196505",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_19650": {
+          "name": "notes_19650",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_196502": {
+          "name": "notes_196502",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_196503": {
+          "name": "notes_196503",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_196504": {
+          "name": "notes_196504",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_196505": {
+          "name": "notes_196505",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_19649": {
+          "name": "show_19649",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_19649": {
+          "name": "accreditation_19649",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_19649": {
+          "name": "notes_19649",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_21001": {
+          "name": "show_21001",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_21001": {
+          "name": "accreditation_21001",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_21001": {
+          "name": "notes_21001",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_smeta": {
+          "name": "show_smeta",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accreditation_smeta": {
+          "name": "accreditation_smeta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "notes_smeta": {
+          "name": "notes_smeta",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_41001_2018": {
+          "name": "show_41001_2018",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "show_26001_2018": {
+          "name": "show_26001_2018",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
