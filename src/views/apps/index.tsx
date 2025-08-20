@@ -1,27 +1,23 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import {
   Award,
-  BarChart3,
-  BookOpen,
-  Box,
-  Building2,
+  BadgeCheck,
   Calendar,
   CreditCard,
-  FileText,
-  FlaskConical,
   Folder,
+  Gift,
   GraduationCap,
   History,
-  Landmark,
-  LayoutDashboard,
+  LibraryIcon,
   LineChart,
   ListChecks,
+  NotebookTextIcon,
   Settings,
+  User2,
   Users,
-  Wallet,
+  Video,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -36,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { AppsSearchAndView } from "./app-search-view";
 import { AppListView } from "./app-list-view";
 import { AppsHero } from "./app-hero";
+import WhatsappButton from "@/components/ui/whatsapp-button";
 
 // Define the app interfaces
 interface AppCategory {
@@ -61,11 +58,19 @@ const appCategories: AppCategory[] = [
     title: "Main Applications",
     apps: [
       {
-        id: "dashboard",
-        title: "Dashboard",
-        description: "Overview of your activities and metrics",
-        icon: LayoutDashboard,
-        url: "/apps/dashboard",
+        id: "application-form",
+        title: "Application Form",
+        description: "Manage and track application form",
+        icon: NotebookTextIcon,
+        url: "/apps/application-form",
+      },
+      {
+        id: "our-auditor",
+        title: "Our Auditor",
+        description:
+          "Designed for auditors — monitor workflows, assess compliance, and ensure every audit runs smoothly and transparently.",
+        icon: User2,
+        url: "/apps/our-auditor",
       },
       {
         id: "mandays",
@@ -82,32 +87,13 @@ const appCategories: AppCategory[] = [
         icon: LineChart,
         url: "/apps/price-simulation",
       },
-    ],
-  },
-  {
-    id: "finance",
-    title: "Finance & Administration",
-    apps: [
       {
-        id: "invoices",
-        title: "Invoices",
-        description: "Manage and track all your invoices",
-        icon: FileText,
-        url: "/apps/invoices",
-      },
-      {
-        id: "payments",
-        title: "Payments",
-        description: "Track payment status and history",
-        icon: CreditCard,
-        url: "/apps/payments",
-      },
-      {
-        id: "expense-reports",
-        title: "Expense Reports",
-        description: "Submit and track expense reports",
-        icon: Wallet,
-        url: "/apps/expenses",
+        id: "quotation",
+        title: "Quotation",
+        description:
+          "Simplify the creation and management of detailed price quotations to support informed decision-making.",
+        icon: LineChart,
+        url: "/apps/quotation",
       },
     ],
   },
@@ -116,18 +102,26 @@ const appCategories: AppCategory[] = [
     title: "Certification Services",
     apps: [
       {
+        id: "scope",
+        title: "Scope Library",
+        description: "Overview of your activities and metrics",
+        icon: LibraryIcon,
+        url: "/apps/scope",
+        badge: "Premium",
+      },
+      {
+        id: "tracking-certificate",
+        title: "Tracking Certificate",
+        description: "View and manage all your certifications",
+        icon: Award,
+        url: "/apps/tracking-certificate/audit-status",
+      },
+      {
         id: "audit-process",
         title: "Audit Process",
         description: "Manage and track certification audits",
         icon: ListChecks,
-        url: "/apps/audit",
-      },
-      {
-        id: "certifications",
-        title: "Certifications",
-        description: "View and manage all your certifications",
-        icon: Award,
-        url: "/apps/certifications",
+        url: "/apps/audit-process/audit-stage-1/capa-and-report",
       },
       {
         id: "audit-history",
@@ -136,69 +130,92 @@ const appCategories: AppCategory[] = [
         icon: History,
         url: "/apps/audit-history",
       },
+    ],
+  },
+  {
+    id: "finance",
+    title: "Finance & Administration",
+    apps: [
       {
-        id: "scope-library",
-        title: "Scope Library",
-        description: "Access certification standards and requirements",
-        icon: BookOpen,
-        url: "/apps/scope",
-        badge: "Premium",
+        id: "payments",
+        title: "Payments",
+        description: "Track payment status and history",
+        icon: CreditCard,
+        url: "/apps/payments",
       },
     ],
   },
   {
-    id: "training",
-    title: "Training & Development",
+    id: "library",
+    title: "Library",
     apps: [
       {
-        id: "courses",
-        title: "Training Courses",
-        description: "Browse and enroll in certification courses",
-        icon: GraduationCap,
-        url: "/apps/courses",
+        id: "videok3",
+        title: "Video K3",
+        description:
+          "Watch curated safety training and K3 (Occupational Health and Safety) videos.",
+        icon: Video,
+        url: "/apps/library/video-k3",
+      },
+      {
+        id: "regulation",
+        title: "Regulation",
+        description:
+          "Browse up-to-date regulations and compliance requirements relevant to your industry.",
+        icon: Folder,
+        url: "/apps/library/regulation",
       },
       {
         id: "webinars",
         title: "Webinars",
-        description: "Register for upcoming webinars and workshops",
+        description:
+          "Register and participate in upcoming webinars and professional workshops.",
         icon: Users,
-        url: "/apps/webinars",
-        isNew: true,
+        url: "/apps/library/webinars",
+        badge: "Premium",
       },
       {
-        id: "resources",
-        title: "Learning Resources",
-        description: "Access educational materials and guides",
-        icon: Folder,
-        url: "/apps/resources",
+        id: "standard-iso",
+        title: "Standard ISO",
+        description:
+          "Access and review various ISO standards for certification and compliance.",
+        icon: GraduationCap,
+        url: "/apps/library/standard-iso",
       },
     ],
   },
   {
-    id: "analytics",
-    title: "Analytics & Reports",
+    id: "benefits",
+    title: "Benefit, Rewards, Membership & News",
     apps: [
       {
-        id: "performance",
-        title: "Performance Analytics",
-        description: "Track and analyze business performance metrics",
-        icon: BarChart3,
-        url: "/apps/analytics",
+        id: "benefit",
+        title: "Benefit Center",
+        description: "Access exclusive employee and member benefits.",
+        icon: Gift,
+        url: "/apps/benefit",
       },
       {
-        id: "compliance",
-        title: "Compliance Reports",
-        description: "Generate compliance status reports",
-        icon: FileText,
-        url: "/apps/compliance-reports",
+        id: "rewards",
+        title: "Rewards Program",
+        description: "Track and redeem your reward points and perks.",
+        icon: BadgeCheck,
+        url: "/apps/rewards",
+        badge: "New",
       },
       {
-        id: "industry-benchmarks",
-        title: "Industry Benchmarks",
-        description: "Compare your metrics with industry standards",
-        icon: Building2,
-        url: "/apps/benchmarks",
-        badge: "Premium",
+        id: "membership",
+        title: "Membership",
+        description: "Manage your membership status and privileges.",
+        icon: Users,
+        url: "/apps/membership",
+      },
+      {
+        id: "news",
+        title: "News",
+        description: "Access exclusive news.",
+        icon: Gift,
+        url: "/apps/benefit",
       },
     ],
   },
@@ -207,34 +224,12 @@ const appCategories: AppCategory[] = [
     title: "Tools & Utilities",
     apps: [
       {
-        id: "settings",
-        title: "Account Settings",
-        description: "Manage your account preferences and settings",
+        id: "reminder-surveillance",
+        title: "Reminder Surveillance",
+        description:
+          "Stay on top of upcoming audits and surveillance deadlines with automated reminders.",
         icon: Settings,
-        url: "/apps/settings",
-      },
-      {
-        id: "api",
-        title: "API Access",
-        description: "Integrate TSI services with your systems",
-        icon: Box,
-        url: "/apps/api",
-        badge: "Beta",
-      },
-      {
-        id: "calculator",
-        title: "ROI Calculator",
-        description: "Calculate return on investment for certification",
-        icon: Landmark,
-        url: "/apps/roi-calculator",
-      },
-      {
-        id: "lab",
-        title: "TSI Labs",
-        description: "Try experimental features and tools",
-        icon: FlaskConical,
-        url: "/apps/labs",
-        isNew: true,
+        url: "/apps/reminder-surveillance",
       },
     ],
   },
@@ -326,6 +321,7 @@ const AppsView = () => {
           </section>
         ))
       )}
+      <WhatsappButton />
     </div>
   );
 };
