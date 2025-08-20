@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../init";
+import { createTRPCRouter, protectedProcedure, baseProcedure } from "../init";
 import { db } from "@/lib/db";
 import { partners } from "@/lib/schema/partner-schema";
 import { eq, count, or, ilike } from "drizzle-orm";
 
 export const partnersRouter = createTRPCRouter({
-  list: protectedProcedure
+  list: baseProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
