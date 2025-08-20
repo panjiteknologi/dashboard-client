@@ -6,7 +6,6 @@ type TSIUser = {
   id: string;
   uid: number;
   username: string;
-  email: string;
   partner_name: string;
   access_token: string;
 };
@@ -17,8 +16,9 @@ declare module "next-auth" {
     user: {
       name?: string | null;
       image?: string | null;
-      user_id?: number;
+      uid?: number;
       username?: string;
+      partner_name?: string;
       access_token?: string;
     };
   }

@@ -13,11 +13,10 @@ export default {
       async authorize(credentials) {
         try {
           const response = await axios.post(
-            "https://erp.tsicertification.com/session/authenticate",
+            "https://erp.tsicertification.com/client/authenticate",
             {
               params: {
-                db: "Odoo_Tsi_Production",
-                login: credentials?.email,
+                username: credentials?.email,
                 password: credentials?.password,
               },
             }
@@ -30,8 +29,9 @@ export default {
           ) {
             return {
               id: String(response.data.result.user_id),
-              user_id: response.data.result.user_id,
+              uid: response.data.result.uid,
               username: response.data.result.user_name,
+              partner_name: response.data.result.partner_name,
               access_token: response.data.result.access_token,
             };
           }
