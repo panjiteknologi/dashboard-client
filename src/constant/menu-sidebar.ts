@@ -1,7 +1,6 @@
 import {
   BadgeCheck,
   BookOpen,
-  Bot,
   CalendarCheck,
   ClipboardList,
   FileCheck2,
@@ -11,7 +10,6 @@ import {
   GraduationCap,
   LibraryIcon,
   NotebookIcon,
-  SquareTerminal,
   Users,
   Video,
 } from "lucide-react";
