@@ -46,7 +46,8 @@ export function NavbarApps() {
     signOut();
   };
 
-  const displayName = sessionUser?.name || sessionUser?.username || "User";
+  const displayName =
+    sessionUser?.partner_name || sessionUser?.username || "User";
   const initials = displayName.substring(0, 2).toUpperCase();
 
   return (
