@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { CapaAndReportMenu } from "@/constant/menu-sidebar";
+import { CapaAndReportMenu } from "@/utils/sidebar-menu/sidebar-tracking-certificate";
 import { useDataStandardQuery } from "@/hooks/use-standard";
 import { useDateCustomerQuery } from "@/hooks/use-date-customer";
 import { DataCapa } from "@/constant/capa";

@@ -1,15 +1,16 @@
 "use client";
+
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { BenefitMenu } from "@/constant/menu-sidebar";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import BenefitView from "@/views/apps/benefit";
+import MembershipView from "@/views/apps/membership";
+import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
 
 export default function Page() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -19,14 +20,12 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/apps/benefit"
-      titleHeader="Benefit"
-      subTitleHeader="Table"
-      menuSidebar={BenefitMenu as AppSidebarTypes}
+      href="/apps/perks-and-updates/membership"
+      titleHeader="Membership"
+      subTitleHeader="Customer Care"
+      menuSidebar={SidebarMenuPerksAndUpdatesMenu as AppSidebarTypes}
     >
-      <div className="space-y-4">
-        <BenefitView />
-      </div>
+      <MembershipView />
     </DashboardLayout>
   );
 }

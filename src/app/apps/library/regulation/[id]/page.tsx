@@ -1,13 +1,14 @@
 "use client";
+
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { LibraryMenu } from "@/constant/menu-sidebar";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { RegulationType } from "@/types/projects";
 import { dataRegulations } from "@/constant/regulation";
 import RegulationDetailView from "@/views/apps/library/regulation/regulation-detail";
 import { ArrowLeft } from "lucide-react";
+import { SidebarLibraryMenu } from "@/utils";
 
 export default function page() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function page() {
       href={`/apps/library/regulation/${id}`}
       titleHeader="Detail Regulation"
       subTitleHeader={data.title}
-      menuSidebar={LibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
     >
       <div className="flex items-center gap-2">
         <button

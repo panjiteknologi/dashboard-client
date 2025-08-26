@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import * as React from "react";
-import { NavMain } from "@/components/nav-main";
+import { usePathname } from "next/navigation";
+import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -14,30 +15,42 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { AppSidebarTypes } from "@/types/sidebar-types";
+import NavMain from "./nav-main";
 
-// Type optional supaya aman kalau kosong
-interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  menuData: AppSidebarTypes;
-}
+export function AppSidebar({ data, ...props }: { data: AppSidebarTypes }) {
+  const pathname = usePathname();
+  const [expandedMenus, setExpandedMenus] = React.useState<string[]>([]);
 
-export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
+  const toggleMenu = (url: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url]
+    );
+  };
+
+  const isMenuExpanded = (url: string) => expandedMenus.includes(url);
+
+  const dataNavMain = data.navMain.map((item) => ({
+    ...item,
+    isActive: pathname.startsWith(item.url),
+  }));
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <div>
-                <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center size-8 rounded-lg">
                   <Image
                     src="/images/tsi-logo.png"
-                    width={100}
-                    height={100}
+                    width={32}
+                    height={32}
                     priority
                     alt="TSI Logo"
                   />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="text-left text-sm leading-tight">
                   <span className="truncate font-bold text-blue-950 text-lg">
                     Certification
                   </span>
@@ -50,11 +63,16 @@ export function AppSidebar({ menuData, ...props }: AppSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={menuData?.navMain} />
+        <NavMain
+          items={dataNavMain as any}
+          toggleMenu={toggleMenu}
+          isMenuExpanded={isMenuExpanded}
+        />
+        <NavSecondary items={data?.navSecondary as any} className="mt-auto" />
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={menuData?.user} />
+        <NavUser user={data?.user} />
       </SidebarFooter>
     </Sidebar>
   );

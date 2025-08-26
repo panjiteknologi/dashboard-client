@@ -7,8 +7,8 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { useDateCustomerQuery } from "@/hooks/use-date-customer";
 import AuditStatusView from "@/views/apps/tracking-certificate/audit-status";
 import { useDataStandardQuery } from "@/hooks/use-standard";
-import { SidebarTrackingCertificateMenu } from "@/constant/menu-sidebar";
 import { AppSidebarTypes } from "@/types/sidebar-types";
+import { SidebarTrackingMenu } from "@/utils";
 
 export default function Page() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function Page() {
       href="/apps/tracking-certificate/audit-status"
       titleHeader="Audit Status"
       subTitleHeader="Table"
-      menuSidebar={SidebarTrackingCertificateMenu as AppSidebarTypes}
+      menuSidebar={SidebarTrackingMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
         <h1 className="text-md font-bold">Tracking Project Consultant</h1>

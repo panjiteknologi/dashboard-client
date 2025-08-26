@@ -1,65 +1,92 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import * as React from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { MainTypes } from "@/types/sidebar-types";
+import { ChevronDown, ChevronRight, LucideIcon } from "lucide-react";
+import clsx from "clsx";
 
-export function NavMain({ items }: { items: MainTypes[] }) {
+type NavItem = {
+  title: string;
+  url: string;
+  icon: LucideIcon;
+  isActive?: boolean;
+  children?: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+};
+
+interface NavMainProps {
+  items: NavItem[];
+  toggleMenu: (url: string) => void;
+  isMenuExpanded: (url: string) => boolean;
+}
+
+export default function NavMain({
+  items,
+  toggleMenu,
+  isMenuExpanded,
+}: NavMainProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu>
-        {items?.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-              {item.items?.length ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuAction className="data-[state=open]:rotate-90">
-                      <ChevronRight />
-                      <span className="sr-only">Toggle</span>
-                    </SidebarMenuAction>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </>
-              ) : null}
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
+    <SidebarMenu>
+      {items.map((item) => {
+        const isActive = pathname.startsWith(item.url);
+        return (
+          <SidebarMenuItem
+            key={item.url}
+            className={clsx({ "bg-muted": isActive })}
+          >
+            <SidebarMenuButton
+              onClick={() => {
+                if (item.children) {
+                  toggleMenu(item.url);
+                } else {
+                  router.push(item.url);
+                }
+              }}
+              className="flex justify-between items-center w-full cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <item.icon className="w-4 h-4" />
+                {item.title}
+              </div>
+              {item.children &&
+                (isMenuExpanded(item.url) ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                ))}
+            </SidebarMenuButton>
+
+            {item.children && isMenuExpanded(item.url) && (
+              <SidebarMenu className="ml-4">
+                {item.children.map((child) => (
+                  <SidebarMenuItem
+                    key={child.url}
+                    className={clsx({
+                      "bg-muted": pathname === child.url,
+                    })}
+                  >
+                    <SidebarMenuButton onClick={() => router.push(child.url)}>
+                      <child.icon className="w-4 h-4 mr-2" />
+                      {child.title}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            )}
+          </SidebarMenuItem>
+        );
+      })}
+    </SidebarMenu>
   );
 }

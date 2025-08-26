@@ -1,9 +1,7 @@
-// lib/sidebar-data.ts
 import {
   BookOpen,
   Bot,
   Frame,
-  GraduationCap,
   LifeBuoy,
   Map,
   PieChart,
@@ -12,40 +10,7 @@ import {
   SquareTerminal,
 } from "lucide-react";
 
-export const sidebarTrackingMenu = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "",
-  },
-  navMain: [
-    {
-      title: "Label Maps",
-      url: "/label-maps",
-      icon: SquareTerminal,
-      isActive: true,
-    },
-    {
-      title: "TSI",
-      url: "/tsi",
-      icon: Bot,
-    },
-    {
-      title: "Audit Status",
-      url: "/audit-status",
-      icon: BookOpen,
-    },
-    {
-      title: "Certificate",
-      url: "/certificate",
-      icon: GraduationCap,
-    },
-  ],
-  navSecondary: [],
-  projects: [],
-};
-
-export const sidebarDashboard = {
+export const SidebarDashboardMenu = {
   user: {
     name: "shadcn",
     email: "m@example.com",

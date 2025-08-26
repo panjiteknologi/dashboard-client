@@ -3,11 +3,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { SidebarApplicationFormMenu } from "@/constant/menu-sidebar";
-import { useDateCustomerQuery } from "@/hooks/use-date-customer";
 import { mockApplicationFormData } from "@/constant/application-form";
 import { useDataStandardQuery } from "@/hooks/use-standard";
 import ApplicationFormView from "@/views/apps/application-form";
+import { SidebarApplicationFormMenu } from "@/utils";
+import { AppSidebarTypes } from "@/types/sidebar-types";
 
 export default function Page() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function Page() {
       href="/apps/application-form"
       titleHeader="Application Form"
       subTitleHeader="Table"
-      menuSidebar={SidebarApplicationFormMenu}
+      menuSidebar={SidebarApplicationFormMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
         <h1 className="text-md font-bold">List Data Application Form</h1>

@@ -1,14 +1,13 @@
 "use client";
-
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/layout/dashboard-layout";
+import { LibraryMenu } from "@/utils/sidebar-menu/sidebar-tracking-certificate";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { RegulationType } from "@/types/projects";
 import { ArrowLeft } from "lucide-react";
 import { dataWebinars } from "@/constant/webinars";
 import WebinarsDetailView from "@/views/apps/library/webinars/webinars-detail";
-import { SidebarLibraryMenu } from "@/utils";
 
 export default function page() {
   const router = useRouter();
@@ -32,7 +31,7 @@ export default function page() {
       href={`/apps/library/webinars/${id}`}
       titleHeader="Detail Webinars"
       subTitleHeader={data.title}
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={LibraryMenu as AppSidebarTypes}
     >
       <div className="flex items-center gap-2">
         <button
