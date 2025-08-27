@@ -11,32 +11,33 @@ export default function RegulationToggle({
 }) {
   return (
     <div className="flex justify-between items-center mb-4">
-      <h1 className="text-md font-bold">List Data Regulation</h1>
+      <h1 className="text-md font-bold">Daftar Regulasi</h1>
 
-      <div>
-        <ToggleGroup
-          type="single"
-          value={view}
-          onValueChange={(val: "grid" | "list") => setView(val)}
+      <ToggleGroup
+        type="single"
+        value={view}
+        onValueChange={(val) => {
+          if (val === "grid" || val === "list") setView(val);
+        }}
+      >
+        <ToggleGroupItem
+          value="grid"
+          aria-label="Tampilan Grid"
+          className="cursor-pointer"
         >
-          <ToggleGroupItem
-            value="grid"
-            aria-label="Grid View"
-            className="cursor-pointer"
-          >
-            <LayoutGrid className="h-4 w-4 mr-1" />
-            Grid
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="list"
-            aria-label="List View"
-            className="cursor-pointer"
-          >
-            <List className="h-4 w-4 mr-1" />
-            List
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+          <LayoutGrid className="h-4 w-4 mr-1" />
+          Grid
+        </ToggleGroupItem>
+
+        <ToggleGroupItem
+          value="list"
+          aria-label="Tampilan List"
+          className="cursor-pointer"
+        >
+          <List className="h-4 w-4 mr-1" />
+          List
+        </ToggleGroupItem>
+      </ToggleGroup>
     </div>
   );
 }

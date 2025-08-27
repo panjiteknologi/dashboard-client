@@ -121,21 +121,28 @@ export interface RegulationType {
   title: string;
   subtitle: string;
   image: string;
-  students: number;
-  chapters: number;
-  time: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  price: string;
-  author: string;
-  modules: {
-    title: string;
-    duration: string;
-    isFree: boolean;
+  number: string;
+  type: string;
+  issuer: string;
+  sector: string;
+  jurisdiction: string;
+  status: "Berlaku" | "Dicabut" | "Draft";
+  publishedAt: string;
+  effectiveAt: string;
+  summary: string;
+  keywords?: string[];
+  sourceUrl?: string;
+  attachments?: {
+    filename: string;
+    url: string;
   }[];
-  relatedCourses?: {
+  sections?: {
     title: string;
-    price: string;
-    thumbnail: string;
+    description: string;
+  }[];
+  relatedRegulations?: {
+    id: number;
+    title: string;
   }[];
 }
 
@@ -145,7 +152,7 @@ export interface WebinarsType {
   subtitle: string;
   image: string;
   students: number;
-  chapters: number;
+  sessions: number; // ganti dari chapters
   time: string;
   level: "Beginner" | "Intermediate" | "Advanced";
   price: string;
@@ -155,7 +162,7 @@ export interface WebinarsType {
     duration: string;
     isFree: boolean;
   }[];
-  relatedCourses?: {
+  relatedWebinars?: {
     title: string;
     price: string;
     thumbnail: string;
