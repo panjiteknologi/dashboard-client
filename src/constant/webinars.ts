@@ -8,7 +8,7 @@ export const dataWebinars: WebinarsType[] = [
       "Pelatihan untuk memahami penerapan ISO 45001 terkait Kesehatan dan Keselamatan Kerja.",
     image: "https://picsum.photos/800/450?random=1",
     students: 98,
-    chapters: 4,
+    sessions: 4, // ganti dari chapters
     time: "2 jam 15 menit",
     level: "Intermediate",
     price: "Rp 50.000",
@@ -31,7 +31,7 @@ export const dataWebinars: WebinarsType[] = [
         isFree: false,
       },
     ],
-    relatedCourses: [
+    relatedWebinars: [
       {
         title: "ISO 45001 untuk Industri Manufaktur",
         price: "Rp 55.000",
@@ -44,9 +44,9 @@ export const dataWebinars: WebinarsType[] = [
     title: "ISO 27001: Sistem Manajemen Keamanan Informasi",
     subtitle:
       "Pelajari prinsip dan penerapan standar keamanan informasi global.",
-    image: "https://picsum.photos/800/450?random=1",
+    image: "https://picsum.photos/800/450?random=2",
     students: 145,
-    chapters: 5,
+    sessions: 5,
     time: "3 jam",
     level: "Beginner",
     price: "Rp 60.000",
@@ -66,7 +66,7 @@ export const dataWebinars: WebinarsType[] = [
       },
       { title: "Sertifikasi & Audit", duration: "35 menit", isFree: false },
     ],
-    relatedCourses: [
+    relatedWebinars: [
       {
         title: "ISO 27001 untuk Startup Digital",
         price: "Rp 65.000",
@@ -79,9 +79,9 @@ export const dataWebinars: WebinarsType[] = [
     title: "ISO 14001: Sistem Manajemen Lingkungan",
     subtitle:
       "Pelatihan komprehensif untuk menerapkan ISO 14001 di tempat kerja.",
-    image: "https://picsum.photos/800/450?random=1",
+    image: "https://picsum.photos/800/450?random=3",
     students: 76,
-    chapters: 3,
+    sessions: 3,
     time: "2 jam",
     level: "Intermediate",
     price: "Rp 55.000",
@@ -99,11 +99,11 @@ export const dataWebinars: WebinarsType[] = [
         isFree: false,
       },
     ],
-    relatedCourses: [
+    relatedWebinars: [
       {
         title: "ISO 14001 untuk Sektor Publik",
         price: "Rp 50.000",
-        thumbnail: "https://picsum.photos/800/450?random=1",
+        thumbnail: "https://picsum.photos/800/450?random=4",
       },
     ],
   },

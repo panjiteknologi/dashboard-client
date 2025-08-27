@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import RewardProgramView from "@/views/apps/rewards";
+import RewardProgramView from "@/views/apps/perks-and-updates/rewards";
 import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
 
 export default function Page() {

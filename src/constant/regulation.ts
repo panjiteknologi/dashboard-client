@@ -3,114 +3,97 @@ import { RegulationType } from "@/types/projects";
 export const dataRegulations: RegulationType[] = [
   {
     id: 1,
-    title: "Dasar-dasar ISO 9001:2015",
-    subtitle:
-      "Pelatihan untuk memahami standar sistem manajemen mutu internasional.",
+    title: "ISO 9001:2015 – Sistem Manajemen Mutu",
+    subtitle: "Standar internasional untuk sistem manajemen mutu (QMS).",
     image:
       "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
-    students: 124,
-    chapters: 4,
-    time: "2 jam 30 menit",
-    level: "Beginner",
-    price: "Rp 45.000",
-    author: "Budi Santoso",
-    modules: [
+    number: "ISO 9001:2015",
+    type: "Standar",
+    issuer: "International Organization for Standardization (ISO)",
+    sector: "Manajemen Mutu",
+    jurisdiction: "Internasional",
+    status: "Berlaku",
+    publishedAt: "2015-09-23",
+    effectiveAt: "2015-09-23",
+    summary:
+      "Menetapkan persyaratan untuk sistem manajemen mutu, berfokus pada konsistensi produk/jasa, kepuasan pelanggan, dan perbaikan berkelanjutan.",
+    keywords: [
+      "QMS",
+      "audit internal",
+      "kontrol dokumen",
+      "perbaikan berkelanjutan",
+    ],
+    sourceUrl: "https://www.iso.org/standard/62085.html",
+    attachments: [
       {
-        title: "Pengenalan ISO 9001",
-        duration: "15 menit",
-        isFree: true,
-      },
-      {
-        title: "Prinsip Manajemen Mutu",
-        duration: "30 menit",
-        isFree: false,
-      },
-      {
-        title: "Dokumentasi & Implementasi",
-        duration: "45 menit",
-        isFree: false,
-      },
-      {
-        title: "Audit Internal",
-        duration: "60 menit",
-        isFree: false,
+        filename: "Ringkasan-ISO-9001-ID.pdf",
+        url: "/files/regulations/iso-9001-2015/ringkasan-id.pdf",
       },
     ],
-    relatedCourses: [
+    sections: [
       {
-        title: "Audit Internal ISO 9001",
-        price: "Rp 50.000",
-        thumbnail:
-          "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
+        title: "Ruang Lingkup",
+        description: "Tujuan, batasan, dan penerapan standar.",
       },
       {
-        title: "ISO 14001: Manajemen Lingkungan",
-        price: "Rp 60.000",
-        thumbnail:
-          "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
+        title: "Istilah & Definisi",
+        description: "Terminologi kunci dalam QMS.",
       },
       {
-        title: "ISO 27001: Keamanan Informasi",
-        price: "Rp 70.000",
-        thumbnail:
-          "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
+        title: "Klausul 4–10",
+        description:
+          "Konteks organisasi, kepemimpinan, perencanaan, dukungan, operasi, evaluasi kinerja, dan peningkatan.",
       },
     ],
+    relatedRegulations: [{ id: 2, title: "ISO 31000:2018 – Manajemen Risiko" }],
   },
   {
     id: 2,
-    title: "Manajemen Risiko ISO 31000",
-    subtitle: "Pelatihan untuk memahami prinsip dan panduan manajemen risiko.",
+    title: "ISO 31000:2018 – Manajemen Risiko",
+    subtitle:
+      "Pedoman kerangka kerja dan proses manajemen risiko untuk semua jenis organisasi.",
     image:
       "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
-    students: 86,
-    chapters: 5,
-    time: "3 jam 15 menit",
-    level: "Intermediate",
-    price: "Rp 55.000",
-    author: "Siti Lestari",
-    modules: [
+    number: "ISO 31000:2018",
+    type: "Standar",
+    issuer: "International Organization for Standardization (ISO)",
+    sector: "Manajemen Risiko",
+    jurisdiction: "Internasional",
+    status: "Berlaku",
+    publishedAt: "2018-02-15",
+    effectiveAt: "2018-02-15",
+    summary:
+      "Memberikan prinsip, kerangka, dan proses manajemen risiko untuk meningkatkan pencapaian tujuan, mengidentifikasi peluang/ancaman, serta meningkatkan tata kelola.",
+    keywords: [
+      "risk management",
+      "kerangka kerja risiko",
+      "evaluasi risiko",
+      "mitigasi",
+    ],
+    sourceUrl: "https://www.iso.org/standard/65694.html",
+    attachments: [
       {
-        title: "Pengantar ISO 31000",
-        duration: "20 menit",
-        isFree: true,
-      },
-      {
-        title: "Identifikasi Risiko",
-        duration: "40 menit",
-        isFree: false,
-      },
-      {
-        title: "Penilaian dan Evaluasi Risiko",
-        duration: "50 menit",
-        isFree: false,
-      },
-      {
-        title: "Strategi Penanganan Risiko",
-        duration: "45 menit",
-        isFree: false,
-      },
-      {
-        title: "Studi Kasus",
-        duration: "40 menit",
-        isFree: false,
+        filename: "Ringkasan-ISO-31000-ID.pdf",
+        url: "/files/regulations/iso-31000-2018/ringkasan-id.pdf",
       },
     ],
-    relatedCourses: [
+    sections: [
       {
-        title: "Implementasi ISO 31000",
-        price: "Rp 60.000",
-        thumbnail:
-          "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
+        title: "Prinsip",
+        description: "Nilai yang mendasari manajemen risiko yang efektif.",
       },
       {
-        title: "Audit Risiko Lanjutan",
-        price: "Rp 65.000",
-        thumbnail:
-          "https://cdn1-production-images-kly.akamaized.net/3_er-u5OYxxyxS9lwGVtoBJzzwo=/800x450/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3169251/original/070592500_1593756387-harald-arlander-NuhkHAAF6Y0-unsplash.jpg",
+        title: "Kerangka",
+        description: "Integrasi ke dalam tata kelola & budaya organisasi.",
       },
+      {
+        title: "Proses",
+        description:
+          "Identifikasi, analisis, evaluasi, perlakuan, dan pemantauan risiko.",
+      },
+    ],
+    relatedRegulations: [
+      { id: 1, title: "ISO 9001:2015 – Sistem Manajemen Mutu" },
     ],
   },
 ];
-
-

@@ -2,211 +2,272 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RegulationType } from "@/types/projects";
-import { useState } from "react";
+import Image from "next/image";
+import { useMemo, useState } from "react";
 
 export default function RegulationDetailView({
   data,
 }: {
   data: RegulationType;
 }) {
-  const [activeTab, setActiveTab] = useState<"modul" | "sertifikat">("modul");
+  const [activeTab, setActiveTab] = useState<
+    "ringkasan" | "seksi" | "lampiran"
+  >("ringkasan");
+
+  const statusStyle = useMemo(() => {
+    if (data.status === "Berlaku") return "bg-emerald-100 text-emerald-700";
+    if (data.status === "Dicabut") return "bg-rose-100 text-rose-700";
+    return "bg-amber-100 text-amber-800"; // Draft
+  }, [data.status]);
+
+  const initials = useMemo(() => {
+    const issuer = data.issuer || "";
+    const parts = issuer.trim().split(/\s+/);
+    return (parts[0]?.[0] || "R") + (parts[1]?.[0] || "");
+  }, [data.issuer]);
+
+  const formatID = (d?: string) => {
+    if (!d) return "-";
+    try {
+      return new Date(d).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return d;
+    }
+  };
 
   return (
     <div className="max-w-6xl grid md:grid-cols-3 gap-8 p-4">
       {/* Kiri: Info Utama */}
       <div className="md:col-span-2 space-y-4">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">Professional Certification</Badge>
-            <Badge variant="secondary">Beginner</Badge>
-          </div>
-          <h1 className="text-3xl font-bold">{data.title}</h1>
-          <p className="text-muted-foreground">{data.subtitle}</p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>⭐ 0 (0 ulasan)</span>
-            <span>⏱️ {data.time}</span>
-          </div>
-        </div>
-
-        {/* Instruktur */}
-        <div className="flex items-center gap-3 mt-4">
-          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold text-white">
-            {data.author[0]}
-          </div>
-          <div>
-            <p className="font-medium">{data.author}</p>
-            <p className="text-sm text-muted-foreground">Course Instructor</p>
-          </div>
-        </div>
-
-        {/* Tab Konten */}
-        <div className="mt-6 border rounded-lg overflow-hidden">
-          <div className="flex">
-            <button
-              onClick={() => setActiveTab("modul")}
-              className={`w-1/2 px-4 py-2 font-medium ${
-                activeTab === "modul"
-                  ? "bg-white border-b-2 border-black"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              Modul
-            </button>
-            <button
-              onClick={() => setActiveTab("sertifikat")}
-              className={`w-1/2 px-4 py-2 font-medium ${
-                activeTab === "sertifikat"
-                  ? "bg-white border-b-2 border-black"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              Sertifikat
-            </button>
+        {/* Header */}
+        <div className="space-y-3">
+          <div className="relative w-full h-52 rounded-xl overflow-hidden border">
+            <Image
+              src={data.image}
+              alt={data.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 66vw"
+            />
           </div>
 
-          <div className="p-4">
-            {activeTab === "modul" ? (
-              <div className="divide-y">
-                {data.modules?.map((modul, index) => (
-                  <div key={index} className="flex items-start gap-4 py-4">
-                    <div className="w-6 h-6 rounded-full bg-gray-200 text-center text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium">{modul.title}</p>
-                      <div className="flex gap-2 text-xs text-muted-foreground mt-1">
-                        <span>⏱️ {modul.duration}</span>
-                        {modul.isFree && (
-                          <Badge
-                            className="bg-green-100 text-green-600"
-                            variant="outline"
-                          >
-                            Gratis
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-sm text-muted-foreground">
-                <p>
-                  Sertifikat akan tersedia setelah menyelesaikan semua modul.
-                </p>
-              </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {data.number && (
+              <Badge variant="outline" className="font-medium">
+                {data.number}
+              </Badge>
+            )}
+            {data.type && <Badge variant="secondary">{data.type}</Badge>}
+            {data.jurisdiction && (
+              <Badge variant="outline">{data.jurisdiction}</Badge>
+            )}
+            {data.status && (
+              <span className={`px-2 py-1 rounded-full text-xs ${statusStyle}`}>
+                {data.status}
+              </span>
             )}
           </div>
 
-          <div className="text-center pb-4">
-            <Button variant="link" className="text-blue-600">
-              Mulai Kursus Sekarang
-            </Button>
-          </div>
-        </div>
+          <h1 className="text-3xl font-bold">{data.title}</h1>
+          {data.subtitle && (
+            <p className="text-muted-foreground">{data.subtitle}</p>
+          )}
 
-        {/* Instruktur Course */}
-        <div>
-          <h2 className="text-xl font-semibold">Instruktur Course</h2>
-          <div className="flex gap-4 mt-4 p-4 border rounded-xl items-center">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-600">
-              {data.author[0] + data.author.split(" ")[1]?.[0]}
+          <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+            <div>
+              <span className="font-medium text-gray-700">Penerbit:</span>{" "}
+              {data.issuer || "-"}
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground mb-2">
-                Saya adalah ahli Magic Chess Go Go, untuk season pertama target
-                saya adalah menjadi top global hahahahahaha
-              </p>
-              <div className="flex gap-2 text-sm">
-                <span className="font-medium">Keahlian:</span>
-                <div className="flex gap-2">
-                  <Badge variant="secondary">DevOps</Badge>
-                  <Badge variant="secondary">ISO</Badge>
-                  <Badge variant="secondary">Football</Badge>
-                </div>
-              </div>
+            <div>
+              <span className="font-medium text-gray-700">Sektor:</span>{" "}
+              {data.sector || "-"}
+            </div>
+            <div>
+              <span className="font-medium text-gray-700">Terbit:</span>{" "}
+              {formatID(data.publishedAt)}
+            </div>
+            <div>
+              <span className="font-medium text-gray-700">Berlaku:</span>{" "}
+              {formatID(data.effectiveAt)}
             </div>
           </div>
         </div>
 
-        {/* Ulasan */}
-        <div>
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Ulasan</h2>
-            <Button variant="link" className="text-blue-600 text-sm">
-              Lihat Semua Ulasan
-            </Button>
-          </div>
-          <div className="text-center py-12 text-muted-foreground">
-            Belum ada ulasan
-          </div>
-        </div>
-
-        {/* Kursus Lainnya */}
-        {data.relatedCourses && data.relatedCourses.length > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold">
-              Kursus Lainnya dari Instruktur Ini
-            </h2>
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {data.relatedCourses.map((course, index) => (
-                <div
-                  key={index}
-                  className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition"
-                >
-                  <img
-                    src={
-                      course.thumbnail || "/placeholder/course-thumbnail.jpg"
-                    }
-                    alt={course.title}
-                    className="w-full h-40 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-sm line-clamp-2">
-                      {course.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Rp {parseInt(course.price).toLocaleString("id-ID")},00
-                    </p>
-                  </div>
-                </div>
-              ))}
+        {/* “Penerbit” avatar ringkas */}
+        {data.issuer && (
+          <div className="flex items-center gap-3 mt-2">
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-700">
+              {initials}
+            </div>
+            <div>
+              <p className="font-medium">{data.issuer}</p>
+              <p className="text-sm text-muted-foreground">Issuer</p>
             </div>
           </div>
         )}
+
+        {/* Tabs */}
+        <div className="mt-6 border rounded-lg overflow-hidden">
+          <div className="flex">
+            {(["ringkasan", "seksi", "lampiran"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setActiveTab(t)}
+                className={`w-1/3 px-4 py-2 font-medium ${
+                  activeTab === t
+                    ? "bg-white border-b-2 border-black"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {t === "ringkasan"
+                  ? "Ringkasan"
+                  : t === "seksi"
+                  ? "Seksi"
+                  : "Lampiran"}
+              </button>
+            ))}
+          </div>
+
+          <div className="p-4">
+            {activeTab === "ringkasan" && (
+              <div className="space-y-3 text-sm leading-relaxed">
+                <p>{data.summary || "Belum ada ringkasan."}</p>
+
+                {/* Kata kunci */}
+                {Array.isArray(data.keywords) && data.keywords.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {data.keywords.map((k, i) => (
+                      <Badge key={i} variant="outline">
+                        #{k}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Sumber */}
+                {data.sourceUrl && (
+                  <div className="pt-3">
+                    <Button asChild variant="link" className="px-0">
+                      <a href={data.sourceUrl} target="_blank" rel="noreferrer">
+                        Lihat Sumber Resmi ↗
+                      </a>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "seksi" && (
+              <div className="divide-y">
+                {Array.isArray(data.sections) && data.sections.length > 0 ? (
+                  data.sections.map((s, i) => (
+                    <div key={i} className="py-4">
+                      <p className="font-medium">{s.title}</p>
+                      {s.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {s.description}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Belum ada seksi.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {activeTab === "lampiran" && (
+              <div className="space-y-3">
+                {Array.isArray(data.attachments) &&
+                data.attachments.length > 0 ? (
+                  data.attachments.map((f, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between border rounded-md p-3"
+                    >
+                      <div className="truncate">
+                        <p className="text-sm font-medium truncate">
+                          {f.filename}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {f.url}
+                        </p>
+                      </div>
+                      <Button asChild variant="outline" size="sm">
+                        <a href={f.url} target="_blank" rel="noreferrer">
+                          Unduh
+                        </a>
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Tidak ada lampiran.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Regulasi Terkait */}
+        {Array.isArray(data.relatedRegulations) &&
+          data.relatedRegulations.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold">Regulasi Terkait</h2>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {data.relatedRegulations.map((r) => (
+                  <div
+                    key={r.id}
+                    className="border rounded-xl p-3 hover:shadow-sm transition"
+                  >
+                    <p className="font-medium text-sm">{r.title}</p>
+                    <Button
+                      asChild
+                      variant="link"
+                      className="px-0 text-blue-600 text-sm"
+                    >
+                      <a href={`/apps/library/regulation/${r.id}`}>
+                        Lihat Detail →
+                      </a>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
 
-      {/* Kanan: Info Harga */}
-      {/* <div className="space-y-4">
-        <div className="border rounded-xl p-6 space-y-4 bg-white shadow-sm">
-          <h2 className="text-2xl font-bold text-right text-black">
-            {data.price}
-          </h2>
+      {/* Kanan: Ringkasan Singkat */}
+      <div className="space-y-4">
+        <div className="border rounded-xl p-6 space-y-3 bg-white shadow-sm">
+          <h2 className="text-lg font-semibold">Info Regulasi</h2>
           <div className="text-sm text-muted-foreground space-y-1">
-            <p>⏱️ Durasi: {data.time}</p>
-            <p>📚 {data.modules?.length} module</p>
-            <p>👤 Akses: Akses Penuh Seumur Hidup</p>
+            <p>📄 Nomor: {data.number || "-"}</p>
+            <p>🏷️ Jenis: {data.type || "-"}</p>
+            <p>🌍 Yurisdiksi: {data.jurisdiction || "-"}</p>
+            <p>🏛️ Penerbit: {data.issuer || "-"}</p>
+            <p>🏭 Sektor: {data.sector || "-"}</p>
+            <p>🗓️ Terbit: {formatID(data.publishedAt)}</p>
+            <p>🗓️ Berlaku: {formatID(data.effectiveAt)}</p>
+            <p>🔖 Kata Kunci: {data.keywords?.length || 0}</p>
+            <p>📎 Lampiran: {data.attachments?.length || 0}</p>
           </div>
-          <Button className="w-full bg-blue-600 text-white">
-            Enroll Course Sekarang
-          </Button>
-          <p className="text-center text-xs text-muted-foreground">
-            30-Hari Jaminan Uang Kembali
-          </p>
+          {data.sourceUrl && (
+            <Button asChild className="w-full">
+              <a href={data.sourceUrl} target="_blank" rel="noreferrer">
+                Buka Sumber Resmi
+              </a>
+            </Button>
+          )}
         </div>
-
-        <div className="flex justify-center gap-2">
-          <Button variant="outline" size="icon">
-            <i className="fab fa-twitter" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <i className="fab fa-facebook" />
-          </Button>
-          <Button variant="outline" size="icon">
-            <i className="fab fa-linkedin" />
-          </Button>
-        </div>
-      </div> */}
+      </div>
     </div>
   );
 }
