@@ -1,11 +1,12 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import VideoListView from "@/views/apps/library/video-k3";
-import { SidebarLibraryMenu } from "@/utils";
+import BenefitView from "@/views/apps/benefit";
+import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
 
 export default function Page() {
   const router = useRouter();
@@ -19,14 +20,13 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/apps/library/video-k3"
-      titleHeader="Video K3"
+      href="/apps/perks-and-updates/benefit"
+      titleHeader="Benefit"
       subTitleHeader="Table"
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarMenuPerksAndUpdatesMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">List Video K3</h1>
-        <VideoListView />
+        <BenefitView />
       </div>
     </DashboardLayout>
   );

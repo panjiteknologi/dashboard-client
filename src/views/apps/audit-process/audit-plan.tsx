@@ -1,3 +1,5 @@
+/* eslint-disable react/no-children-prop */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useMemo } from "react";
 import DataTable from "@/components/ui/data-table";

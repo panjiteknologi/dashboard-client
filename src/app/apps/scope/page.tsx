@@ -3,9 +3,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
-import { SidebarScopeMenu } from "@/constant/menu-sidebar";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import ScopeLibraryView from "@/views/apps/scope";
+import { SidebarScopeMenu } from "@/utils";
 
 export default function Page() {
   const router = useRouter();

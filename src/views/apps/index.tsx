@@ -13,6 +13,7 @@ import {
   LibraryIcon,
   LineChart,
   ListChecks,
+  Newspaper,
   NotebookTextIcon,
   Settings,
   User2,
@@ -186,21 +187,21 @@ const appCategories: AppCategory[] = [
   },
   {
     id: "benefits",
-    title: "Benefit, Rewards, Membership & News",
+    title: "Perks & Updates",
     apps: [
       {
         id: "benefit",
-        title: "Benefit Center",
+        title: "Benefit",
         description: "Access exclusive employee and member benefits.",
         icon: Gift,
-        url: "/apps/benefit",
+        url: "/apps/perks-and-updates/benefit",
       },
       {
         id: "rewards",
         title: "Rewards Program",
         description: "Track and redeem your reward points and perks.",
         icon: BadgeCheck,
-        url: "/apps/rewards",
+        url: "/apps/perks-and-updates/rewards",
         badge: "New",
       },
       {
@@ -208,14 +209,15 @@ const appCategories: AppCategory[] = [
         title: "Membership",
         description: "Manage your membership status and privileges.",
         icon: Users,
-        url: "/apps/membership",
+        url: "/apps/perks-and-updates/membership",
       },
       {
         id: "news",
         title: "News",
-        description: "Access exclusive news.",
-        icon: Gift,
-        url: "/apps/benefit",
+        description:
+          "Discover the latest company announcements, industry insights, and member highlights.",
+        icon: Newspaper,
+        url: "/apps/perks-and-updates/news",
       },
     ],
   },

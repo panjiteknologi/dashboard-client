@@ -7,7 +7,7 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import WebinarsView from "@/views/apps/library/webinars";
 import { dataWebinars } from "@/constant/webinars";
-import { SidebarLibraryMenu } from "@/utils";
+import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
 
 export default function RegulationPage() {
   const router = useRouter();
@@ -22,10 +22,10 @@ export default function RegulationPage() {
 
   return (
     <DashboardLayout
-      href="/apps/library/webinars"
-      titleHeader="Webinars"
+      href="/apps/perks-and-updates/news"
+      titleHeader="News"
       subTitleHeader="Table"
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarMenuPerksAndUpdatesMenu as AppSidebarTypes}
     >
       <WebinarsView data={dataWebinars} view={view} setView={setView} />
     </DashboardLayout>
