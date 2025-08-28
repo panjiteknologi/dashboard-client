@@ -28,11 +28,11 @@ export default {
             response.data.result !== "error"
           ) {
             return {
-              id: String(response.data.result.user_id),
-              uid: response.data.result.uid,
-              username: response.data.result.user_name,
-              partner_name: response.data.result.partner_name,
-              access_token: response.data.result.access_token,
+              id: String(response.data.result.data.user_id),
+              uid: response.data.result.data.user_id,
+              username: response.data.result.data.username,
+              partner_name: response.data.result.data.name,
+              access_token: response.data.result.data.access_token,
             };
           }
 

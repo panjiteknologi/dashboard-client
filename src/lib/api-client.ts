@@ -16,7 +16,7 @@ apiClient.interceptors.request.use(
     const session = await getSession();
 
     if (session?.user?.access_token) {
-      config.headers.Authorization = `${session.user.access_token}`;
+      config.headers.Authorization = `Bearer ${session.user.access_token}`;
       config.headers["Content-Type"] = "application/json";
     }
 
