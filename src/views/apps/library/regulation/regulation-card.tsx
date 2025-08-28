@@ -10,6 +10,13 @@ export default function RegulationCard({
   handleClick: () => void;
   view: "grid" | "list";
 }) {
+  const statusStyle =
+    data.status === "Berlaku"
+      ? "bg-emerald-100 text-emerald-700"
+      : data.status === "Dicabut"
+      ? "bg-rose-100 text-rose-700"
+      : "bg-amber-100 text-amber-800";
+
   return (
     <div
       onClick={handleClick}
@@ -17,6 +24,7 @@ export default function RegulationCard({
         view === "list" ? "flex flex-row h-40" : "flex flex-col h-full"
       }`}
     >
+      {/* Thumbnail */}
       <div
         className={`${
           view === "list" ? "w-40 h-full" : "h-40"
@@ -30,32 +38,84 @@ export default function RegulationCard({
         />
       </div>
 
-      <div className="flex flex-col justify-between p-4 space-y-3 flex-1">
+      {/* Content */}
+      <div className="flex flex-col justify-between p-4 gap-3 flex-1">
+        {/* Title & subtitle */}
         <div className="space-y-1">
           <h3 className="font-semibold text-base line-clamp-2">{data.title}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {data.subtitle}
-          </p>
+          {data.subtitle && (
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {data.subtitle}
+            </p>
+          )}
         </div>
 
+        {/* Badges: number, type, status, jurisdiction */}
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {data.number && (
+            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 font-medium">
+              {data.number}
+            </span>
+          )}
+          {data.type && (
+            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+              {data.type}
+            </span>
+          )}
+          {data.jurisdiction && (
+            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+              {data.jurisdiction}
+            </span>
+          )}
+          {data.status && (
+            <span
+              className={`px-2 py-1 rounded-full font-medium ${statusStyle}`}
+            >
+              {data.status}
+            </span>
+          )}
+        </div>
+
+        {/* Meta: issuer, sector, dates */}
+        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+          {data.issuer && (
+            <div className="truncate">
+              <span className="font-medium text-gray-700">Penerbit:</span>{" "}
+              {data.issuer}
+            </div>
+          )}
+          {data.sector && (
+            <div className="truncate">
+              <span className="font-medium text-gray-700">Sektor:</span>{" "}
+              {data.sector}
+            </div>
+          )}
+          {data.effectiveAt && (
+            <div className="truncate">
+              <span className="font-medium text-gray-700">Berlaku:</span>{" "}
+              {data.effectiveAt}
+            </div>
+          )}
+          {data.publishedAt && (
+            <div className="truncate">
+              <span className="font-medium text-gray-700">Terbit:</span>{" "}
+              {data.publishedAt}
+            </div>
+          )}
+        </div>
+
+        {/* Extras: keywords/attachments counts */}
         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-          <span>👤 {data.students} siswa</span>
-          <span>📚 {data.chapters} bab</span>
-          <span>⏱️ {data.time}</span>
+          {Array.isArray(data.keywords) && data.keywords.length > 0 && (
+            <span>🔖 {data.keywords.length} kata kunci</span>
+          )}
+          {Array.isArray(data.attachments) && data.attachments.length > 0 && (
+            <span>📎 {data.attachments.length} lampiran</span>
+          )}
+          {Array.isArray(data.sections) && data.sections.length > 0 && (
+            <span>📚 {data.sections.length} seksi</span>
+          )}
         </div>
-
-        <div className="flex justify-between items-center">
-          <span className="text-xs px-2 py-1 rounded-full bg-gray-100 font-medium">
-            {data.level}
-          </span>
-          <span className="text-sm font-semibold text-primary">
-            {data.price}
-          </span>
-        </div>
-
-        <p className="text-xs text-muted-foreground mt-auto">
-          Oleh {data.author}
-        </p>
       </div>
     </div>
   );

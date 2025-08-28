@@ -10,27 +10,34 @@ import RegulationDetailView from "@/views/apps/library/regulation/regulation-det
 import { ArrowLeft } from "lucide-react";
 import { SidebarLibraryMenu } from "@/utils";
 
-export default function page() {
+export default function RegulationDetailPage() {
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
 
-  const { id } = useParams();
   const [data, setData] = useState<RegulationType | null>(null);
 
-  const goBack = () => {
-    router.push("/apps/library/regulation");
-  };
+  const goBack = () => router.push("/apps/library/regulation");
 
   useEffect(() => {
-    const reg = dataRegulations?.find((r) => r.id === Number(id));
-    setData(reg || null);
+    if (!id) return;
+    const numericId = Number(id);
+    const reg = dataRegulations.find((r) => r.id === numericId) || null;
+    setData(reg);
   }, [id]);
 
-  if (!data) return <div className="p-6">Regulation not found...</div>;
+  if (!id) {
+    return <div className="p-6">Parameter ID tidak valid.</div>;
+  }
+
+  if (!data) {
+    return <div className="p-6">Regulasi tidak ditemukan…</div>;
+  }
 
   return (
     <DashboardLayout
       href={`/apps/library/regulation/${id}`}
-      titleHeader="Detail Regulation"
+      titleHeader="Detail Regulasi"
       subTitleHeader={data.title}
       menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
     >
@@ -40,9 +47,10 @@ export default function page() {
           className="cursor-pointer flex items-center gap-1 text-sm text-blue-600 hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to list
+          Kembali ke daftar
         </button>
       </div>
+
       <RegulationDetailView data={data} />
     </DashboardLayout>
   );
