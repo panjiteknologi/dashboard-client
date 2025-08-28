@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { CapaAndReportMenu } from "@/utils/sidebar-menu/sidebar-tracking-certificate";
 import { useDataStandardQuery } from "@/hooks/use-standard";
-import { useDateCustomerQuery } from "@/hooks/use-date-customer";
 import { DataCapa } from "@/constant/capa";
 import { CapaTypes } from "@/types/projects";
 import CapaReportView from "@/views/apps/audit-process";
@@ -13,9 +12,6 @@ import CapaReportView from "@/views/apps/audit-process";
 export default function Page() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const { data: dateCustomer = [], isLoading } = useDateCustomerQuery({
-    staleTime: 5 * 60 * 1000,
-  });
 
   const { data: standards = [] } = useDataStandardQuery({
     staleTime: 5 * 60 * 1000,
