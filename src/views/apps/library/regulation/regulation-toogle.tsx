@@ -2,7 +2,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LayoutGrid, List } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
-export default function RegulationToggle({
+export default function RegulationToggleView({
   view,
   setView,
 }: {

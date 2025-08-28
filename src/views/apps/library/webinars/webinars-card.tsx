@@ -2,7 +2,7 @@
 import { WebinarsType } from "@/types/projects";
 import Image from "next/image";
 
-export default function WebinarsCard({
+export default function WebinarsCardView({
   data,
   handleClick,
   view,

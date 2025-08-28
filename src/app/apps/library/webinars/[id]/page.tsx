@@ -7,8 +7,8 @@ import { AppSidebarTypes } from "@/types/sidebar-types";
 import { WebinarsType } from "@/types/projects";
 import { ArrowLeft } from "lucide-react";
 import { dataWebinars } from "@/constant/webinars";
-import WebinarsDetailView from "@/views/apps/library/webinars/webinars-detail";
 import { SidebarLibraryMenu } from "@/utils";
+import { WebinarsDetailView } from "@/views/apps";
 
 export default function WebinarsDetailPage() {
   const router = useRouter();

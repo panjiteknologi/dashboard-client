@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import WebinarsView from "@/views/apps/library/webinars";
 import { dataWebinars } from "@/constant/webinars";
 import { SidebarLibraryMenu } from "@/utils";
+import { WebinarsListView } from "@/views/apps";
 
 export default function RegulationPage() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function RegulationPage() {
       subTitleHeader="Table"
       menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
     >
-      <WebinarsView data={dataWebinars} view={view} setView={setView} />
+      <WebinarsListView data={dataWebinars} view={view} setView={setView} />
     </DashboardLayout>
   );
 }

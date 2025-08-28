@@ -17,7 +17,7 @@ type ScopeSelectorProps = {
   labelMap: Record<string, string>;
 };
 
-export default function ScopeSelector({
+export default function ScopeSelectorView({
   standard,
   setStandard,
   standards,

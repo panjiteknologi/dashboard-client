@@ -6,9 +6,9 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { RegulationType } from "@/types/projects";
 import { dataRegulations } from "@/constant/regulation";
-import RegulationDetailView from "@/views/apps/library/regulation/regulation-detail";
 import { ArrowLeft } from "lucide-react";
 import { SidebarLibraryMenu } from "@/utils";
+import { RegulationDetailView } from "@/views/apps";
 
 export default function RegulationDetailPage() {
   const router = useRouter();

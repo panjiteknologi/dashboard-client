@@ -36,7 +36,7 @@ interface TrackingProgressProps {
   data: AllProject;
 }
 
-export default function TrackingProgress({ data }: TrackingProgressProps) {
+export default function TrackingProgressView({ data }: TrackingProgressProps) {
   const isStepCompleted = (step: string): boolean => {
     const key = leadTimeStepMap[step];
     if (!key) return false;

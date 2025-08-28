@@ -17,7 +17,7 @@ function formatNumber(num: number) {
   return num.toLocaleString("id-ID");
 }
 
-export default function CardAnalytic({
+export default function CardAnalyticView({
   title,
   count,
   data,

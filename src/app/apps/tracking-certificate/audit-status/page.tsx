@@ -5,10 +5,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { useDateCustomerQuery } from "@/hooks/use-date-customer";
-import AuditStatusView from "@/views/apps/tracking-certificate/audit-status";
 import { useDataStandardQuery } from "@/hooks/use-standard";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarTrackingMenu } from "@/utils";
+import { AuditStatusView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();

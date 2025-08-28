@@ -2,7 +2,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LayoutGrid, List } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
-export default function NewsToggle({
+export default function NewsToggleView({
   view,
   setView,
 }: {
