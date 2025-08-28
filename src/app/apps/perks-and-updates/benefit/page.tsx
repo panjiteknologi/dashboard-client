@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import BenefitView from "@/views/apps/perks-and-updates/benefit";
 import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
+import { BenefitISOView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function Page() {
       menuSidebar={SidebarMenuPerksAndUpdatesMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <BenefitView />
+        <BenefitISOView />
       </div>
     </DashboardLayout>
   );

@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import VideoListView from "@/views/apps/library/video-k3";
 import { SidebarLibraryMenu } from "@/utils";
+import { VideoListView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();

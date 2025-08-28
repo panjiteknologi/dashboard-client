@@ -5,8 +5,8 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import MembershipView from "@/views/apps/perks-and-updates/membership";
 import { SidebarMenuPerksAndUpdatesMenu } from "@/utils";
+import { MembershipView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();

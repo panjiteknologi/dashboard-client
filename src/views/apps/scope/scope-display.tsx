@@ -9,7 +9,7 @@ type ScopeDisplayProps = {
   standardLabel: string;
 };
 
-export default function ScopeDisplay({
+export default function ScopeDisplayView({
   scopeList,
   standardLabel,
 }: ScopeDisplayProps) {

@@ -1,7 +1,7 @@
 import { RegulationType } from "@/types/projects";
 import Image from "next/image";
 
-export default function RegulationCard({
+export default function RegulationCardView({
   data,
   handleClick,
   view,
@@ -24,7 +24,6 @@ export default function RegulationCard({
         view === "list" ? "flex flex-row h-40" : "flex flex-col h-full"
       }`}
     >
-      {/* Thumbnail */}
       <div
         className={`${
           view === "list" ? "w-40 h-full" : "h-40"
@@ -38,9 +37,7 @@ export default function RegulationCard({
         />
       </div>
 
-      {/* Content */}
       <div className="flex flex-col justify-between p-4 gap-3 flex-1">
-        {/* Title & subtitle */}
         <div className="space-y-1">
           <h3 className="font-semibold text-base line-clamp-2">{data.title}</h3>
           {data.subtitle && (
@@ -50,7 +47,6 @@ export default function RegulationCard({
           )}
         </div>
 
-        {/* Badges: number, type, status, jurisdiction */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
           {data.number && (
             <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 font-medium">
@@ -76,7 +72,6 @@ export default function RegulationCard({
           )}
         </div>
 
-        {/* Meta: issuer, sector, dates */}
         <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
           {data.issuer && (
             <div className="truncate">
@@ -104,7 +99,6 @@ export default function RegulationCard({
           )}
         </div>
 
-        {/* Extras: keywords/attachments counts */}
         <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
           {Array.isArray(data.keywords) && data.keywords.length > 0 && (
             <span>🔖 {data.keywords.length} kata kunci</span>
