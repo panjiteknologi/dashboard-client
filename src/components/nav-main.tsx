@@ -10,21 +10,18 @@ import {
 import { ChevronDown, ChevronRight, LucideIcon } from "lucide-react";
 import clsx from "clsx";
 
-type NavItem = {
+export type TreeNavItem = {
   title: string;
   url: string;
   icon: LucideIcon;
   isActive?: boolean;
-  children?: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
+  children?: TreeNavItem[];
+  menu?: TreeNavItem[];
 };
 
 interface NavMainProps {
-  items: NavItem[];
-  toggleMenu: (url: string) => void;
+  items: TreeNavItem[];
+  toggleMenu: (url: string) => void; // gunakan url node sebagai key expand
   isMenuExpanded: (url: string) => boolean;
 }
 
@@ -36,57 +33,105 @@ export default function NavMain({
   const router = useRouter();
   const pathname = usePathname();
 
+  // Gabungkan children + menu
+  const getNodeChildren = (item: TreeNavItem): TreeNavItem[] => {
+    const a = item.children ?? [];
+    const b = item.menu ?? [];
+    return a.length || b.length ? [...a, ...b] : [];
+  };
+
+  // Ada descendant yang aktif?
+  const hasActiveDescendant = (item: TreeNavItem): boolean => {
+    const kids = getNodeChildren(item);
+    if (!kids.length) return false;
+    return kids.some(
+      (k) =>
+        pathname === k.url ||
+        pathname.startsWith(k.url + "/") ||
+        hasActiveDescendant(k)
+    );
+  };
+
+  // Render anak-anak (rekursif)
+  const renderChildrenOf = (parent: TreeNavItem, depth: number) => {
+    const children = getNodeChildren(parent);
+
+    return children.map((child) => {
+      const grandChildren = getNodeChildren(child);
+      const hasGrand = grandChildren.length > 0;
+
+      const isActiveSelf =
+        pathname === child.url || pathname.startsWith(child.url + "/");
+
+      const expanded =
+        isMenuExpanded(child.url) ||
+        (hasGrand && (isActiveSelf || hasActiveDescendant(child)));
+
+      const leftPad = Math.max(0, 8 + depth * 12);
+
+      // buat id aman untuk aria-controls
+      const ctrlId = `submenu-${child.url.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
+
+      return (
+        <SidebarMenuItem key={child.url}>
+          <SidebarMenuButton
+            onClick={(e) => {
+              e.preventDefault();
+              if (hasGrand) {
+                toggleMenu(child.url);
+              } else {
+                router.push(child.url);
+              }
+            }}
+            className={clsx(
+              "flex w-full items-center justify-between cursor-pointer",
+              // HIGHLIGHT AKTIF DI TOMBOL (SEMUA DEPTH)
+              isActiveSelf && "bg-muted"
+            )}
+            style={{ paddingLeft: leftPad }}
+            aria-expanded={expanded}
+            aria-controls={ctrlId}
+            aria-current={isActiveSelf ? "page" : undefined}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <child.icon className="h-4 w-4 shrink-0" />
+              <span
+                className={clsx("truncate", { "font-semibold": depth === 0 })}
+                title={child.title}
+              >
+                {child.title}
+              </span>
+            </div>
+
+            {hasGrand &&
+              (expanded ? (
+                <ChevronDown className="h-4 w-4 shrink-0" />
+              ) : (
+                <ChevronRight className="h-4 w-4 shrink-0" />
+              ))}
+          </SidebarMenuButton>
+
+          {hasGrand && expanded && (
+            <div id={ctrlId} className="ml-0">
+              {renderChildrenOf(child, depth + 1)}
+            </div>
+          )}
+        </SidebarMenuItem>
+      );
+    });
+  };
+
   return (
     <SidebarMenu>
-      {items.map((item) => {
-        const isActive = pathname.startsWith(item.url);
-        return (
-          <SidebarMenuItem
-            key={item.url}
-            className={clsx({ "bg-muted": isActive })}
-          >
-            <SidebarMenuButton
-              onClick={() => {
-                if (item.children) {
-                  toggleMenu(item.url);
-                } else {
-                  router.push(item.url);
-                }
-              }}
-              className="flex justify-between items-center w-full cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <item.icon className="w-4 h-4" />
-                {item.title}
-              </div>
-              {item.children &&
-                (isMenuExpanded(item.url) ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronRight className="w-4 h-4" />
-                ))}
-            </SidebarMenuButton>
+      {items.map((item) => (
+        <div key={item.url} className="p-2">
+          <span className="text-sm font-bold text-blue-900 tracking-tighter px-2">
+            {item.title}
+          </span>
 
-            {item.children && isMenuExpanded(item.url) && (
-              <SidebarMenu className="ml-4">
-                {item.children.map((child) => (
-                  <SidebarMenuItem
-                    key={child.url}
-                    className={clsx({
-                      "bg-muted": pathname === child.url,
-                    })}
-                  >
-                    <SidebarMenuButton onClick={() => router.push(child.url)}>
-                      <child.icon className="w-4 h-4 mr-2" />
-                      {child.title}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            )}
-          </SidebarMenuItem>
-        );
-      })}
+          <ul className="mt-1">{renderChildrenOf(item, 0)}</ul>
+        </div>
+      ))}
     </SidebarMenu>
   );
 }

@@ -14,12 +14,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import { AppSidebarTypes } from "@/types/sidebar-types";
+import { AppSidebarTypes, UserInfoTypes } from "@/types/sidebar-types";
 import NavMain from "./nav-main";
+import { useSession } from "next-auth/react";
 
 export function AppSidebar({ data, ...props }: { data: AppSidebarTypes }) {
   const pathname = usePathname();
   const [expandedMenus, setExpandedMenus] = React.useState<string[]>([]);
+
+  const { data: session } = useSession();
+  const user = session?.user;
 
   const toggleMenu = (url: string) => {
     setExpandedMenus((prev) =>
@@ -72,7 +76,7 @@ export function AppSidebar({ data, ...props }: { data: AppSidebarTypes }) {
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={data?.user} />
+        <NavUser user={user as UserInfoTypes} />
       </SidebarFooter>
     </Sidebar>
   );

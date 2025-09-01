@@ -1,13 +1,14 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
+import RewardProgramView from "@/views/apps/perks-and-updates/rewards";
 
-export default function DashboardPage() {
+export default function Page() {
   const router = useRouter();
   const { status } = useSession();
 
@@ -19,13 +20,13 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout
-      href="/dashboard"
-      titleHeader="Dashboard"
+      href="/apps/rewards"
+      titleHeader="Rewards Program"
       subTitleHeader="Table"
-      menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">Dashboard</h1>
+        <RewardProgramView />
       </div>
     </DashboardLayout>
   );

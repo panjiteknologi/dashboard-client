@@ -1,15 +1,18 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
+import { dataWebinars } from "@/constant/webinars";
 import { SidebarAppsMenu } from "@/utils";
+import { WebinarsListView } from "@/views/apps";
 
-export default function DashboardPage() {
+export default function RegulationPage() {
   const router = useRouter();
   const { status } = useSession();
+  const [view, setView] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -19,14 +22,12 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout
-      href="/dashboard"
-      titleHeader="Dashboard"
+      href="/apps/library/webinars"
+      titleHeader="Webinars"
       subTitleHeader="Table"
-      menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
-      <div className="space-y-4">
-        <h1 className="text-md font-bold">Dashboard</h1>
-      </div>
+      <WebinarsListView data={dataWebinars} view={view} setView={setView} />
     </DashboardLayout>
   );
 }
