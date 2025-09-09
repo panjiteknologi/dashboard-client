@@ -4,8 +4,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Download, Eye } from "lucide-react";
-import { PlanTypes, LogNote } from "@/types/projects";
+import { ChevronDown } from "lucide-react";
+import { PlanTypes } from "@/types/projects";
 
 export const AuditPlanDetail = ({ data }: { data: PlanTypes }) => {
   return (
@@ -13,10 +13,10 @@ export const AuditPlanDetail = ({ data }: { data: PlanTypes }) => {
       <div className="flex items-center justify-between px-4 py-2 border-b bg-muted">
         <div>
           <p className="font-semibold text-base break-words">
-            {data.document_no || "-"} - {data.customer || "-"}
+            {data?.document_no || "-"} - {data?.customer || "-"}
           </p>
           <p className="text-sm text-muted-foreground break-words">
-            {data.standards?.join(", ") || "No standards"}
+            {data?.standards?.join(", ") || "No standards"}
           </p>
         </div>
         <CollapsibleTrigger asChild>
@@ -30,34 +30,34 @@ export const AuditPlanDetail = ({ data }: { data: PlanTypes }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
             <p>
-              <strong>Contract Number:</strong> {data.contract_number || "-"}
+              <strong>Contract Number:</strong> {data?.contract_number || "-"}
             </p>
             <p>
-              <strong>Contract Date:</strong> {data.contract_date || "-"}
+              <strong>Contract Date:</strong> {data?.contract_date || "-"}
             </p>
             <p>
-              <strong>Reference:</strong> {data.reference || "-"}
+              <strong>Reference:</strong> {data?.reference || "-"}
             </p>
             <p>
-              <strong>Scope:</strong> {data.scope || "-"}
+              <strong>Scope:</strong> {data?.scope || "-"}
             </p>
             <p>
-              <strong>Boundaries:</strong> {data.boundaries || "-"}
+              <strong>Boundaries:</strong> {data?.boundaries || "-"}
             </p>
           </div>
           <div className="space-y-1">
             <p>
-              <strong>Contact Person:</strong> {data.contact_person || "-"}
+              <strong>Contact Person:</strong> {data?.contact_person || "-"}
             </p>
             <p>
-              <strong>No Telepon:</strong> {data.contact_phone || "-"}
+              <strong>No Telepon:</strong> {data?.contact_phone || "-"}
             </p>
             <p>
-              <strong>IAF Code Existing:</strong> {data.iaf_code || "-"}
+              <strong>IAF Code Existing:</strong> {data?.iaf_code || "-"}
             </p>
             <p>
               <strong>Certification Type:</strong>{" "}
-              {data.certification_type || "-"}
+              {data?.certification_type || "-"}
             </p>
           </div>
         </div>
@@ -65,54 +65,37 @@ export const AuditPlanDetail = ({ data }: { data: PlanTypes }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
             <p>
-              <strong>Audit Stage:</strong> {data.audit_stage || "-"}
+              <strong>Audit Stage:</strong> {data?.audit_stage || "-"}
             </p>
             <p>
-              <strong>Audit Start:</strong> {data.audit_start || "-"}
+              <strong>Audit Start:</strong> {data?.audit_start || "-"}
             </p>
             <p>
-              <strong>Audit End:</strong> {data.audit_end || "-"}
+              <strong>Audit End:</strong> {data?.audit_end || "-"}
             </p>
             <p>
-              <strong>Metode Audit:</strong> {data.audit_method || "-"}
+              <strong>Metode Audit:</strong> {data?.audit_method || "-"}
             </p>
           </div>
 
           <div className="space-y-1">
             <p>
-              <strong>Lead Auditor:</strong> {data.lead_auditor || "-"}
+              <strong>Lead Auditor:</strong> {data?.lead_auditor || "-"}
             </p>
             <p>
-              <strong>Technical Expert:</strong> {data.technical_expert || "-"}
+              <strong>Technical Expert:</strong> {data?.technical_expert || "-"}
             </p>
             <p>
-              <strong>Auditor 1:</strong> {data.auditor1 || "-"}
+              <strong>Auditor 1:</strong> {data?.auditor1 || "-"}
             </p>
             <p>
-              <strong>Auditor 2:</strong> {data.auditor2 || "-"}
+              <strong>Auditor 2:</strong> {data?.auditor2 || "-"}
             </p>
             <p>
-              <strong>Auditor 3:</strong> {data.auditor3 || "-"}
+              <strong>Auditor 3:</strong> {data?.auditor3 || "-"}
             </p>
           </div>
         </div>
-
-        {/* {data.log_notes?.length > 0 && (
-          <div>
-            <strong>Log Notes:</strong>
-            <ul className="list-disc pl-5 space-y-1 break-words">
-              {data.log_notes.map((log: LogNote, index: number) => (
-                <li key={index}>
-                  <span className="font-medium">{log.author}</span>{" "}
-                  <span className="text-gray-500 text-xs">
-                    ({log.timestamp})
-                  </span>
-                  : {log.note}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )} */}
       </CollapsibleContent>
     </Collapsible>
   );

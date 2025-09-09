@@ -34,7 +34,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, auth } = NextAuth({
   ...authConfig,
   pages: {
     signIn: "/login",

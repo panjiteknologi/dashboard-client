@@ -105,40 +105,40 @@ export const SidebarAppsMenu: {
         },
         {
           title: "Tracking Certificate",
-          url: "/tracking-certificate/audit-status",
+          url: "/tracking-certificate",
           icon: Award,
           menu: [
             {
               title: "Label Maps",
-              url: "/label-maps",
+              url: "/tracking-certificate/label-maps",
               icon: SquareTerminal,
               isActive: true,
             },
             {
               title: "TSI",
-              url: "/tsi",
+              url: "/tracking-certificate/tsi",
               icon: Bot,
             },
             {
               title: "Audit Status",
-              url: "/audit-status",
+              url: "/tracking-certificate/audit-status",
               icon: BookOpen,
             },
             {
               title: "Certificate",
-              url: "/certificate",
+              url: "/tracking-certificate/certificate",
               icon: GraduationCap,
             },
           ],
         },
         {
           title: "Audit Process",
-          url: "/audit-process/audit-stage/capa-and-report",
+          url: "/audit-process",
           icon: ListChecks,
           menu: [
             {
               title: "Audit Plan",
-              url: "/audit-process/audit-stage/audit-plan",
+              url: "/audit-process/audit-plan",
               icon: CalendarCheck,
             },
             {
@@ -148,7 +148,7 @@ export const SidebarAppsMenu: {
             },
             {
               title: "Audit Report & Capa",
-              url: "/audit-process/audit-stage/capa-and-report",
+              url: "/audit-process/capa-and-report",
               icon: FileEdit,
             },
           ],

@@ -21,7 +21,7 @@ export type TreeNavItem = {
 
 interface NavMainProps {
   items: TreeNavItem[];
-  toggleMenu: (url: string) => void; // gunakan url node sebagai key expand
+  toggleMenu: (url: string) => void;
   isMenuExpanded: (url: string) => boolean;
 }
 
@@ -33,14 +33,12 @@ export default function NavMain({
   const router = useRouter();
   const pathname = usePathname();
 
-  // Gabungkan children + menu
   const getNodeChildren = (item: TreeNavItem): TreeNavItem[] => {
     const a = item.children ?? [];
     const b = item.menu ?? [];
     return a.length || b.length ? [...a, ...b] : [];
   };
 
-  // Ada descendant yang aktif?
   const hasActiveDescendant = (item: TreeNavItem): boolean => {
     const kids = getNodeChildren(item);
     if (!kids.length) return false;
@@ -52,7 +50,6 @@ export default function NavMain({
     );
   };
 
-  // Render anak-anak (rekursif)
   const renderChildrenOf = (parent: TreeNavItem, depth: number) => {
     const children = getNodeChildren(parent);
 
@@ -68,8 +65,6 @@ export default function NavMain({
         (hasGrand && (isActiveSelf || hasActiveDescendant(child)));
 
       const leftPad = Math.max(0, 8 + depth * 12);
-
-      // buat id aman untuk aria-controls
       const ctrlId = `submenu-${child.url.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
 
       return (
@@ -85,12 +80,11 @@ export default function NavMain({
             }}
             className={clsx(
               "flex w-full items-center justify-between cursor-pointer",
-              // HIGHLIGHT AKTIF DI TOMBOL (SEMUA DEPTH)
               isActiveSelf && "bg-muted"
             )}
             style={{ paddingLeft: leftPad }}
-            aria-expanded={expanded}
-            aria-controls={ctrlId}
+            aria-expanded={hasGrand ? expanded : undefined}
+            aria-controls={hasGrand ? ctrlId : undefined}
             aria-current={isActiveSelf ? "page" : undefined}
           >
             <div className="flex items-center gap-2 min-w-0">
@@ -112,9 +106,9 @@ export default function NavMain({
           </SidebarMenuButton>
 
           {hasGrand && expanded && (
-            <div id={ctrlId} className="ml-0">
+            <ul id={ctrlId} role="group" className="mt-1 pl-0">
               {renderChildrenOf(child, depth + 1)}
-            </div>
+            </ul>
           )}
         </SidebarMenuItem>
       );
@@ -124,13 +118,15 @@ export default function NavMain({
   return (
     <SidebarMenu>
       {items.map((item) => (
-        <div key={item.url} className="p-2">
-          <span className="text-sm font-bold text-blue-900 tracking-tighter px-2">
-            {item.title}
-          </span>
+        <SidebarMenuItem key={item.url} role="presentation">
+          <div className="p-2">
+            <span className="text-sm font-bold text-blue-900 tracking-tighter">
+              {item.title}
+            </span>
+          </div>
 
           <ul className="mt-1">{renderChildrenOf(item, 0)}</ul>
-        </div>
+        </SidebarMenuItem>
       ))}
     </SidebarMenu>
   );

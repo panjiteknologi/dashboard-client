@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -44,6 +45,7 @@ type DataTableProps<TData extends object> = {
   uniqueStandards?: StandardTypes[];
   customGlobalFilter?: FilterFnOption<TData>;
   filteredStandard?: boolean;
+  isSearch?: boolean;
 };
 
 function DataTable<TData extends object>({
@@ -53,6 +55,7 @@ function DataTable<TData extends object>({
   uniqueStandards,
   customGlobalFilter,
   filteredStandard,
+  isSearch,
 }: DataTableProps<TData>) {
   const scrollPosition = React.useRef<number>(0);
   const [selected, setSelected] = useState("");
@@ -95,6 +98,7 @@ function DataTable<TData extends object>({
       },
       ...columns,
     ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const defaultGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) => {
@@ -131,20 +135,23 @@ function DataTable<TData extends object>({
       table.setPageIndex(pageIndex < maxPage - 1 ? pageIndex + 1 : 0);
     }, 40000);
     return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (
     <React.Fragment>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <Input
-          type="search"
-          placeholder="Search data..."
-          value={globalFilter ?? ""}
-          onChange={(e) => {
-            setGlobalFilter(e.target.value);
-          }}
-          className="w-full md:max-w-xs rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600"
-        />
+        {!!isSearch && (
+          <Input
+            type="search"
+            placeholder="Search data..."
+            value={globalFilter ?? ""}
+            onChange={(e) => {
+              setGlobalFilter(e.target.value);
+            }}
+            className="w-full md:max-w-xs rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600"
+          />
+        )}
 
         {!!filteredStandard && (
           <Combobox

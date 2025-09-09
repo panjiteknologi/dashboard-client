@@ -25,7 +25,6 @@ export default function Page() {
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">Scope Sertifikasi ISO</h1>
         <ScopeLibraryView />
       </div>
     </DashboardLayout>

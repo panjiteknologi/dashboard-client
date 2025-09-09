@@ -5,7 +5,9 @@ const baseUrl = env.NEXT_PUBLIC_ENDPOINT_URL;
 
 export const dateCustomerService = {
   async getDateCustomers() {
-    const response = await apiClient.get(`${baseUrl}/api/get_date_customer`);
+    const response = await apiClient.get(
+      `${baseUrl}/api/client/get_date_customer`
+    );
     return response.data;
   },
 };

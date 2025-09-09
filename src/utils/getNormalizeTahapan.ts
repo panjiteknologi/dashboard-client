@@ -1,5 +1,5 @@
 import { Tahapan } from "@/constant/tahapan";
-import { AllProject } from "@/types/Project";
+import { AllProject } from "@/types/projects";
 
 export function findTahapan(namaTahapan: string) {
   if (!namaTahapan) return null;

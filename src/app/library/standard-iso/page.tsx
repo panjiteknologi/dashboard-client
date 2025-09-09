@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import { SidebarLibraryMenu } from "@/utils";
 import { StandardISOListView } from "@/views/apps";
+import { SidebarAppsMenu } from "@/utils";
 
 export default function Page() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Page() {
       href="/apps/library/standard-iso"
       titleHeader="Standard ISO"
       subTitleHeader="Table"
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
