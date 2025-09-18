@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { getSession } from "next-auth/react";
+import { getSession, signOut } from "next-auth/react";
 
 // Create base axios instance
 const apiClient = axios.create({
@@ -38,7 +38,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        await signOut({ callbackUrl: "/login" });
       }
 
       return Promise.reject(error);

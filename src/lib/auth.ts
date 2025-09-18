@@ -46,11 +46,28 @@ export const { handlers, signIn, auth } = NextAuth({
   },
   callbacks: {
     authorized({ auth, request }) {
-      const isLoggedIn = !!auth?.user;
       const { pathname } = request.nextUrl;
-      const isProtectedRoute = pathname.startsWith("/dashboard/summary");
+      const isLoggedIn = !!auth?.user;
 
-      return !isProtectedRoute || isLoggedIn;
+      const publicPaths = ["/login", "/signup", "/"]; // add other public routes as needed
+      const isPublicPath = publicPaths.some((path) =>
+        pathname === path || pathname.startsWith(`${path}/`)
+      );
+
+      if (isPublicPath) {
+        return true;
+      }
+
+      if (
+        pathname.startsWith("/_next") ||
+        pathname.startsWith("/api/auth") ||
+        pathname === "/favicon.ico" ||
+        /\.[^/]+$/.test(pathname)
+      ) {
+        return true;
+      }
+
+      return isLoggedIn;
     },
 
     async jwt({ token, user }) {
