@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import {
   scope9001,
   scope14001,
@@ -18,6 +18,8 @@ import {
 } from "@/constant/scope";
 import ScopeSelectorView from "./scope-selector";
 import ScopeDisplayView from "./scope-display";
+import { cx } from "@/utils";
+import { THEME } from "@/constant";
 
 const scopeMap: Record<string, string[]> = {
   "9001": scope9001,
@@ -59,19 +61,34 @@ export default function ScopeLibraryView() {
   const currentLabel = labelMap[standard];
 
   return (
-    <Fragment>
-      <ScopeSelectorView
-        standard={standard}
-        setStandard={setStandard}
-        standards={standards}
-        labelMap={labelMap}
-      />
-      <div className="mt-6">
-        <ScopeDisplayView
-          scopeList={currentScope}
-          standardLabel={currentLabel}
-        />
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1
+            className={cx(
+              "text-xl font-bold leading-tight tracking-tight",
+              THEME.headerText
+            )}
+          >
+            Scope Library
+          </h1>
+          <p className="text-sm text-slate-600">
+            Overview of your activities and metrics
+          </p>
+        </div>
+        <div className="mt-1">
+          <ScopeSelectorView
+            standard={standard}
+            setStandard={setStandard}
+            standards={standards}
+            labelMap={labelMap}
+          />
+          <ScopeDisplayView
+            scopeList={currentScope}
+            standardLabel={currentLabel}
+          />
+        </div>
       </div>
-    </Fragment>
+    </div>
   );
 }

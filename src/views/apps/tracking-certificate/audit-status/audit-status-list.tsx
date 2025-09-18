@@ -9,6 +9,8 @@ import TrackingProgressView from "./tracking-progress";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { AllProject, StandardTypes } from "@/types/projects";
+import { cx } from "@/utils";
+import { THEME } from "@/constant";
 
 export default function AuditStatusView({
   data,
@@ -166,26 +168,44 @@ export default function AuditStatusView({
   };
 
   return (
-    <div className="space-y-6 max-w-screen">
-      <DataTable
-        filteredStandard
-        columns={columns}
-        data={dataTransform}
-        uniqueStandards={uniqueStandards}
-        loading={false}
-        customGlobalFilter={customGlobalFilter}
-        children={(rowData) => {
-          return (
-            <div>
-              <h1 className="text-md font-bold p-4">Audit Status - Progress</h1>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1
+            className={cx(
+              "text-xl font-bold leading-tight tracking-tight",
+              THEME.headerText
+            )}
+          >
+            Audit Status Tracking Certificate
+          </h1>
+          <p className={cx("text-sm", THEME.subText)}>
+            View and manage all tracking your certifications
+          </p>
+        </div>
+        <DataTable
+          filteredStandard={false}
+          isSearch={false}
+          columns={columns}
+          data={dataTransform}
+          uniqueStandards={uniqueStandards}
+          loading={false}
+          customGlobalFilter={customGlobalFilter}
+          children={(rowData) => {
+            return (
+              <div>
+                <h1 className="text-md font-bold p-4">
+                  Audit Status - Progress
+                </h1>
 
-              <div className="p-2 pb-4">
-                <TrackingProgressView data={rowData} />
+                <div className="p-2 pb-4">
+                  <TrackingProgressView data={rowData} />
+                </div>
               </div>
-            </div>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      </div>
     </div>
   );
 }

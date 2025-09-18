@@ -11,3 +11,10 @@ export function formatNumber(num: number) {
     .format()
     .replace(/\.00$/, "");
 }
+
+export const formatIDRFraction = (n: number) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(n);

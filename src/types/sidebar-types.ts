@@ -14,6 +14,8 @@ export interface MainTypes {
 }
 
 export interface UserInfoTypes {
+  username?: string;
+  partner_name?: string | undefined;
   name: string;
   email: string;
   avatar: string;

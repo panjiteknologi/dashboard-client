@@ -5,7 +5,9 @@ const baseUrl = env.NEXT_PUBLIC_ENDPOINT_URL;
 
 export const dataStandard = {
   async getListStandard() {
-    const response = await apiClient.get(`${baseUrl}/api/chart_list_standards`);
+    const response = await apiClient.get(
+      `${baseUrl}/api/client/chart_list_standards`
+    );
     return response.data;
   },
 };

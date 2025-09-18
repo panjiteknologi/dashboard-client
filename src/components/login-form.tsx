@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
@@ -119,6 +120,7 @@ export function LoginForm({
                     {...register("password")}
                     aria-invalid={!!errors.password}
                     className="pr-10"
+                    placeholder="Input your password"
                   />
                   <button
                     type="button"

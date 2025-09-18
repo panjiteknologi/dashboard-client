@@ -15,7 +15,7 @@ export default function ScopeDisplayView({
 }: ScopeDisplayProps) {
   return (
     <motion.div
-      className="px-3 max-h-[450px] overflow-y-auto"
+      className="px-1 max-h-[450px] overflow-y-auto"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

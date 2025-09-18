@@ -25,8 +25,8 @@ const DashboardLayout = ({
 }: {
   children: React.ReactNode;
   menuSidebar: AppSidebarTypes;
-  titleHeader: string;
-  subTitleHeader: string;
+  titleHeader?: string;
+  subTitleHeader?: string;
   href?: string;
 }) => {
   return (
@@ -43,7 +43,7 @@ const DashboardLayout = ({
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/apps">Apps</BreadcrumbLink>
+                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem className="hidden md:block">

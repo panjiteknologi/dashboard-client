@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MoveLeft, Home, Grid, LayoutDashboard, LogIn } from "lucide-react";
+import { MoveLeft, Home, LayoutDashboard, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,12 +59,7 @@ export default function NotFound() {
                   Dashboard
                 </Button>
               </Link>
-              <Link href="/apps" className="w-full">
-                <Button variant="outline" className="w-full justify-start">
-                  <Grid className="mr-2 h-4 w-4" />
-                  Applications
-                </Button>
-              </Link>
+
               <Link href="/Login" className="w-full">
                 <Button variant="outline" className="w-full justify-start">
                   <LogIn className="mr-2 h-4 w-4" />

@@ -12,44 +12,101 @@ export interface StandardTypes {
   standard_name: string;
 }
 
-export interface AllApplicationFormType {
-  partner_name: string | undefined;
-  office_address: string;
-  invoice_address: string;
-  contact_person: string;
-  phone: string;
-  departement: string;
-  email: string;
-  website: string;
-  tahapan: string;
-  standards: string[];
-  created_at: string;
-  updated_at: string;
-
-  // Detail fields
+export interface RowApplicationFormType {
+  id: any;
+  hotel?: string;
+  remarks?: string;
+  contact_phone?: string;
   scope?: string;
   boundaries?: string;
-  iso_standard?: string;
-  certificate_type?: string;
+  document_no?: string;
+  customer_name?: string;
+  issued_date?: string;
+  standards?: string[];
+  created_by?: string;
+  status_app_form?: string;
+  status_sales?: string;
+  audit_status?: string;
+  office_address?: string;
+  contact_person?: string;
+  position?: string;
+  fax?: string;
+  email?: string;
+  website?: string;
+  invoicing_address?: string;
+  sale_order?: string;
   audit_stage?: string;
-  number_of_site?: number;
+  certification?: string;
+  number_of_site?: number | string;
+  attachment?: string;
+  segment?: string;
+  declaration?: string;
+  sales_person?: string;
+  category?: string;
+  signature?: string;
+  created_by_full?: string;
+  transport_by?: string;
+  integreted_audit?: string;
+  integrated_audit?: string;
+  accreditation?: string;
+  iaf_code?: string | string[];
+  complexity?: string;
+  mandatory_sni?: string;
+  available_sections?: string[];
+}
+
+export interface AllApplicationFormType {
+  id: number;
+  name: string;
+  customer?: { id: number; name: string } | null;
+  issued_date?: string | null;
+  iso_standard_ids?:
+    | { id: number; name: string; code?: string | null }[]
+    | null;
+  user_id?: { id: number; name: string } | null;
+  state?: string | null;
+  state_sales?: string | null;
+  audit_status?: string | null;
+}
+
+export interface ApplicationFormDetailType {
+  id?: number;
+  available_sections?: string[];
+  office_address?: string;
+  invoicing_address?: string;
+  contact_person?: string;
+  contact_phone?: string;
+  position?: string;
+  fax?: string;
+  email?: string;
+  website?: string;
+  sale_order?: string;
+
+  audit_stage?: string;
+  certification?: string;
+  number_of_site?: number | string;
   remarks?: string;
+  attachment?: string;
 
-  // Personal Situation 1–3
-  type_1?: string;
-  address_1?: string;
-  activity_1?: string;
-  employees_1?: number;
+  segment?: string;
+  category?: string;
+  declaration?: string;
+  signature?: string;
+  sales_person?: string;
+  created_by_full?: string;
+  hotel?: string;
+  transport_by?: string;
 
-  type_2?: string;
-  address_2?: string;
-  activity_2?: string;
-  employees_2?: number;
+  integrated_audit?: string;
+  integreted_audit?: string;
 
-  type_3?: string;
-  address_3?: string;
-  activity_3?: string;
-  employees_3?: number;
+  accreditation?: string;
+  iaf_code?:
+    | string
+    | string[]
+    | Array<{ id?: number | string; name?: string; code?: string }>;
+  complexity?: string;
+  mandatory_sni?: string;
 }
 
 export interface DocumentAudit {
