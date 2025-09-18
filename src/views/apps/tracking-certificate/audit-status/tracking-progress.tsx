@@ -36,7 +36,7 @@ interface TrackingProgressProps {
   data: AllProject;
 }
 
-export default function TrackingProgressView({ data }: TrackingProgressProps) {
+export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
   const isStepCompleted = (step: string): boolean => {
     const key = leadTimeStepMap[step];
     if (!key) return false;
@@ -51,9 +51,8 @@ export default function TrackingProgressView({ data }: TrackingProgressProps) {
 
         <div className="flex flex-col space-y-6">
           {auditSteps.map((step, index) => {
-            console.log("steppp", step);
             const completed = isStepCompleted(step);
-            console.log("completed", completed);
+
             return (
               <div className="flex items-start space-x-3 relative" key={index}>
                 <div className="relative z-10">
@@ -80,4 +79,4 @@ export default function TrackingProgressView({ data }: TrackingProgressProps) {
       </div>
     </div>
   );
-}
+};

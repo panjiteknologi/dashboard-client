@@ -1,1 +1,1 @@
-export { default as StandardISOListView } from "./standard-iso-list";
+export * from "./standard-iso-list";

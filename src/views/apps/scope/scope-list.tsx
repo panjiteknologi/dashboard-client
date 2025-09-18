@@ -16,10 +16,10 @@ import {
   scopeISCCEU,
   scopeISCCPlus,
 } from "@/constant/scope";
-import ScopeSelectorView from "./scope-selector";
-import ScopeDisplayView from "./scope-display";
 import { cx } from "@/utils";
 import { THEME } from "@/constant";
+import { ScopeDisplayView } from "./scope-display";
+import { ScopeSelectorView } from "./scope-selector";
 
 const scopeMap: Record<string, string[]> = {
   "9001": scope9001,
@@ -53,7 +53,7 @@ const labelMap: Record<string, string> = {
   ISCCPlus: "ISCC Plus",
 };
 
-export default function ScopeLibraryView() {
+export const ScopeLibraryView = () => {
   const [standard, setStandard] = useState("9001");
 
   const standards = Object.keys(scopeMap);
@@ -91,4 +91,4 @@ export default function ScopeLibraryView() {
       </div>
     </div>
   );
-}
+};

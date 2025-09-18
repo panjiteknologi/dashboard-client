@@ -5,11 +5,7 @@ import { RegulationType } from "@/types/projects";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
-export default function RegulationDetailView({
-  data,
-}: {
-  data: RegulationType;
-}) {
+export const RegulationDetail = ({ data }: { data: RegulationType }) => {
   const [activeTab, setActiveTab] = useState<
     "ringkasan" | "seksi" | "lampiran"
   >("ringkasan");
@@ -270,4 +266,4 @@ export default function RegulationDetailView({
       </div>
     </div>
   );
-}
+};

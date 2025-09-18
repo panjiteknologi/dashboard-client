@@ -6,14 +6,14 @@ import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { useEffect } from "react";
-import { OurAuditorView } from "@/views/apps/our-auditor";
 import { useDataOurAuditorQuery } from "@/hooks/use-data-our-auditor";
+import { OurAuditorView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();
   const { status } = useSession();
 
-  const { data } = useDataOurAuditorQuery({
+  const { data, isLoading } = useDataOurAuditorQuery({
     staleTime: 5 * 60 * 1000,
   });
 
@@ -31,7 +31,7 @@ export default function Page() {
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <OurAuditorView data={data} />
+        <OurAuditorView data={data} loading={isLoading} />
       </div>
     </DashboardLayout>
   );

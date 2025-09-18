@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Download, Eye, FileText, Plus } from "lucide-react";
 
-// --- Types ---
 export type ISOStandard = {
   id: string;
   code: string; // e.g., ISO 9001:2015
@@ -32,7 +31,6 @@ export type ISOStandard = {
   fileUrl?: string; // optional download URL
 };
 
-// --- Mock data (replace with TRPC/API) ---
 const MOCK_DATA: ISOStandard[] = [
   {
     id: "1",
@@ -70,11 +68,9 @@ const MOCK_DATA: ISOStandard[] = [
 
 const CATEGORIES = ["All", "QMS", "EMS", "OHS", "ISMS"] as const;
 
-// --- Component ---
-export default function StandardISOListView() {
+export const StandardISOListView = () => {
   const router = useRouter();
 
-  // Local UI state (swap with URL params if needed)
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
   const [page, setPage] = useState(1);
@@ -260,4 +256,4 @@ export default function StandardISOListView() {
       </div>
     </div>
   );
-}
+};

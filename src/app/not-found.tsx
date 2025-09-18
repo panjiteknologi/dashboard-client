@@ -53,7 +53,7 @@ export default function NotFound() {
                   Home
                 </Button>
               </Link>
-              <Link href="/dashboard" className="w-full">
+              <Link href="/dashboard/summary" className="w-full">
                 <Button variant="outline" className="w-full justify-start">
                   <LayoutDashboard className="mr-2 h-4 w-4" />
                   Dashboard

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function OrderCardQuotationsSkeleton() {
+export const OrderCardQuotationsSkeleton = () => {
   return (
     <div className="rounded-2xl border border-sky-200 bg-white shadow-sm">
       <div className="w-full flex items-center justify-between gap-3 p-4">
@@ -97,4 +97,4 @@ export function OrderCardQuotationsSkeleton() {
       </div>
     </div>
   );
-}
+};

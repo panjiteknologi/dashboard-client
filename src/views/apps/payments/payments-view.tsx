@@ -1,15 +1,41 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { Fragment } from "react";
 import { Receipt } from "lucide-react";
 import { ApiResponseTypes } from "@/types/payments";
 import { Badge } from "./payments-badge";
-import { PaymentsPaginationInfo } from "./payments-pagination-info";
 import { THEME } from "@/constant";
 import { cx } from "@/utils";
 import { OrderCardPayments } from "./order-card-payments";
+import { PaginationBar } from "@/components/pagination/pagination-bar";
 
-export default function PaymentsView({ data }: { data?: ApiResponseTypes }) {
+type PaymentssViewProps = {
+  data?: ApiResponseTypes;
+  page: number;
+  totalPages?: number;
+  onPageChange: (p: number) => void;
+  pageSize?: number;
+  onPageSizeChange?: (n: number) => void;
+  isFetching?: boolean;
+};
+
+export const PaymentsView = ({
+  data,
+  page,
+  totalPages,
+  onPageChange,
+  pageSize,
+  onPageSizeChange,
+  isFetching,
+}: PaymentssViewProps) => {
   const orders = data?.data ?? [];
   const isSuccess = data?.status === "success";
+
+  const meta =
+    (data as any)?.pagination ?? (data as any)?.meta?.pagination ?? undefined;
+
+  const currentPage = page ?? meta?.current_page ?? 1;
+  const pages = totalPages ?? meta?.total_pages ?? 1;
+  const total = meta?.total ?? orders.length;
 
   return (
     <div className="space-y-4">
@@ -55,7 +81,17 @@ export default function PaymentsView({ data }: { data?: ApiResponseTypes }) {
         </Fragment>
       )}
 
-      <PaymentsPaginationInfo meta={data?.pagination} />
+      <PaginationBar
+        page={currentPage}
+        totalPages={pages}
+        onPageChange={onPageChange}
+        pageSize={pageSize}
+        onPageSizeChange={onPageSizeChange}
+        pageSizeOptions={[10, 25, 50, 100]}
+        totalCount={total}
+        disabled={isFetching}
+        className="pb-2"
+      />
     </div>
   );
-}
+};

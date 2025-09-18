@@ -38,14 +38,16 @@ const DashboardLayout = ({
             <SidebarTrigger className="-ml-1" />
             <Separator
               orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
+              className="data-[orientation=vertical]:h-4"
             />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
+                {/* <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/dashboard/summary">
+                    Dashboard
+                  </BreadcrumbLink>
+                </BreadcrumbItem> */}
+                {/* <BreadcrumbSeparator className="hidden md:block" /> */}
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink href={href}>{titleHeader}</BreadcrumbLink>
                 </BreadcrumbItem>

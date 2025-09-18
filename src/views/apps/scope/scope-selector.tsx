@@ -17,12 +17,12 @@ type ScopeSelectorProps = {
   labelMap: Record<string, string>;
 };
 
-export default function ScopeSelectorView({
+export const ScopeSelectorView = ({
   standard,
   setStandard,
   standards,
   labelMap,
-}: ScopeSelectorProps) {
+}: ScopeSelectorProps) => {
   const maxVisible = 8;
   const visibleStandards = standards.slice(0, maxVisible);
   const hiddenStandards = standards.slice(maxVisible);
@@ -60,4 +60,4 @@ export default function ScopeSelectorView({
       )}
     </div>
   );
-}
+};

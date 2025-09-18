@@ -1,6 +1,4 @@
-function cx(...classes: (string | false | null | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { cx } from "@/utils";
 
 export const Badge: React.FC<{
   variant?:

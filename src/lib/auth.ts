@@ -38,7 +38,7 @@ export const { handlers, signIn, auth } = NextAuth({
   ...authConfig,
   pages: {
     signIn: "/login",
-    signOut: "/",
+    signOut: "/login",
   },
   session: {
     strategy: "jwt",
@@ -48,7 +48,7 @@ export const { handlers, signIn, auth } = NextAuth({
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
       const { pathname } = request.nextUrl;
-      const isProtectedRoute = pathname.startsWith("/dashboard");
+      const isProtectedRoute = pathname.startsWith("/dashboard/summary");
 
       return !isProtectedRoute || isLoggedIn;
     },

@@ -5,20 +5,20 @@ import React, { useMemo } from "react";
 import DataTable from "@/components/ui/data-table";
 import { findTahapan } from "@/utils/getNormalizeTahapan";
 import { getlatestProgress, getNextStep } from "@/utils/getProgressAndField";
-import TrackingProgressView from "./tracking-progress";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { AllProject, StandardTypes } from "@/types/projects";
 import { cx } from "@/utils";
 import { THEME } from "@/constant";
+import { TrackingProgressView } from "./tracking-progress";
 
-export default function AuditStatusView({
+export const AuditStatusView = ({
   data,
   uniqueStandards,
 }: {
   data: AllProject[];
   uniqueStandards: StandardTypes[] | any;
-}) {
+}) => {
   const dataTransform = useMemo(() => {
     const stat = {
       surveilance1: "sv 1",
@@ -208,4 +208,4 @@ export default function AuditStatusView({
       </div>
     </div>
   );
-}
+};

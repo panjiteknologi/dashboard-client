@@ -1,2 +1,2 @@
-export { default as AuditStatusView } from "./audit-status-list";
-export { default as TrackingProgressView } from "./tracking-progress";
+export * from "./audit-status-list";
+export * from "./tracking-progress";

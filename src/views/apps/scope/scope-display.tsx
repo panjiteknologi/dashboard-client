@@ -9,10 +9,10 @@ type ScopeDisplayProps = {
   standardLabel: string;
 };
 
-export default function ScopeDisplayView({
+export const ScopeDisplayView = ({
   scopeList,
   standardLabel,
-}: ScopeDisplayProps) {
+}: ScopeDisplayProps) => {
   return (
     <motion.div
       className="px-1 max-h-[450px] overflow-y-auto"
@@ -45,4 +45,4 @@ export default function ScopeDisplayView({
       )}
     </motion.div>
   );
-}
+};

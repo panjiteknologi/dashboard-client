@@ -64,6 +64,17 @@ export const formatDateID = (d: DateLike, fallback = "-") => {
   }
 };
 
+export const formatDateShortID = (s?: string | null) => {
+  if (!s) return "-";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  return d.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 // Opsional: kalau butuh tanggal + jam
 export const formatDateTimeID = (d: DateLike, fallback = "-") => {
   const dt = parseToDate(d);

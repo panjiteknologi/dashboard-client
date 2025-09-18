@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { signOut } from "next-auth/react";
@@ -55,7 +56,7 @@ export function NavbarApps() {
       className={`sticky top-0 z-50 w-full border-b bg-background transition-shadow duration-200`}
     >
       <div className="container mx-auto py-3 flex justify-between items-center">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/dashboard/summary" className="flex items-center gap-2">
           <img src="/images/tsi-logo.png" className="h-8 w-8" alt="TSI Logo" />
           <span className="font-bold text-blue-950">Certification</span>
         </Link>

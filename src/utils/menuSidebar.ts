@@ -7,7 +7,9 @@ import {
   Bot,
   Calendar,
   CalendarCheck,
+  CalendarClock,
   CreditCard,
+  FileChartColumn,
   FileCheck2,
   FileEdit,
   Folder,
@@ -24,6 +26,7 @@ import {
   SquareTerminal,
   User2,
   Users,
+  Users2,
   Video,
   type LucideIcon,
 } from "lucide-react";
@@ -54,7 +57,6 @@ export const SidebarAppsMenu: {
     avatar: "",
   },
 
-  // === KATEGORI → CHILDREN DARI DATA APPS ===
   navMain: [
     {
       title: "Main Applications",
@@ -65,6 +67,28 @@ export const SidebarAppsMenu: {
           title: "Dashboard",
           url: "/dashboard",
           icon: LayoutDashboard,
+          menu: [
+            {
+              title: "Summary",
+              url: "/dashboard/summary",
+              icon: LayoutDashboard,
+            },
+            {
+              title: "Reports",
+              url: "/dashboard/reports",
+              icon: FileChartColumn,
+            },
+            {
+              title: "Upcoming Audits",
+              url: "/dashboard/upcoming-audits",
+              icon: CalendarClock,
+            },
+            {
+              title: "Auditors",
+              url: "/dashboard/auditors",
+              icon: Users2,
+            },
+          ],
         },
         {
           title: "Application Form",
