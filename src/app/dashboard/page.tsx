@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
-import { AuditorsProvider } from "@/context/auditors-context";
-import { AuditorsView } from "@/views/apps";
+import { DashboardView } from "@/views/apps";
+import { DashboardProvider } from "@/context/dashboard-context";
 
 export default function Page() {
   const router = useRouter();
@@ -21,14 +21,14 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/dashboard/auditors"
+      href="/dashboard"
       titleHeader="Dashboard"
-      subTitleHeader="Auditors"
+      subTitleHeader="Dashboard"
       menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
     >
-      <AuditorsProvider>
-        <AuditorsView />
-      </AuditorsProvider>
+      <DashboardProvider>
+        <DashboardView />
+      </DashboardProvider>
     </DashboardLayout>
   );
 }

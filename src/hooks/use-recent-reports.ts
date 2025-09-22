@@ -1,12 +1,12 @@
-import { dataQuotationsServices } from "@/services/data-quotations";
+import { dataRecentReportsServices } from "@/services/data-recent-reports";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 export const keys = {
   list: (page: number, limit: number) =>
-    ["quotations", "list", page, limit] as const,
+    ["RecentReports", "list", page, limit] as const,
 };
 
-export function useQuotationsQuery({
+export function useRecentReportsQuery({
   page = 1,
   limit = 10,
   enabled = true,
@@ -17,7 +17,8 @@ export function useQuotationsQuery({
 }) {
   return useQuery({
     queryKey: keys.list(page, limit),
-    queryFn: () => dataQuotationsServices.getDataQuotations({ page, limit }),
+    queryFn: () =>
+      dataRecentReportsServices.getDataRecentReports({ page, limit }),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
     refetchOnMount: "always",

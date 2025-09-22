@@ -117,7 +117,7 @@ export default function NavMain({
 
   return (
     <SidebarMenu>
-      {items.map((item) => (
+      {items?.map((item) => (
         <SidebarMenuItem key={item.url} role="presentation">
           <div className="p-2">
             <span className="text-sm font-bold text-blue-900 tracking-tighter">

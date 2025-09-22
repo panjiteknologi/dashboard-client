@@ -1,2 +1,1 @@
-export * from "./auditors";
-export * from "./summary";
+export { DashboardView } from "./dashboard-view";
