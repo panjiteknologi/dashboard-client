@@ -22,7 +22,7 @@ export default function RegulationPage() {
 
   return (
     <DashboardLayout
-      href="/apps/library/regulation"
+      href="/library/regulation"
       titleHeader="Regulation"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}

@@ -7,8 +7,8 @@ import { AppSidebarTypes } from "@/types/sidebar-types";
 import { RegulationType } from "@/types/projects";
 import { dataRegulations } from "@/constant/regulation";
 import { ArrowLeft } from "lucide-react";
-import { SidebarLibraryMenu } from "@/utils";
-import { RegulationDetailView } from "@/views/apps";
+import { SidebarAppsMenu } from "@/utils";
+import { RegulationDetail } from "@/views/apps";
 
 export default function RegulationDetailPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function RegulationDetailPage() {
 
   const [data, setData] = useState<RegulationType | null>(null);
 
-  const goBack = () => router.push("/apps/library/regulation");
+  const goBack = () => router.push("/library/regulation");
 
   useEffect(() => {
     if (!id) return;
@@ -36,10 +36,10 @@ export default function RegulationDetailPage() {
 
   return (
     <DashboardLayout
-      href={`/apps/library/regulation/${id}`}
+      href={`/library/regulation/${id}`}
       titleHeader="Detail Regulasi"
       subTitleHeader={data.title}
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="flex items-center gap-2">
         <button
@@ -51,7 +51,7 @@ export default function RegulationDetailPage() {
         </button>
       </div>
 
-      <RegulationDetailView data={data} />
+      <RegulationDetail data={data} />
     </DashboardLayout>
   );
 }

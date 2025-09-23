@@ -30,9 +30,7 @@ export const WebinarsListView = ({
           <WebinarsCardView
             key={items.id}
             data={items}
-            handleClick={() =>
-              router.push(`/apps/library/webinars/${items.id}`)
-            }
+            handleClick={() => router.push(`/library/webinars/${items.id}`)}
             view={view}
           />
         ))}

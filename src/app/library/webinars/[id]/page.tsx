@@ -7,8 +7,8 @@ import { AppSidebarTypes } from "@/types/sidebar-types";
 import { WebinarsType } from "@/types/projects";
 import { ArrowLeft } from "lucide-react";
 import { dataWebinars } from "@/constant/webinars";
-import { SidebarLibraryMenu } from "@/utils";
-import { WebinarsDetailView } from "@/views/apps";
+import { SidebarAppsMenu } from "@/utils";
+import { WebinarsDetail } from "@/views/apps";
 
 export default function WebinarsDetailPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function WebinarsDetailPage() {
 
   const [data, setData] = useState<WebinarsType | null>(null);
 
-  const goBack = () => router.push("/apps/library/webinars");
+  const goBack = () => router.push("/library/webinars");
 
   useEffect(() => {
     if (!id) return;
@@ -36,10 +36,10 @@ export default function WebinarsDetailPage() {
 
   return (
     <DashboardLayout
-      href={`/apps/library/webinars/${id}`}
+      href={`/library/webinars/${id}`}
       titleHeader="Detail Webinar"
       subTitleHeader={data.title}
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="flex items-center gap-2">
         <button
@@ -51,7 +51,7 @@ export default function WebinarsDetailPage() {
         </button>
       </div>
 
-      <WebinarsDetailView data={data} />
+      <WebinarsDetail data={data} />
     </DashboardLayout>
   );
 }
