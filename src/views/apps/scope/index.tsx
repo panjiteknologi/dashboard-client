@@ -1,3 +1,3 @@
-export { default as ScopeLibraryView } from "./scope-list";
-export { default as ScopeDisplayView } from "./scope-display";
-export { default as ScopeSelectorView } from "./scope-selector";
+export * from "./scope-list";
+export * from "./scope-display";
+export * from "./scope-selector";

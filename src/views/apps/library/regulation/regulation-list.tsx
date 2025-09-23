@@ -1,11 +1,11 @@
 "use client";
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
-import RegulationToggleView from "./regulation-toogle";
-import RegulationCardView from "./regulation-card";
 import { RegulationType } from "@/types/projects";
+import { RegulationToggleView } from "./regulation-toogle";
+import { RegulationCardView } from "./regulation-card";
 
-export default function RegulationListView({
+export const RegulationListView = ({
   setView,
   view,
   data,
@@ -13,7 +13,7 @@ export default function RegulationListView({
   view: "grid" | "list";
   setView: Dispatch<SetStateAction<"grid" | "list">>;
   data: RegulationType[];
-}) {
+}) => {
   const router = useRouter();
 
   return (
@@ -39,4 +39,4 @@ export default function RegulationListView({
       </div>
     </Fragment>
   );
-}
+};

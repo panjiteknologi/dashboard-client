@@ -1,11 +1,13 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { SidebarAppsMenu } from "@/utils";
 import type { AppSidebarTypes } from "@/types/sidebar-types";
-import AuditPlanView from "@/views/apps/audit-process/audit-plan";
+import { AuditPlanProvider } from "@/context/audit-plan-context";
+import { AuditPlanView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();
@@ -19,14 +21,15 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/apps/audit-process/capa-report"
-      titleHeader="CAPA Report"
+      href="/audit-process/audit-plan"
+      titleHeader="Audit Plan"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">Audit Plan</h1>
-        <AuditPlanView data={[]} uniqueStandards={[]} />
+        <AuditPlanProvider>
+          <AuditPlanView />
+        </AuditPlanProvider>
       </div>
     </DashboardLayout>
   );

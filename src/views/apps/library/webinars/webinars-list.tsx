@@ -2,10 +2,10 @@
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { WebinarsType } from "@/types/projects";
-import WebinarsToggleView from "./webinars-toogle";
-import WebinarsCardView from "./webinars-card";
+import { WebinarsCardView } from "./webinars-card";
+import { WebinarsToggleView } from "./webinars-toogle";
 
-export default function WebinarsListView({
+export const WebinarsListView = ({
   setView,
   view,
   data,
@@ -13,7 +13,7 @@ export default function WebinarsListView({
   view: "grid" | "list";
   setView: Dispatch<SetStateAction<"grid" | "list">>;
   data: WebinarsType[];
-}) {
+}) => {
   const router = useRouter();
 
   return (
@@ -39,4 +39,4 @@ export default function WebinarsListView({
       </div>
     </Fragment>
   );
-}
+};

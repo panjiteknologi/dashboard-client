@@ -1,24 +1,24 @@
 /* eslint-disable react/no-children-prop */
-"use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo } from "react";
 import DataTable from "@/components/ui/data-table";
-import { ColumnDef, type FilterFn } from "@tanstack/react-table";
-import { PlanTypes, StandardTypes } from "@/types/projects";
-import { AuditPlanDetail } from "./audit-plan-detail";
+import { ColumnDef } from "@tanstack/react-table";
+import { CapaTypes, StandardTypes } from "@/types/projects";
+import { CapaReportDetail } from "./capa-report-detail";
 
-export default function AuditPlanView({
+export const CapaReportView = ({
   data,
   uniqueStandards,
 }: {
-  data: PlanTypes[];
-  uniqueStandards: StandardTypes[];
-}) {
+  data: CapaTypes[];
+  uniqueStandards: StandardTypes[] | any;
+}) => {
   const filteredData = useMemo(
     () => data.filter((item) => item?.category === "report"),
     [data]
   );
 
-  const columns = useMemo<ColumnDef<PlanTypes>[]>(
+  const columns = useMemo<ColumnDef<CapaTypes>[]>(
     () => [
       {
         header: "Document No",
@@ -28,17 +28,17 @@ export default function AuditPlanView({
         ),
       },
       {
-        header: "Reference",
-        accessorKey: "reference",
-        cell: ({ row }) => (
-          <p className="text-sm">{row.original.reference ?? "-"}</p>
-        ),
-      },
-      {
         header: "Company Name",
         accessorKey: "customer",
         cell: ({ row }) => (
           <p className="text-sm">{row.original.customer ?? "-"}</p>
+        ),
+      },
+      {
+        header: "Reference",
+        accessorKey: "reference",
+        cell: ({ row }) => (
+          <p className="text-sm">{row.original.reference ?? "-"}</p>
         ),
       },
       {
@@ -83,21 +83,10 @@ export default function AuditPlanView({
     []
   );
 
-  const customGlobalFilter: FilterFn<PlanTypes> = (
-    row,
-    _columnId,
-    filterValue
-  ) => {
-    const filter = String(filterValue ?? "").toLowerCase();
-
-    const original = row.original as unknown as Record<string, unknown>;
-    const flatString = Object.values(original)
-      .map((val) => {
-        if (Array.isArray(val)) return val.join(" ");
-        if (val == null) return "";
-        if (typeof val === "object") return "";
-        return String(val);
-      })
+  const customGlobalFilter = (row: any, filterValue: string) => {
+    const filter = filterValue.toLowerCase();
+    const flatString = Object.values(row.original)
+      .map((val) => (Array.isArray(val) ? val.join(" ") : val ?? ""))
       .join(" ")
       .toLowerCase();
 
@@ -112,15 +101,15 @@ export default function AuditPlanView({
         uniqueStandards={uniqueStandards}
         loading={false}
         filteredStandard
-        customGlobalFilter={customGlobalFilter} // now correctly typed
+        customGlobalFilter={customGlobalFilter}
         children={(rowData) => {
           return (
             <div className="p-2 pb-4">
-              <AuditPlanDetail data={rowData} />
+              <CapaReportDetail data={rowData} />
             </div>
           );
         }}
       />
     </div>
   );
-}
+};

@@ -1,1 +1,1 @@
-export { default as VideoListView } from "./video-list";
+export * from "./video-list";

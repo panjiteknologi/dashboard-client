@@ -1,7 +1,5 @@
 /* eslint-disable react/no-children-prop */
-"use client";
-
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import DataTable from "@/components/ui/data-table";
 import { ColumnDef, type FilterFn } from "@tanstack/react-table";
 import { RowApplicationFormType } from "@/types/projects";
@@ -9,43 +7,29 @@ import { ApplicationFormDetail } from "./application-form-detail";
 import { useISODetailQuery } from "@/hooks/use-data-iso";
 import { THEME } from "@/constant";
 import { cx } from "@/utils";
-import { FileText } from "lucide-react";
-import { ApplicationFormSkeleton } from "./application-form-skeleton";
+import { RefreshCw } from "lucide-react";
 import { RowDetailSkeleton } from "./row-detail-skeleton";
+import { Button } from "@/components/ui/button";
+import { ApplicationFormSkeleton } from "./application-form-skeleton";
 
 type LocalRowData = RowApplicationFormType & { id?: number };
 type TableRow = { rowData: LocalRowData; index: number };
 
-export default function ApplicationFormView({
+export const ApplicationFormView = ({
   data,
-  isLoading = false,
-  emptyDelayMs = 600,
+  isLoading,
+  isFetching,
+  refetch,
 }: {
   data: RowApplicationFormType[];
   isLoading?: boolean;
-  emptyDelayMs?: number;
-}) {
+  isFetching?: boolean;
+  refetch?: () => void;
+}) => {
   const tableRows = useMemo(
     () => (data ?? []).map((r, i) => ({ rowData: r, index: i })),
     [data]
   );
-
-  const isEmpty = tableRows.length === 0;
-  const [showEmpty, setShowEmpty] = useState(false);
-
-  useEffect(() => {
-    let t: ReturnType<typeof setTimeout> | undefined;
-
-    if (!isLoading && isEmpty) {
-      t = setTimeout(() => setShowEmpty(true), emptyDelayMs);
-    } else {
-      setShowEmpty(false);
-    }
-
-    return () => {
-      if (t) clearTimeout(t);
-    };
-  }, [isLoading, isEmpty, emptyDelayMs]);
 
   const formatDate = (iso?: string) => {
     if (!iso) return "-";
@@ -252,43 +236,9 @@ export default function ApplicationFormView({
     );
   };
 
-  if (isLoading || (isEmpty && !showEmpty)) {
-    return <ApplicationFormSkeleton />;
-  }
-
-  if (isEmpty && showEmpty) {
-    return (
-      <div className="space-y-4">
-        <div>
-          <h1
-            className={cx(
-              "text-xl font-bold leading-tight tracking-tight",
-              THEME.headerText
-            )}
-          >
-            Application Form
-          </h1>
-          <p className={cx("text-sm", THEME.subText)}>
-            Manage your certification requests and application details with ease
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-10 text-center">
-          <div className="mx-auto mb-3 inline-flex rounded-2xl bg-sky-100 p-3">
-            <FileText className="h-6 w-6 text-sky-700" />
-          </div>
-          <div className="text-base font-semibold text-sky-800">No data</div>
-          <p className="mt-1 text-sm text-slate-600">
-            Belum ada Application Form yang bisa ditampilkan.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex items-center justify-between">
         <div>
           <h1
             className={cx(
@@ -303,26 +253,46 @@ export default function ApplicationFormView({
           </p>
         </div>
 
-        <DataTable
-          columns={columns}
-          data={tableRows}
-          loading={false}
-          filteredStandard={false}
-          customGlobalFilter={customGlobalFilter}
-          children={({
-            rowData,
-            index,
-          }: {
-            rowData: LocalRowData;
-            index: number;
-          }) => (
-            <RowDetail
-              key={`${rowData.document_no ?? "row"}-${index}`}
-              row={rowData}
-            />
-          )}
-        />
+        <Button
+          variant="outline"
+          size="sm"
+          aria-label="Refresh"
+          onClick={() => refetch?.()}
+          disabled={isFetching}
+          title="Refresh data"
+        >
+          <RefreshCw
+            className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
+          />
+          Refresh
+        </Button>
       </div>
+
+      {isLoading || isFetching ? (
+        <ApplicationFormSkeleton />
+      ) : (
+        <div className="mt-4">
+          <DataTable
+            columns={columns}
+            data={tableRows}
+            loading={false}
+            filteredStandard={false}
+            customGlobalFilter={customGlobalFilter}
+            children={({
+              rowData,
+              index,
+            }: {
+              rowData: LocalRowData;
+              index: number;
+            }) => (
+              <RowDetail
+                key={`${rowData.document_no ?? "row"}-${index}`}
+                row={rowData}
+              />
+            )}
+          />
+        </div>
+      )}
     </div>
   );
-}
+};

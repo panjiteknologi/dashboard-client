@@ -2,13 +2,13 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { LayoutGrid, List } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
-export default function RegulationToggleView({
+export const RegulationToggleView = ({
   view,
   setView,
 }: {
   view: "grid" | "list";
   setView: Dispatch<SetStateAction<"grid" | "list">>;
-}) {
+}) => {
   return (
     <div className="flex justify-between items-center mb-4">
       <h1 className="text-md font-bold">Daftar Regulasi</h1>
@@ -40,4 +40,4 @@ export default function RegulationToggleView({
       </ToggleGroup>
     </div>
   );
-}
+};

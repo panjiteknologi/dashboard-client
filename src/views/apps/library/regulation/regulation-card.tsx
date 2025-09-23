@@ -1,7 +1,7 @@
 import { RegulationType } from "@/types/projects";
 import Image from "next/image";
 
-export default function RegulationCardView({
+export const RegulationCardView = ({
   data,
   handleClick,
   view,
@@ -9,7 +9,7 @@ export default function RegulationCardView({
   data: RegulationType;
   handleClick: () => void;
   view: "grid" | "list";
-}) {
+}) => {
   const statusStyle =
     data.status === "Berlaku"
       ? "bg-emerald-100 text-emerald-700"
@@ -113,4 +113,4 @@ export default function RegulationCardView({
       </div>
     </div>
   );
-}
+};

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function RowDetailSkeleton() {
+export const RowDetailSkeleton = () => {
   return (
     <div className="p-2 pb-4">
       <div className="rounded-xl border border-sky-100 bg-white p-4 space-y-3">
@@ -22,4 +22,4 @@ export function RowDetailSkeleton() {
       </div>
     </div>
   );
-}
+};

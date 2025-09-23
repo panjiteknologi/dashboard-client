@@ -33,7 +33,7 @@ const videoData: VideoTypes[] = [
   },
 ];
 
-export default function VideoListView() {
+export const VideoListView = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoTypes | null>(null);
   const [isWide, setIsWide] = useState(false);
 
@@ -109,4 +109,4 @@ export default function VideoListView() {
       )}
     </div>
   );
-}
+};

@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderCardPaymentsSkeleton } from "./order-card-payments-skeleton";
 
-export function PaymentsSkeleton() {
+export const PaymentsSkeleton = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -21,4 +21,4 @@ export function PaymentsSkeleton() {
       </div>
     </div>
   );
-}
+};

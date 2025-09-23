@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
+import { DashboardView } from "@/views/apps";
+import { DashboardProvider } from "@/context/dashboard-context";
 
-export default function DashboardPage() {
+export default function Page() {
   const router = useRouter();
   const { status } = useSession();
 
@@ -21,12 +23,12 @@ export default function DashboardPage() {
     <DashboardLayout
       href="/dashboard"
       titleHeader="Dashboard"
-      subTitleHeader="Table"
+      subTitleHeader="Dashboard"
       menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
     >
-      <div className="space-y-4">
-        <h1 className="text-md font-bold">Dashboard</h1>
-      </div>
+      <DashboardProvider>
+        <DashboardView />
+      </DashboardProvider>
     </DashboardLayout>
   );
 }

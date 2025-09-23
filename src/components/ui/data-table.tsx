@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -5,7 +6,6 @@ import React, { useState, useEffect } from "react";
 import {
   flexRender,
   useReactTable,
-  getExpandedRowModel,
   getCoreRowModel,
   ColumnDef,
   getFilteredRowModel,
@@ -15,6 +15,8 @@ import {
   PaginationState,
   FilterFnOption,
   FilterFn,
+  ExpandedState,
+  getExpandedRowModel,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -31,16 +33,17 @@ import { Input } from "./input";
 import { Combobox } from "./combobox";
 import { StandardTypes } from "@/types/projects";
 
-type Pagination = {
-  pageIndex: number;
-  pageSize: number;
-  totalData: number;
-};
-
 type DataTableProps<TData extends object> = {
   columns: ColumnDef<TData>[];
   data: TData[];
-  children?: (x: TData) => React.ReactNode;
+
+  /** Row detail (expander) */
+  expandable?: boolean; // default: true
+  renderExpanded?: (x: TData) => React.ReactNode; // kalau tidak ada, pakai children fallback
+  children?: (x: TData) => React.ReactNode; // kompat lama
+  preserveScrollOnExpand?: boolean; // default: true
+
+  /** UX/Filter */
   loading?: boolean;
   uniqueStandards?: StandardTypes[];
   customGlobalFilter?: FilterFnOption<TData>;
@@ -51,7 +54,10 @@ type DataTableProps<TData extends object> = {
 function DataTable<TData extends object>({
   columns,
   data,
+  expandable = true,
+  renderExpanded,
   children,
+  preserveScrollOnExpand = true,
   uniqueStandards,
   customGlobalFilter,
   filteredStandard,
@@ -66,89 +72,97 @@ function DataTable<TData extends object>({
     pageIndex: 0,
     pageSize: 10,
   });
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
 
-  const perPage = 10;
-  const totalPages = Math.ceil(data?.length / perPage);
-
-  const additionalColumn = React.useMemo(() => {
-    return [
-      {
-        id: "expander",
-        header: () => null,
-        cell: ({ row }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                scrollPosition.current = window.scrollY; // simpan posisi scroll
-                row.toggleExpanded();
-                setTimeout(() => {
-                  window.scrollTo({
-                    top: scrollPosition.current,
-                    behavior: "auto",
-                  });
-                }, 0);
-              }}
-              className="text-blue-900"
-            >
-              {row.getIsExpanded() ? <ChevronDown /> : <ChevronUp />}
-            </Button>
-          );
-        },
-      },
-      ...columns,
-    ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const defaultGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) => {
-    return String(row.getValue(columnId))
-      .toLowerCase()
-      .includes(filterValue.toLowerCase());
+  const expanderCol: ColumnDef<TData, any> = {
+    id: "expander",
+    header: () => null,
+    cell: ({ row }) => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          if (preserveScrollOnExpand) {
+            scrollPosition.current = window.scrollY;
+          }
+          row.toggleExpanded();
+          if (preserveScrollOnExpand) {
+            setTimeout(() => {
+              window.scrollTo({
+                top: scrollPosition.current,
+                behavior: "auto",
+              });
+            }, 0);
+          }
+        }}
+        className="text-blue-900"
+        aria-label={row.getIsExpanded() ? "Collapse row" : "Expand row"}
+      >
+        {row.getIsExpanded() ? <ChevronUp /> : <ChevronDown />}
+      </Button>
+    ),
+    size: 44,
   };
 
+  const composedColumns = React.useMemo<ColumnDef<TData, any>[]>(() => {
+    return expandable ? [expanderCol, ...columns] : columns;
+  }, [columns, expandable]);
+
+  const defaultGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) =>
+    String(row.getValue(columnId))
+      .toLowerCase()
+      .includes(String(filterValue ?? "").toLowerCase());
+
   const table = useReactTable({
-    data: data,
-    columns: additionalColumn,
+    data,
+    columns: composedColumns,
     state: {
       globalFilter,
       columnFilters,
       sorting,
+      pagination,
+      expanded,
     },
     onSortingChange: setSorting,
-    getRowCanExpand: () => true,
+    onGlobalFilterChange: setGlobalFilter,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    onExpandedChange: setExpanded,
+
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: customGlobalFilter ?? defaultGlobalFilter,
-    onColumnFiltersChange: setColumnFilters,
+
+    ...(expandable
+      ? {
+          getRowCanExpand: () => true,
+          getExpandedRowModel: getExpandedRowModel(),
+        }
+      : {}),
   });
 
   useEffect(() => {
-    const dataLength = data.length;
-    const intervalId = setInterval(() => {
-      const { pageSize, pageIndex } = table.getState().pagination;
-      const maxPage = Math.floor(dataLength / pageSize);
-      table.setPageIndex(pageIndex < maxPage - 1 ? pageIndex + 1 : 0);
+    if (!data?.length) return;
+    const id = setInterval(() => {
+      const { pageIndex } = table.getState().pagination;
+      const max = table.getPageCount();
+      table.setPageIndex(pageIndex + 1 < max ? pageIndex + 1 : 0);
     }, 40000);
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+    return () => clearInterval(id);
+  }, [data, table]);
+
+  const totalPages = table.getPageCount();
 
   return (
     <React.Fragment>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+      <div className="mb-4">
         {!!isSearch && (
           <Input
             type="search"
             placeholder="Search data..."
             value={globalFilter ?? ""}
-            onChange={(e) => {
-              setGlobalFilter(e.target.value);
-            }}
+            onChange={(e) => setGlobalFilter(e.target.value)}
             className="w-full md:max-w-xs rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-600"
           />
         )}
@@ -160,10 +174,11 @@ function DataTable<TData extends object>({
             onChange={(val: string) => {
               setSelected(val);
               setColumnFilters((prev) => {
-                const filtered = prev.filter((f) => f.id !== "iso_standards");
+                const filtered = prev.filter((f) => f.id !== "standards"); // id kolom yang benar
                 if (!val) return filtered;
-                return [...filtered, { id: "iso_standards", value: val }];
+                return [...filtered, { id: "standards", value: val }];
               });
+              table.setPageIndex(0);
             }}
             placeholderName="Standard"
           />
@@ -176,86 +191,83 @@ function DataTable<TData extends object>({
             <TableHeader className="bg-blue-900 hover:bg-blue-800">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header, i) => {
-                    return (
-                      <TableHead
-                        key={i}
-                        className="text-white font-bold text-sm px-4 py-3 border-b border-gray-200"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className="text-white font-bold text-sm px-4 py-3 border-b border-gray-200"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
                 </TableRow>
               ))}
             </TableHeader>
-            {!!data && (
-              <TableBody>
-                {table?.getRowModel()?.rows?.length ? (
-                  <React.Fragment>
-                    {table.getRowModel().rows.map((row) => (
-                      <React.Fragment key={row.id}>
-                        <TableRow
-                          data-state={row.getIsSelected() && "selected"}
-                          className="hover:bg-gray-50 transition"
-                        >
-                          {row.getVisibleCells().map((cell, idx) => (
-                            <TableCell
-                              key={idx}
-                              className="px-4 py-3 text-sm text-gray-800 border-b border-gray-100"
-                            >
-                              {flexRender(
-                                cell.column.columnDef.cell,
-                                cell.getContext()
-                              )}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                        {row.getIsExpanded() && (
+
+            <TableBody>
+              {table.getRowModel().rows.length ? (
+                <>
+                  {table.getRowModel().rows.map((row) => (
+                    <React.Fragment key={row.id}>
+                      <TableRow
+                        data-state={row.getIsSelected() && "selected"}
+                        className="hover:bg-gray-50 transition"
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            className="px-4 py-3 text-sm text-gray-800 border-b border-gray-100"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+
+                      {expandable &&
+                        row.getIsExpanded() &&
+                        (renderExpanded || children) && (
                           <TableRow>
                             <TableCell
                               colSpan={row.getVisibleCells().length}
                               className="w-full min-h-[150px] p-6 border border-gray-100 shadow-inner"
                             >
-                              <div>
-                                {children ? children(row.original) : null}
-                              </div>
+                              {(renderExpanded ?? children)!(
+                                row.original as TData
+                              )}
                             </TableCell>
                           </TableRow>
                         )}
-                      </React.Fragment>
-                    ))}
-                  </React.Fragment>
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center text-gray-500 italic"
-                    >
-                      No results.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            )}
+                    </React.Fragment>
+                  ))}
+                </>
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={composedColumns.length}
+                    className="h-24 text-center text-gray-500 italic"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
           </Table>
         </div>
+
         <Pagination
-          totalItems={data?.length}
-          page={pagination.pageIndex + 1}
-          onChangePage={(pg) => {
-            setPagination((prev) => ({ ...prev, pageIndex: pg - 1 }));
-          }}
+          totalItems={table.getFilteredRowModel().rows.length}
+          page={table.getState().pagination.pageIndex + 1}
+          onChangePage={(pg) => table.setPageIndex(pg - 1)}
           totalPages={totalPages}
-          onChangeRowsPerPage={(rows) =>
-            setPagination((prev) => ({ ...prev, pageSize: rows }))
-          }
-          rowsPerPage={pagination.pageSize}
+          onChangeRowsPerPage={(rows) => table.setPageSize(rows)}
+          rowsPerPage={table.getState().pagination.pageSize}
         />
       </div>
     </React.Fragment>

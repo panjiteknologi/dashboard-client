@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { WebinarsType } from "@/types/projects";
 import { useState } from "react";
 
-export default function WebinarsDetailView({ data }: { data: WebinarsType }) {
+export const WebinarsDetail = ({ data }: { data: WebinarsType }) => {
   const [activeTab, setActiveTab] = useState<"materi" | "sertifikat">("materi");
 
   const speakerInitial =
@@ -166,4 +166,4 @@ export default function WebinarsDetailView({ data }: { data: WebinarsType }) {
       </div>
     </div>
   );
-}
+};

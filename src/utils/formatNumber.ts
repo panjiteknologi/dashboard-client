@@ -18,3 +18,6 @@ export const formatIDRFraction = (n: number) =>
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(n);
+
+export const formatNumberID = (n: number | null | undefined) =>
+  new Intl.NumberFormat("id-ID").format(typeof n === "number" ? n : 0);

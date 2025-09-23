@@ -1,5 +1,3 @@
-"use client";
-
 import { env } from "@/env";
 import apiClient from "@/lib/api-client";
 

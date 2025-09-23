@@ -180,7 +180,7 @@ const renderMobileMenuItem = (item: MenuItem) => {
           {item.title}
         </AccordionTrigger>
         <AccordionContent className="mt-2">
-          {item.items.map((subItem) => (
+          {item?.items.map((subItem) => (
             <SubMenuLink key={subItem.title} item={subItem} />
           ))}
         </AccordionContent>

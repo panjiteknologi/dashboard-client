@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   Collapsible,
   CollapsibleContent,
@@ -5,7 +6,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Download, Eye } from "lucide-react";
-import { CapaTypes, LogNote } from "@/types/projects";
+import { CapaTypes } from "@/types/projects";
 
 export const CapaReportDetail = ({ data }: { data: CapaTypes }) => {
   return (

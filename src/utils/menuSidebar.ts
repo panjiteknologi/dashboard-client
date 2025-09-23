@@ -54,7 +54,6 @@ export const SidebarAppsMenu: {
     avatar: "",
   },
 
-  // === KATEGORI → CHILDREN DARI DATA APPS ===
   navMain: [
     {
       title: "Main Applications",

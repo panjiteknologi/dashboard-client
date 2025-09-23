@@ -2,7 +2,7 @@
 import { WebinarsType } from "@/types/projects";
 import Image from "next/image";
 
-export default function WebinarsCardView({
+export const WebinarsCardView = ({
   data,
   handleClick,
   view,
@@ -10,7 +10,7 @@ export default function WebinarsCardView({
   data: WebinarsType;
   handleClick: () => void;
   view: "grid" | "list";
-}) {
+}) => {
   const speaker = data.author ?? "Pembicara";
   const sessions =
     typeof (data as any).sessions === "number"
@@ -77,4 +77,4 @@ export default function WebinarsCardView({
       </div>
     </div>
   );
-}
+};

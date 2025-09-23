@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
@@ -6,9 +7,9 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { useDataStandardQuery } from "@/hooks/use-standard";
 import { DataCapa } from "@/constant/capa";
 import { CapaTypes } from "@/types/projects";
-import CapaReportView from "@/views/apps/audit-process";
 import { SidebarAppsMenu } from "@/utils";
 import { AppSidebarTypes } from "@/types/sidebar-types";
+import { CapaReportView } from "@/views/apps/audit-process";
 
 export default function Page() {
   const router = useRouter();

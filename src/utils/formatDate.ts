@@ -64,7 +64,17 @@ export const formatDateID = (d: DateLike, fallback = "-") => {
   }
 };
 
-// Opsional: kalau butuh tanggal + jam
+export const formatDateShortID = (s?: string | null) => {
+  if (!s) return "-";
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return s;
+  return d.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 export const formatDateTimeID = (d: DateLike, fallback = "-") => {
   const dt = parseToDate(d);
   if (!dt) return fallback;
@@ -86,4 +96,39 @@ export const formatDateRangeID = (start?: string, end?: string) => {
   if (!start && !end) return "-";
   if (start && end) return `${formatDateID(start)} — ${formatDateID(end)}`;
   return formatDateID(start || end!);
+};
+
+export const clampMonth = (m: string) =>
+  /^\d{4}-\d{2}$/.test(m) ? m : new Date().toISOString().slice(0, 7);
+
+export const fmtYear = (d: Date) => String(d.getFullYear());
+export const fmtMonth = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+export const fmtDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`;
+
+export const parseMonth = (m: string) => {
+  const [y, mm] = m.split("-").map(Number);
+  return new Date(y, (mm || 1) - 1, 1);
+};
+
+export const monthDiff = (a: string, b: string) => {
+  const d1 = parseMonth(a);
+  const d2 = parseMonth(b);
+  return (
+    (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth())
+  );
+};
+
+export const rangeMonths = (from: string, to: string) => {
+  const n = Math.max(0, monthDiff(from, to));
+  const out: string[] = [];
+  const d = parseMonth(from);
+  for (let i = 0; i <= n; i++) {
+    out.push(fmtMonth(d));
+    d.setMonth(d.getMonth() + 1);
+  }
+  return out;
 };

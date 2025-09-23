@@ -1,4 +1,4 @@
-export { default as RegulationListView } from "./regulation-list";
-export { default as RegulationCardView } from "./regulation-card";
-export { default as RegulationDetailView } from "./regulation-detail";
-export { default as RegulationToogleView } from "./regulation-toogle";
+export * from "./regulation-list";
+export * from "./regulation-card";
+export * from "./regulation-detail";
+export * from "./regulation-toogle";

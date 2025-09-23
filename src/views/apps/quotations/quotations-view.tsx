@@ -3,31 +3,50 @@ import React, { Fragment } from "react";
 import { Receipt } from "lucide-react";
 import { ApiResponseTypes } from "@/types/payments";
 import { Badge } from "./quotations-badge";
-import { QuotationsPaginationInfo } from "./quotations-pagination-info";
 import { OrderCardQuotations } from "./order-card-quotations";
 import { QuotationsSkeleton } from "./quotations-skeleton";
 import { THEME } from "@/constant";
 import { cx } from "@/utils";
+import { PaginationBar } from "@/components/pagination/pagination-bar";
 
-export default function QuotationsView({ data }: { data?: ApiResponseTypes }) {
-  const isLoading = !data || data.status === ("loading" as any);
+type QuotationsViewProps = {
+  data?: ApiResponseTypes;
+  page: number;
+  totalPages?: number;
+  onPageChange: (p: number) => void;
+  pageSize?: number;
+  onPageSizeChange?: (n: number) => void;
+  isFetching?: boolean;
+};
 
-  if (isLoading) {
-    return <QuotationsSkeleton />;
-  }
+export const QuotationsView = ({
+  data,
+  page,
+  totalPages,
+  onPageChange,
+  pageSize,
+  onPageSizeChange,
+  isFetching,
+}: QuotationsViewProps) => {
+  const isLoading = !data || (data as any).status === "loading";
+  if (isLoading) return <QuotationsSkeleton />;
 
   const orders = data?.data ?? [];
   const isSuccess = data?.status === "success";
+
+  const meta =
+    (data as any)?.pagination ?? (data as any)?.meta?.pagination ?? undefined;
+
+  const currentPage = page ?? meta?.current_page ?? 1;
+  const pages = totalPages ?? meta?.total_pages ?? 1;
+  const total = meta?.total ?? orders.length;
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1
-            className={cx(
-              "text-xl font-bold leading-tight tracking-tight",
-              THEME.headerText
-            )}
+            className={cx("text-xl font-bold leading-tight", THEME.headerText)}
           >
             Quotations
           </h1>
@@ -43,7 +62,7 @@ export default function QuotationsView({ data }: { data?: ApiResponseTypes }) {
         </div>
       </div>
 
-      {orders?.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="rounded-2xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-8 text-center">
           <div className="mx-auto mb-2 inline-flex rounded-2xl bg-sky-100 p-3">
             <Receipt className={cx("h-6 w-6", THEME.icon)} />
@@ -57,13 +76,23 @@ export default function QuotationsView({ data }: { data?: ApiResponseTypes }) {
         </div>
       ) : (
         <Fragment>
-          {orders?.map((o, index) => (
+          {orders.map((o, index: number) => (
             <OrderCardQuotations key={index} order={o} cx={cx} THEME={THEME} />
           ))}
         </Fragment>
       )}
 
-      <QuotationsPaginationInfo meta={data?.pagination} />
+      <PaginationBar
+        page={currentPage}
+        totalPages={pages}
+        onPageChange={onPageChange}
+        pageSize={pageSize}
+        onPageSizeChange={onPageSizeChange}
+        pageSizeOptions={[10, 25, 50, 100]}
+        totalCount={total}
+        disabled={isFetching}
+        className="pb-2"
+      />
     </div>
   );
-}
+};
