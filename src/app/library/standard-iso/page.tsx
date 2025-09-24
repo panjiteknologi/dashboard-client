@@ -19,7 +19,7 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/apps/library/standard-iso"
+      href="/library/standard-iso"
       titleHeader="Standard ISO"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}

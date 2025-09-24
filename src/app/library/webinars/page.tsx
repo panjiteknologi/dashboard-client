@@ -22,7 +22,7 @@ export default function RegulationPage() {
 
   return (
     <DashboardLayout
-      href="/apps/library/webinars"
+      href="/library/webinars"
       titleHeader="Webinars"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}

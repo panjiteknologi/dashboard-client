@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import { useAuditorsQuery } from "@/hooks/use-auditors";
 import { useSummaryQuery } from "@/hooks/use-summary";
-import { useReportsTimelineQuery } from "@/hooks/use-reports-timeline";
 import { useRecentReportsQuery } from "@/hooks/use-recent-reports";
 
 function nnum(n: any, def = 0) {
@@ -152,7 +151,7 @@ export const DashboardProvider = ({
     isError: isErrTime,
     error: errTime,
     refetch: refetchTime,
-  } = useReportsTimelineQuery({ staleTime: 5 * 60 * 1000 });
+  } = useRecentReportsQuery({ page: 1, limit: 10, enabled: true });
 
   const {
     data: recentResp,
@@ -161,7 +160,7 @@ export const DashboardProvider = ({
     isError: isErrRec,
     error: errRec,
     refetch: refetchRec,
-  } = useRecentReportsQuery({ staleTime: 5 * 60 * 1000 });
+  } = useRecentReportsQuery({ page: 1, limit: 10, enabled: true });
 
   // ===== Summary
   const summary = useMemo(() => {

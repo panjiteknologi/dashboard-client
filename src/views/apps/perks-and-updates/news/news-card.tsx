@@ -1,3 +1,4 @@
+import { NewsType } from "@/types/news";
 import Image from "next/image";
 
 export default function NewsCard({

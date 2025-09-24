@@ -30,9 +30,7 @@ export const RegulationListView = ({
           <RegulationCardView
             key={items.id}
             data={items}
-            handleClick={() =>
-              router.push(`/apps/library/regulation/${items.id}`)
-            }
+            handleClick={() => router.push(`/library/regulation/${items.id}`)}
             view={view}
           />
         ))}

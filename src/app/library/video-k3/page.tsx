@@ -19,7 +19,7 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/apps/library/video-k3"
+      href="/library/video-k3"
       titleHeader="Video K3"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
