@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { OrderTypes } from "@/types/payments";
 import {
   ChevronDown,

@@ -20,14 +20,16 @@ export type ReportsTimelineResponse = {
 };
 
 export const reportsTimelineService = {
-  async getReportsTimeline(params: { from: string; to: string }) {
-    const { from, to } = params;
+  async getReportsTimeline(from: string, to: string) {
     const url = `${baseUrl}/api/client/dashboard/charts/reports_timeline`;
-
     const response = await apiClient.get<ReportsTimelineResponse>(url, {
       params: { from, to },
     });
-
     return response.data;
+  },
+
+  async getReportsTimelineByParams(params: { from: string; to: string }) {
+    const { from, to } = params;
+    return this.getReportsTimeline(from, to);
   },
 };

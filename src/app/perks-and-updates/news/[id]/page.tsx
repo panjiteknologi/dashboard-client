@@ -1,37 +1,45 @@
 "use client";
+
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
-import { RegulationType } from "@/types/projects";
 import { ArrowLeft } from "lucide-react";
-import { dataWebinars } from "@/constant/webinars";
-import WebinarsDetailView from "@/views/apps/library/webinars/webinars-detail";
-import { SidebarLibraryMenu } from "@/utils";
+import { dataNews } from "@/constant/news";
+import { SidebarAppsMenu } from "@/utils";
+import { NewsDetailView } from "@/views/apps";
+import { NewsType } from "@/types/news";
 
-export default function page() {
+export default function NewsDetailPage() {
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
 
-  const { id } = useParams();
-  const [data, setData] = useState<RegulationType | null>(null);
+  const [data, setData] = useState<NewsType | null>(null);
 
-  const goBack = () => {
-    router.push("/apps/library/webinars");
-  };
+  const goBack = () => router.push("/perks-and-update/news");
 
   useEffect(() => {
-    const reg = dataWebinars?.find((r) => r.id === Number(id));
-    setData(reg || null);
+    if (!id) return;
+    const numericId = Number(id);
+    const news = dataNews.find((w) => w.id === numericId) || null;
+    setData(news);
   }, [id]);
 
-  if (!data) return <div className="p-6">Webinars not found...</div>;
+  if (!id) {
+    return <div className="p-6">Parameter ID tidak valid.</div>;
+  }
+
+  if (!data) {
+    return <div className="p-6">News tidak ditemukan…</div>;
+  }
 
   return (
     <DashboardLayout
-      href={`/apps/library/webinars/${id}`}
-      titleHeader="Detail Webinars"
+      href={`/perks-and-update/news/${id}`}
+      titleHeader="Detail News"
       subTitleHeader={data.title}
-      menuSidebar={SidebarLibraryMenu as AppSidebarTypes}
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="flex items-center gap-2">
         <button
@@ -39,10 +47,11 @@ export default function page() {
           className="cursor-pointer flex items-center gap-1 text-sm text-blue-600 hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to list
+          Kembali ke daftar
         </button>
       </div>
-      <WebinarsDetailView data={data} />
+
+      <NewsDetailView data={data} />
     </DashboardLayout>
   );
 }

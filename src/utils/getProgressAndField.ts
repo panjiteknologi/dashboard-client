@@ -1,4 +1,4 @@
-import { AllProject } from "../types/Project";
+import { AllProject } from "@/types/projects";
 import { normalizeFieldTahapan } from "./getNormalizeTahapan";
 
 function getFieldAuditISPO(field: AllProject) {
@@ -247,13 +247,13 @@ function getFieldAuditISO(field: AllProject) {
       leadTime: "",
     },
     {
-      tahapan: "Tanggal Pengajuan ke " + field?.nama_akreditasi,
+      tahapan: "Tanggal Pengajuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_pengajuan_ke_kan || "",
       catatan: field?.note_tgl_pengajuan_ke_kan || "",
       leadTime: field?.lead_time_tgl_pengajuan_ke_kan || "",
     },
     {
-      tahapan: "Tanggal Persetujuan ke " + field?.nama_akreditasi,
+      tahapan: "Tanggal Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_persetujuan_kan || "",
       catatan: field?.note_tgl_persetujuan_kan || "",
       leadTime: field?.lead_time_tgl_persetujuan_kan || "",
@@ -403,13 +403,13 @@ function getFieldISO(field: AllProject) {
       leadTime: "",
     },
     {
-      tahapan: "Tanggal Pengajuan ke " + field?.nama_akreditasi,
+      tahapan: "Tanggal Pengajuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_pengajuan_ke_kan || "",
       catatan: field?.note_tgl_pengajuan_ke_kan || "",
       leadTime: field?.lead_time_tgl_pengajuan_ke_kan || "",
     },
     {
-      tahapan: "Tanggal Persetujuan ke " + field?.nama_akreditasi,
+      tahapan: "Tanggal Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_persetujuan_kan || "",
       catatan: field?.note_tgl_persetujuan_kan || "",
       leadTime: field?.lead_time_tgl_persetujuan_kan || "",
@@ -425,6 +425,7 @@ function getFieldISO(field: AllProject) {
 
 export function getlatestProgress(field: AllProject) {
   const normalizedField = normalizeFieldTahapan(field);
+  const step = Number(normalizedField?.tahapan ?? 0); // ✅ hindari null
 
   const latestProgressAuditISPO = getFieldAuditISPO(field)
     .filter((item) => item.tanggalStatus)
@@ -458,21 +459,18 @@ export function getlatestProgress(field: AllProject) {
         new Date(a.tanggalStatus as string).getTime()
     )[0];
 
-  if (location?.pathname === "/ispo") {
-    if (
-      latestProgressAuditISPO &&
-      (normalizedField.tahapan === 1 || normalizedField.tahapan === 7)
-    ) {
+  if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
+    if (latestProgressAuditISPO && (step === 1 || step === 7)) {
       return latestProgressAuditISPO.tahapan?.replace("Tanggal ", "") ?? "";
     }
-    if (latestProgressISPO && normalizedField.tahapan > 1) {
+    if (latestProgressISPO && step > 1) {
       return latestProgressISPO.tahapan?.replace("Tanggal ", "") ?? "";
     }
   } else {
-    if (latestProgressAuditISO && normalizedField.tahapan === 1) {
+    if (latestProgressAuditISO && step === 1) {
       return latestProgressAuditISO.tahapan?.replace("Tanggal ", "") ?? "";
     }
-    if (latestProgressISO && normalizedField.tahapan > 1) {
+    if (latestProgressISO && step > 1) {
       return latestProgressISO.tahapan?.replace("Tanggal ", "") ?? "";
     }
   }
@@ -482,19 +480,20 @@ export function getlatestProgress(field: AllProject) {
 
 export function getDataTable(field: AllProject) {
   const normalizedField = normalizeFieldTahapan(field);
+  const step = Number(normalizedField?.tahapan ?? 0); // ✅ hindari null
 
-  if (location?.pathname === "/ispo") {
-    if (normalizedField?.tahapan === 1 || normalizedField?.tahapan === 7) {
+  if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
+    if (step === 1 || step === 7) {
       return getFieldAuditISPO(field);
     }
-    if (normalizedField?.tahapan > 1 && normalizedField?.tahapan <= 6) {
+    if (step > 1 && step <= 6) {
       return getFieldISPO(field);
     }
   } else {
-    if (normalizedField?.tahapan === 1) {
+    if (step === 1) {
       return getFieldAuditISO(field);
     }
-    if (normalizedField?.tahapan > 1) {
+    if (step > 1) {
       return getFieldISO(field);
     }
   }
@@ -504,62 +503,52 @@ export function getDataTable(field: AllProject) {
 
 export function getNextStep(field: AllProject) {
   const normalizedField = normalizeFieldTahapan(field);
+  const step = Number(normalizedField?.tahapan ?? 0); // ✅ hindari null
 
   const latest = `Tanggal ${getlatestProgress(field)}`;
 
-  if (location?.pathname === "/ispo") {
-    if (normalizedField?.tahapan === 1 || normalizedField?.tahapan === 7) {
+  if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
+    if (step === 1 || step === 7) {
+      const auditISPO = getFieldAuditISPO(field);
       const indexInitialAudit =
-        getFieldAuditISPO(field).findIndex((item) => item.tahapan === latest) +
-        1;
-      const isDone = indexInitialAudit > getFieldAuditISPO(field).length - 1;
+        auditISPO.findIndex((item) => item.tahapan === latest) + 1;
+      const isDone = indexInitialAudit > auditISPO.length - 1;
 
       return isDone
         ? "DONE"
-        : getFieldAuditISPO(field)[indexInitialAudit]?.tahapan?.replace(
-            "Tanggal ",
-            ""
-          );
+        : auditISPO[indexInitialAudit]?.tahapan?.replace("Tanggal ", "");
     }
 
-    if (normalizedField?.tahapan > 1) {
+    if (step > 1) {
+      const survISPO = getFieldISPO(field); // ✅ bugfix: jangan pass normalizedField
       const indexSurveillance =
-        getFieldISPO(field).findIndex((item) => item.tahapan === latest) + 1;
-      const isDone =
-        indexSurveillance > getFieldISPO(normalizedField).length - 1;
+        survISPO.findIndex((item) => item.tahapan === latest) + 1;
+      const isDone = indexSurveillance > survISPO.length - 1;
 
       return isDone
         ? "DONE"
-        : getFieldISPO(field)[indexSurveillance]?.tahapan?.replace(
-            "Tanggal ",
-            ""
-          );
+        : survISPO[indexSurveillance]?.tahapan?.replace("Tanggal ", "");
     }
   } else {
-    if (normalizedField?.tahapan === 1) {
+    if (step === 1) {
+      const auditISO = getFieldAuditISO(field);
       const indexInitialAudit =
-        getFieldAuditISO(field).findIndex((item) => item.tahapan === latest) +
-        1;
-      const isDone = indexInitialAudit > getFieldAuditISO(field).length - 1;
+        auditISO.findIndex((item) => item.tahapan === latest) + 1;
+      const isDone = indexInitialAudit > auditISO.length - 1;
 
       return isDone
         ? "DONE"
-        : getFieldAuditISO(field)[indexInitialAudit]?.tahapan?.replace(
-            "Tanggal ",
-            ""
-          );
+        : auditISO[indexInitialAudit]?.tahapan?.replace("Tanggal ", "");
     }
-    if (normalizedField?.tahapan > 1) {
+    if (step > 1) {
+      const survISO = getFieldISO(field);
       const indexSurveillance =
-        getFieldISO(field).findIndex((item) => item.tahapan === latest) + 1;
-      const isDone = indexSurveillance > getFieldISO(field).length - 1;
+        survISO.findIndex((item) => item.tahapan === latest) + 1;
+      const isDone = indexSurveillance > survISO.length - 1;
 
       return isDone
         ? "DONE"
-        : getFieldISO(field)[indexSurveillance]?.tahapan?.replace(
-            "Tanggal ",
-            ""
-          );
+        : survISO[indexSurveillance]?.tahapan?.replace("Tanggal ", "");
     }
   }
 

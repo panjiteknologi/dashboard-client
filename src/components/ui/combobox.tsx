@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
 type ComboboxProps = {
-  options: string[] | any;
+  options: string[];
   onChange: (value: string) => void;
   placeholderName: string;
   value?: string;

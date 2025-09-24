@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
@@ -29,7 +30,7 @@ export default function NewsView({
         {data.map((items) => (
           <NewsCard
             key={items.id}
-            data={items}
+            data={items as any}
             handleClick={() =>
               router.push(`/apps/library/webinars/${items.id}`)
             }
