@@ -70,7 +70,6 @@ export const DashboardStateBuckets = ({
   reportObj,
   tsiIsoObj,
   tsiIspoObj,
-  contracts,
 }: {
   loading: boolean;
   hideZero: boolean;
@@ -79,11 +78,6 @@ export const DashboardStateBuckets = ({
   reportObj: BucketObj;
   tsiIsoObj?: BucketObj;
   tsiIspoObj?: BucketObj;
-  contracts?: {
-    total?: NumLike;
-    expiring60d?: NumLike;
-    overdue?: NumLike;
-  };
 }) => {
   const filterZeros = (obj?: BucketObj) => {
     if (!obj) return {};
@@ -147,7 +141,6 @@ export const DashboardStateBuckets = ({
 
   return (
     <div className="mt-8">
-      {/* Header */}
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
           <Filter className="h-4 w-4" />
@@ -188,16 +181,7 @@ export const DashboardStateBuckets = ({
         </div>
       </div>
 
-      {contracts && (
-        <ContractsStrip
-          loading={loading}
-          total={contracts.total}
-          expiring60d={contracts.expiring60d}
-          overdue={contracts.overdue}
-        />
-      )}
-
-      <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-2">
         {sections.map(({ title, obj, empty }) => {
           const filtered = filterZeros(obj);
           return (
@@ -223,7 +207,7 @@ export const DashboardStateBuckets = ({
   );
 };
 
-function FancyCard({
+const FancyCard = ({
   title,
   loading,
   body,
@@ -233,7 +217,7 @@ function FancyCard({
   loading: boolean;
   body: React.ReactNode;
   className?: string;
-}) {
+}) => {
   return (
     <Card
       className={cn(
@@ -265,42 +249,4 @@ function FancyCard({
       </div>
     </Card>
   );
-}
-
-function ContractsStrip({
-  loading,
-  total,
-  expiring60d,
-  overdue,
-}: {
-  loading: boolean;
-  total?: NumLike;
-  expiring60d?: NumLike;
-  overdue?: NumLike;
-}) {
-  const items = [
-    { label: "Contracts Total", value: toNumber(total ?? 0) },
-    { label: "Expiring ≤60 hari", value: toNumber(expiring60d ?? 0) },
-    { label: "Overdue", value: toNumber(overdue ?? 0) },
-  ];
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      {items.map((it) => (
-        <Card
-          key={it.label}
-          className="rounded-2xl border bg-card px-4 py-3 hover:shadow-sm transition-shadow"
-        >
-          {loading ? (
-            <CardSkeleton />
-          ) : (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">{it.label}</span>
-              <span className="text-lg font-semibold">{it.value}</span>
-            </div>
-          )}
-        </Card>
-      ))}
-    </div>
-  );
-}
+};
