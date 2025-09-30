@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -6,15 +7,14 @@ import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
 import { ScopeLibraryView } from "@/views/apps";
+import { ScopeLibraryProvider } from "@/context/scope-library-context";
 
 export default function Page() {
   const router = useRouter();
   const { status } = useSession();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
+    if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
 
   return (
@@ -25,7 +25,9 @@ export default function Page() {
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <ScopeLibraryView />
+        <ScopeLibraryProvider>
+          <ScopeLibraryView />
+        </ScopeLibraryProvider>
       </div>
     </DashboardLayout>
   );

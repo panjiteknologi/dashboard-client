@@ -20,6 +20,7 @@ import {
   ListChecks,
   Newspaper,
   NotebookTextIcon,
+  Search,
   Settings,
   SquareTerminal,
   User2,
@@ -89,6 +90,18 @@ export const SidebarAppsMenu: {
           title: "Quotation",
           url: "/quotation",
           icon: LineChart,
+        },
+      ],
+    },
+    {
+      title: "Scope Determination",
+      url: "/scope-determination",
+      icon: Search,
+      children: [
+        {
+          title: "Scope Determination",
+          url: "/scope-determination",
+          icon: Search,
         },
       ],
     },

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 import type { NextAuthConfig } from "next-auth";
