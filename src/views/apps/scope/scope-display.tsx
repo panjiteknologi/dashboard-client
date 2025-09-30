@@ -7,11 +7,13 @@ import { Badge } from "@/components/ui/badge";
 type ScopeDisplayProps = {
   scopeList: string[];
   standardLabel: string;
+  isLoading?: boolean;
 };
 
 export const ScopeDisplayView = ({
   scopeList,
   standardLabel,
+  isLoading = false,
 }: ScopeDisplayProps) => {
   return (
     <motion.div
@@ -24,13 +26,22 @@ export const ScopeDisplayView = ({
         Daftar Scope <span className="text-primary">{standardLabel}</span>
       </h2>
 
-      {scopeList.length === 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-8">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="w-full h-10 rounded-xl border border-gray-200 bg-gray-100 animate-pulse"
+            />
+          ))}
+        </div>
+      ) : scopeList.length === 0 ? (
         <p className="text-gray-500 text-sm italic">
           Tidak ada data scope tersedia.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-8">
-          {scopeList.map((item, index) => (
+          {scopeList?.map((item, index) => (
             <Badge
               key={index}
               variant="outline"
