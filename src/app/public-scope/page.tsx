@@ -10,8 +10,8 @@ export default function PublicScopePage() {
   return (
     <MainLayout>
       <Navbar />
-      <div className="py-5">
-        <div className="mb-6 px-3">
+      <div>
+        <div className="mb-2 px-3">
           <h1 className="text-1xl font-bold text-gray-900">Scope Determination</h1>
           <p className="text-gray-600" style={{  fontSize: '12px' }}>
             Cari sektor sertifikasi yang tersedia untuk perusahaan Anda
