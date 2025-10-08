@@ -239,7 +239,7 @@ const HeroSection = () => {
             </CardContent>
             <CardFooter className="flex justify-center pt-0">
               <a
-                href="/login"
+                href={feature.id === 1 ? "/public-scope" : "/login"}  // 👈 Update ini
                 className="inline-flex items-center text-gray-900 font-medium hover:text-gray-700 transition-colors"
               >
                 See more
