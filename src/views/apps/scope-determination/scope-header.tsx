@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import {
   Popover,
   PopoverTrigger,
@@ -39,8 +39,8 @@ export const ScopeHeader = () => {
     scopeLabel,
     isLoadingChips,
     shouldQuery,
-    isLoadingList,
-    total,
+    // isLoadingList,
+    // total,
   } = useScopeDeterminationContext();
 
   const { data: listResp } = useScopeListQuery();
