@@ -144,7 +144,7 @@ export function LoginForm({
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Login"}
               </Button>
-
+              
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or continue with
@@ -180,6 +180,14 @@ export function LoginForm({
                   <span className="sr-only">Login with Meta</span>
                 </Button>
               </div>
+              <Button style={{ background:'black' }}>
+                <Link
+                  href="/"
+                  className="w-full hover:cursor-pointer relative md:flex justify-center items-center"
+                >
+                  Back to Home
+                </Link>
+              </Button>
 
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
