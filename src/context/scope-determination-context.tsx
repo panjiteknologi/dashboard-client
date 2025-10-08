@@ -37,10 +37,15 @@ const extractCode = (label: string): string | null => {
 };
 
 const rowsToCsv = (rows: ScopeROW[]) => {
-  const header = ["#", "Code", "Label"].join(",");
+  const header = ["#", "Code", "Label", "Title"].join(",");
   const body = rows
     .map((r) =>
-      [r.idx, r.code ?? "", `"${r.label.replace(/"/g, '""')}"`].join(",")
+      [
+        r.idx,
+        r.code ?? "",
+        `"${r.label.replace(/"/g, '""')}"`,
+        `"${r.title?.replace(/"/g, '""') ?? ""}"`,
+      ].join(",")
     )
     .join("\n");
   return `${header}\n${body}`;
@@ -57,22 +62,35 @@ const exportCsvImpl = (rows: ScopeROW[]) => {
   URL.revokeObjectURL(url);
 };
 
-function getItemsFromLibResp(resp: unknown): string[] {
+// ✅ Kembalikan items beserta scope title-nya
+function getItemsFromLibResp(resp: unknown): { label: string; title: string }[] {
   if (isRecord(resp)) {
     const data = resp.data;
     if (Array.isArray(data)) {
-      const first = data[0];
-      if (isRecord(first) && Array.isArray(first.items)) {
-        return first.items.filter((x): x is string => typeof x === "string");
-      }
+      // Ambil semua items dan sertakan title scope-nya
+      const allItems = data.flatMap((scopeItem) => {
+        if (isRecord(scopeItem) && Array.isArray(scopeItem.items)) {
+          const title = typeof scopeItem.title === "string" ? scopeItem.title : "Unknown Scope";
+          return scopeItem.items
+            .filter((x): x is string => typeof x === "string")
+            .map((label) => ({ label, title }));
+        }
+        return [];
+      });
+      return allItems;
     }
+
     if (Array.isArray(resp.items)) {
-      return resp.items.filter((x): x is string => typeof x === "string");
+      return resp.items
+        .filter((x): x is string => typeof x === "string")
+        .map((label) => ({ label, title: "Unknown Scope" }));
     }
   }
+
   if (Array.isArray(resp) && resp.every((x) => typeof x === "string")) {
-    return resp as string[];
+    return (resp as string[]).map((label) => ({ label, title: "Unknown Scope" }));
   }
+
   return [];
 }
 
@@ -85,7 +103,7 @@ export const ScopeSearchProvider = ({
   const debounced = useDebounce(query, 250);
   const [showCodes, setShowCodes] = useState<boolean>(true);
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const quick = ["pertanian", "konstruksi", "logam", "IT", "keuangan"] as const;
+  const quick = ["pertanian", "kehutanan", "perikanan", "konstruksi", "logam", "teknologi informasi", "keuangan", "beton", "kelistrikan"] as const;
 
   const [page, setPage] = useState<number>(1);
   const pageSize = 10;
@@ -144,33 +162,39 @@ export const ScopeSearchProvider = ({
   );
 
   const scopeLabel = labelMap[scopeId] ?? "Pilih Standar";
-
-  const shouldQuery = !!scopeId && debounced.trim().length > 0;
+  const shouldQuery = debounced.trim().length > 0;
 
   const { data: libResp, isLoading: isLoadingList } = useScopeLibraryQuery(
     {
       page,
       limit: pageSize,
       search: shouldQuery ? debounced : "",
-      scope: shouldQuery ? scopeId : undefined,
+      scope: scopeId || undefined,
     },
-    {
-      enabled: shouldQuery,
-      keepPreviousData: true,
-    } as { enabled: boolean; keepPreviousData: boolean }
+    { enabled: shouldQuery }
   );
 
-  const items: string[] = useMemo(
-    () => getItemsFromLibResp(libResp),
-    [libResp]
-  );
+  // ✅ Ambil semua item + title scope-nya, lalu filter sesuai pencarian
+  const items = useMemo(() => {
+    const allItems = getItemsFromLibResp(libResp);
 
+    if (debounced.trim()) {
+      return allItems.filter((item) =>
+        item.label.toLowerCase().includes(debounced.toLowerCase())
+      );
+    }
+
+    return allItems;
+  }, [libResp, debounced]);
+
+  // ✅ Masukkan title ke dalam rows
   const rows: ScopeROW[] = useMemo(
     () =>
-      items.map((label, i) => ({
+      items.map((item, i) => ({
         idx: (page - 1) * pageSize + i + 1,
-        code: extractCode(label),
-        label,
+        code: extractCode(item.label),
+        label: item.label,
+        title: item.title,
       })),
     [items, page]
   );
@@ -228,10 +252,6 @@ export const ScopeSearchProvider = ({
   useEffect(() => {
     setPage(1);
   }, [debounced]);
-
-  useEffect(() => {
-    if (!scopeId && scopes.length > 0) setScopeId(scopes[0].id);
-  }, [scopeId, scopes]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

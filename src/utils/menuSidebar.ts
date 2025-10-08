@@ -76,16 +76,16 @@ export const SidebarAppsMenu: {
           url: "/our-auditor",
           icon: User2,
         },
-        {
-          title: "Mandays Calculator",
-          url: "/mandays",
-          icon: Calendar,
-        },
-        {
-          title: "Price Simulation",
-          url: "/price-simulation",
-          icon: LineChart,
-        },
+          // {
+          //   title: "Mandays Calculator",
+          //   url: "/mandays",
+          //   icon: Calendar,
+          // },
+          // {
+          //   title: "Price Simulation",
+          //   url: "/price-simulation",
+          //   icon: LineChart,
+          // },
         {
           title: "Quotation",
           url: "/quotation",
@@ -94,10 +94,15 @@ export const SidebarAppsMenu: {
       ],
     },
     {
-      title: "Scope Determination",
+      title: "TSI Scope",
       url: "/scope-determination",
       icon: Search,
       children: [
+        {
+          title: "Our Scope",
+          url: "/scope",
+          icon: LibraryIcon,
+        },
         {
           title: "Scope Determination",
           url: "/scope-determination",
@@ -111,26 +116,21 @@ export const SidebarAppsMenu: {
       icon: Award,
       children: [
         {
-          title: "Scope Library",
-          url: "/scope",
-          icon: LibraryIcon,
-        },
-        {
           title: "Tracking Certificate",
           url: "/tracking-certificate",
           icon: Award,
           menu: [
-            {
-              title: "Label Maps",
-              url: "/tracking-certificate/label-maps",
-              icon: SquareTerminal,
-              isActive: true,
-            },
-            {
-              title: "TSI",
-              url: "/tracking-certificate/tsi",
-              icon: Bot,
-            },
+            // {
+            //   title: "Label Maps",
+            //   url: "/tracking-certificate/label-maps",
+            //   icon: SquareTerminal,
+            //   isActive: true,
+            // },
+            // {
+            //   title: "TSI",
+            //   url: "/tracking-certificate/tsi",
+            //   icon: Bot,
+            // },
             {
               title: "Audit Status",
               url: "/tracking-certificate/audit-status",

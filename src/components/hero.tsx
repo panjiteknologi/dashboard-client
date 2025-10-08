@@ -17,9 +17,9 @@ const HeroSection = () => {
   const features = [
     {
       id: 1,
-      title: "Mandays Calculation",
+      title: "Scope Determination",
       description:
-        "Accurately forecast project timelines and resource allocation with our advanced mandays calculator.",
+        "Scope Determination is the process of determining the boundaries, scope, and areas that are included or excluded from an activity, project, or management system.",
       icon: (
         <svg
           width="80"
@@ -84,9 +84,9 @@ const HeroSection = () => {
     },
     {
       id: 2,
-      title: "Price Simulation",
+      title: "Audit Process",
       description:
-        "Test various pricing scenarios to maximize revenue and market competitiveness for your products or services.",
+        "Streamline compliance verification with our systematic audit workflows to ensure quality standards.",
       icon: (
         <svg
           width="80"
@@ -134,9 +134,9 @@ const HeroSection = () => {
     },
     {
       id: 3,
-      title: "Audit Process",
+      title: "Certificate",
       description:
-        "Streamline compliance verification with our systematic audit workflows to ensure quality standards.",
+        "Track your certificate status",
       icon: (
         <svg
           width="80"
@@ -239,7 +239,7 @@ const HeroSection = () => {
             </CardContent>
             <CardFooter className="flex justify-center pt-0">
               <a
-                href="#"
+                href="/login"
                 className="inline-flex items-center text-gray-900 font-medium hover:text-gray-700 transition-colors"
               >
                 See more
