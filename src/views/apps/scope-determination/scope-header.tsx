@@ -95,7 +95,8 @@ export const ScopeHeader = () => {
                 <Button
                   variant="outline"
                   className="gap-2 rounded-lg flex-1 sm:flex-none"
-                  disabled={isLoadingChips || scopeList?.length === 0}
+                  disabled={isLoadingChips || scopeList?.length === 0 || !query.trim()} // 👈 Tambahkan kondisi ini
+                  title={!query.trim() ? "Masukkan kata kunci pencarian terlebih dahulu" : undefined}
                 >
                   <Filter className="h-4 w-4" />
                   <span className="truncate">
