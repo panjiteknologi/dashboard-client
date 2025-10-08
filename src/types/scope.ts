@@ -16,7 +16,7 @@ export type ScopeLibraryParams = {
   scope?: string;
 };
 
-export type ScopeROW = { idx: number; code: string | null; label: string };
+export type ScopeROW = { idx: number; code: string | null; label: string; title?: string; };
 
 export type ScopeItem = { id: string; title: string };
 
