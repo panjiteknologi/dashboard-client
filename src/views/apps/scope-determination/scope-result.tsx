@@ -11,7 +11,7 @@ export const ScopeResult = () => {
     shouldQuery,
     isLoadingList,
     rows,
-    scopeLabel,
+    // scopeLabel,
     debounced,
     showCodes,
     exportCsv,
