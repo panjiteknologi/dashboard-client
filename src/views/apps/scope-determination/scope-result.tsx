@@ -79,7 +79,7 @@ export const ScopeResult = () => {
         ) : rows.length === 0 ? (
           <div className="text-sm text-muted-foreground">
             Tidak ada hasil untuk{" "}
-            <span className="font-medium">"{debounced}"</span>.
+            <span className="font-medium">&quot;{debounced}&quot;</span>.
           </div>
         ) : (
           <>
