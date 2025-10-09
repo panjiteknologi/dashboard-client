@@ -121,7 +121,7 @@ export const ScopeResult = () => {
                 return (
                   <div key={`${r.idx}-${r.code ?? "x"}`} className="group">
                     <div className="text-xs text-muted-foreground">
-                      <span style={{ color: "blue" }}>
+                      <span style={{ color: "#000097" }}>
                         <b>{r.title}</b>
                       </span>
                       {showCodes && r.code ? (
@@ -135,6 +135,7 @@ export const ScopeResult = () => {
                     <div className="mt-0.5 text-lg leading-snug">
                       <button
                         className="text-primary underline-offset-4 hover:underline"
+                        style={{ textAlign: "justify" }}
                         onClick={() => handleCopy(textToCopy)}
                         title="Salin item ini"
                       >

@@ -156,7 +156,7 @@ export const ApplicationFormView = ({
       },
       {
         id: "audit_status",
-        header: "Audit Status",
+        header: "Project Status",
         accessorFn: (r) => r.rowData.audit_status,
         cell: ({ row }) => (
           <p className="text-sm">{row.original.rowData.audit_status || "-"}</p>
