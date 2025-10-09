@@ -132,15 +132,15 @@ export const SidebarAppsMenu: {
             //   icon: Bot,
             // },
             {
-              title: "Audit Status",
+              title: "Project Status",
               url: "/tracking-certificate/audit-status",
               icon: BookOpen,
             },
-            {
-              title: "Certificate",
-              url: "/tracking-certificate/certificate",
-              icon: GraduationCap,
-            },
+            // {
+            //   title: "Certificate",
+            //   url: "/tracking-certificate/certificate",
+            //   icon: GraduationCap,
+            // },
           ],
         },
         {

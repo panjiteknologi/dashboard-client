@@ -41,7 +41,7 @@ export default function Page() {
   return (
     <DashboardLayout
       href="/apps/audit-status"
-      titleHeader="Audit Status"
+      titleHeader="Project Status"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >

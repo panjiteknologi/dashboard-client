@@ -177,10 +177,10 @@ export const AuditStatusView = ({
               THEME.headerText
             )}
           >
-            Audit Status Tracking Certificate
+            Tracking Certificate Status
           </h1>
           <p className={cx("text-sm", THEME.subText)}>
-            View and manage all tracking your certifications
+            View and manage all tracking your certificate
           </p>
         </div>
         <DataTable
@@ -195,7 +195,7 @@ export const AuditStatusView = ({
             return (
               <div>
                 <h1 className="text-md font-bold p-4">
-                  Audit Status - Progress
+                  Project Status - Progress
                 </h1>
 
                 <div className="p-2 pb-4">
