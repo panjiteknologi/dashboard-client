@@ -72,12 +72,12 @@ export const ScopeResult = () => {
 
   // AI Response Component
   const AIResponseSection = () => {
-    if (!aiResponse) return null;
-
+    
     const [showSummary, setShowSummary] = useState(true);
     const [activeResultId, setActiveResultId] = useState<string | null>(null);
     const [activeChildCode, setActiveChildCode] = useState<string | null>(null);
     const [activeChildLinkId, setActiveChildLinkId] = useState<string | null>(null);
+    if (!aiResponse) return null;
 
     // Use corrected query for highlighting if available, otherwise use debounced
     const highlightQuery = aiResponse.corrected_query || debounced;
@@ -93,33 +93,93 @@ export const ScopeResult = () => {
         });
     };
 
+    type NaceChildMap = Map<string, string>;
+
+    interface NaceInfo {
+      description?: string;
+      children: NaceChildMap;
+    }
+
+    interface Summary {
+      [standar: string]: {
+        [iaf: string]: {
+          [naceCode: string]: NaceInfo;
+        };
+      };
+    }
+
+    interface HasilPencarian {
+      standar?: string;
+      scope_key: string;
+      iaf_code: string;
+      nace?: {
+        code?: string;
+        description?: string;
+      };
+      nace_child?: {
+        code?: string;
+      };
+    }
+
     // Create summary grouped by standard
-    const createSummary = () => {
-      const summary: Record<string, any> = {};
+    // const createSummary = () => {
+    //   const summary: Record<string, any> = {};
 
-      aiResponse.hasil_pencarian.forEach((result: any) => {
+    //   aiResponse.hasil_pencarian.forEach((result: any) => {
+    //     const standar = result.standar || result.scope_key;
+
+    //     if (!summary[standar]) {
+    //       summary[standar] = {};
+    //     }
+
+    //     const iaf = result.iaf_code;
+    //     if (!summary[standar][iaf]) {
+    //       summary[standar][iaf] = {};
+    //     }
+
+    //     const naceCode = result.nace?.code;
+    //     const naceDesc = result.nace?.description;
+    //     const naceChildCode = result.nace_child?.code;
+
+    //     // Create unique ID for linking
+    //     const linkId = `result-${result.scope_key}-${naceCode}-${naceChildCode}`.replace(/[^a-zA-Z0-9-_]/g, '-');
+
+    //     if (!summary[standar][iaf][naceCode]) {
+    //       summary[standar][iaf][naceCode] = {
+    //         description: naceDesc,
+    //         children: new Map() // Change to Map to store child code with linkId
+    //       };
+    //     }
+
+    //     if (naceChildCode) {
+    //       summary[standar][iaf][naceCode].children.set(naceChildCode, linkId);
+    //     }
+    //   });
+
+    //   return summary;
+    // };
+    const createSummary = (): Summary => {
+      const summary: Summary = {};
+
+      aiResponse.hasil_pencarian.forEach((result: HasilPencarian) => {
         const standar = result.standar || result.scope_key;
-
-        if (!summary[standar]) {
-          summary[standar] = {};
-        }
-
         const iaf = result.iaf_code;
-        if (!summary[standar][iaf]) {
-          summary[standar][iaf] = {};
-        }
-
-        const naceCode = result.nace?.code;
+        const naceCode = result.nace?.code ?? "N/A";
         const naceDesc = result.nace?.description;
         const naceChildCode = result.nace_child?.code;
 
-        // Create unique ID for linking
-        const linkId = `result-${result.scope_key}-${naceCode}-${naceChildCode}`.replace(/[^a-zA-Z0-9-_]/g, '-');
+        // Buat unique linkId untuk result
+        const linkId = `result-${result.scope_key}-${naceCode}-${naceChildCode}`.replace(
+          /[^a-zA-Z0-9-_]/g,
+          "-"
+        );
 
+        if (!summary[standar]) summary[standar] = {};
+        if (!summary[standar][iaf]) summary[standar][iaf] = {};
         if (!summary[standar][iaf][naceCode]) {
           summary[standar][iaf][naceCode] = {
             description: naceDesc,
-            children: new Map() // Change to Map to store child code with linkId
+            children: new Map(),
           };
         }
 
@@ -129,7 +189,7 @@ export const ScopeResult = () => {
       });
 
       return summary;
-    };
+    };              
 
     const summary = createSummary();
 

@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 
-interface ScopeDeterminationRequest {
-  query: string;
-}
+// interface ScopeDeterminationRequest {
+//   query: string;
+// }
 
 interface ScopeDeterminationResponse {
   hasil_pencarian: string[];
@@ -12,7 +12,8 @@ interface ScopeDeterminationResponse {
     key: string;
     standar: string;
     description: string | null;
-    scope: any[];
+    scope: unknown[];
+    // scope: any[];
   }>;
   query: string;
   raw_ai_response?: string;
