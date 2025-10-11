@@ -11,12 +11,12 @@ export default function PublicScopePage() {
     <MainLayout>
       <Navbar />
       <div>
-        <div className="mb-2 px-3">
+        {/* <div className="mb-2 px-3">
           <h1 className="text-1xl font-bold text-gray-900">Scope Determination</h1>
           <p className="text-gray-600" style={{  fontSize: '12px' }}>
             Cari sektor sertifikasi yang tersedia untuk perusahaan Anda
           </p>
-        </div>
+        </div> */}
 
         <ScopeSearchProvider>
           <div className="space-y-4">
