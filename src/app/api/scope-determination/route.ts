@@ -28,10 +28,10 @@ type IafScope = {
   NACE_DETAIL_INFORMATION: NaceDetail[];
 };
 
-type ScopeValue = {
-  standar: string;
-  scope: IafScope[];
-};
+// type ScopeValue = {
+//   standar: string;
+//   scope: IafScope[];
+// };
 
 type GroupedResult = {
   scope_key: string;
