@@ -11,6 +11,7 @@ import React, {
 import { useScopeListQuery } from "@/hooks/use-scope-list";
 import { useScopeLibraryQuery } from "@/hooks/use-scope-library";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useScopeDetermination } from "@/hooks/use-scope-determination";
 import { ScopeCTX, ScopeItem, ScopeROW } from "@/types/scope";
 
 const ScopeSearchContext = createContext<ScopeCTX | null>(null);
@@ -110,6 +111,15 @@ export const ScopeSearchProvider = ({
 
   const { data: listResp, isLoading: isLoadingChips } = useScopeListQuery();
 
+  // AI Scope Determination
+  const {
+    response: aiResponse,
+    isLoading: isLoadingAI,
+    error: aiError,
+    determinateScope,
+    reset: resetAI
+  } = useScopeDetermination();
+
   const rawList = useMemo<unknown[]>(
     () =>
       asArray(
@@ -164,6 +174,7 @@ export const ScopeSearchProvider = ({
   const scopeLabel = labelMap[scopeId] ?? "Pilih Standar";
   const shouldQuery = debounced.trim().length > 0;
 
+  // Comment: Disable auto query saat typing, hanya aktif manual via Enter/button
   const { data: libResp, isLoading: isLoadingList } = useScopeLibraryQuery(
     {
       page,
@@ -171,7 +182,7 @@ export const ScopeSearchProvider = ({
       search: shouldQuery ? debounced : "",
       scope: scopeId || undefined,
     },
-    { enabled: shouldQuery }
+    { enabled: false } // ✅ Disabled auto query
   );
 
   // ✅ Ambil semua item + title scope-nya, lalu filter sesuai pencarian
@@ -209,9 +220,52 @@ export const ScopeSearchProvider = ({
 
   const highlight = (text: string, q: string) => {
     if (!q) return text;
-    const parts = text.split(new RegExp(`(${escapeRegex(q)})`, "ig"));
-    return parts.map((p, i) =>
-      p.toLowerCase() === q.toLowerCase() ? (
+
+    // Stopwords to filter out (Indonesian & English) - sync with backend
+    const stopwords = [
+      // Indonesian stopwords
+      'yang', 'dan', 'atau', 'adalah', 'untuk', 'dari', 'di', 'ke', 'pada',
+      'dengan', 'ini', 'itu', 'saya', 'bergerak', 'menggunakan', 'bahan',
+      'membuat', 'melakukan', 'perusahaan',
+      // English stopwords
+      'the', 'a', 'an', 'and', 'or', 'for', 'of', 'in', 'to', 'on', 'with',
+      'this', 'that', 'using', 'by', 'as', 'at', 'be', 'we', 'our', 'my',
+      'create', 'make', 'do', 'have', 'has', 'company', 'business'
+    ];
+
+    // Split query into words and filter
+    const keywords = q
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(word =>
+        word.length >= 3 && // Min 3 characters
+        !stopwords.includes(word) // Not a stopword
+      );
+
+    // If no valid keywords, fallback to original query
+    if (keywords.length === 0) {
+      const parts = text.split(new RegExp(`(${escapeRegex(q)})`, "ig"));
+      return parts.map((p, i) =>
+        p.toLowerCase() === q.toLowerCase() ? (
+          <mark
+            key={i}
+            className="rounded px-0.5 bg-yellow-200/60 dark:bg-yellow-600/40"
+          >
+            {p}
+          </mark>
+        ) : (
+          <span key={i}>{p}</span>
+        )
+      );
+    }
+
+    // Create regex pattern for all keywords (e.g., "produksi|rambut|palsu|plastik")
+    const pattern = keywords.map(escapeRegex).join('|');
+    const parts = text.split(new RegExp(`(${pattern})`, "ig"));
+
+    return parts.map((p, i) => {
+      const isMatch = keywords.some(kw => p.toLowerCase() === kw.toLowerCase());
+      return isMatch ? (
         <mark
           key={i}
           className="rounded px-0.5 bg-yellow-200/60 dark:bg-yellow-600/40"
@@ -220,8 +274,8 @@ export const ScopeSearchProvider = ({
         </mark>
       ) : (
         <span key={i}>{p}</span>
-      )
-    );
+      );
+    });
   };
 
   const value: ScopeCTX = {
@@ -247,6 +301,12 @@ export const ScopeSearchProvider = ({
     pageSize,
     highlight,
     exportCsv: exportCsvImpl,
+    // AI Scope Determination
+    aiResponse,
+    isLoadingAI,
+    aiError,
+    determinateScope,
+    resetAI,
   };
 
   useEffect(() => {

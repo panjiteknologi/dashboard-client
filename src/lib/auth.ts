@@ -60,6 +60,7 @@ export const { handlers, signIn, auth } = NextAuth({
       if (
         pathname.startsWith("/_next") ||
         pathname.startsWith("/api/auth") ||
+        pathname.startsWith("/api/scope-determination") ||
         pathname === "/favicon.ico" ||
         /\.[^/]+$/.test(pathname)
       ) {
