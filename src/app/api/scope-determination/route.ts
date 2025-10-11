@@ -3,6 +3,46 @@ import { GoogleGenAI } from '@google/genai';
 import scopeDataEN from '@/lib/scope_en.json';
 import scopeDataID from '@/lib/scope_id.json';
 
+// Tambahkan ini di bagian atas file (setelah import)
+type NaceChildDetail = {
+  code: string;
+  title?: string;
+  nace_child_detail_description?: string;
+  description?: string; // 👈 tambahkan ini
+};
+
+type NaceChild = {
+  code: string;
+  nace_child_title?: string;
+  nace_child_detail?: NaceChildDetail[];
+  NACE_CHILD_DETAIL?: NaceChildDetail[];
+};
+
+type NaceDetail = {
+  NACE: { code: string; nace_description: string };
+  NACE_CHILD: NaceChild[];
+};
+
+type IafScope = {
+  IAF_CODE: string;
+  NACE_DETAIL_INFORMATION: NaceDetail[];
+};
+
+type ScopeValue = {
+  standar: string;
+  scope: IafScope[];
+};
+
+type GroupedResult = {
+  scope_key: string;
+  standar: string;
+  iaf_code: string;
+  nace: { code: string; description: string };
+  nace_child: { code: string; title?: string };
+  nace_child_details: NaceChildDetail[];
+  relevance_score: number;
+};
+
 export async function POST(request: NextRequest) {
   try {
     const { query } = await request.json();
@@ -128,14 +168,23 @@ Instructions:
 
     // Function to search directly in scopeData
     function searchInScopeData(keyword: string) {
-      const results: any[] = [];
+      // const results: any[] = [];
+      const results: {
+        scope_key: string;
+        iaf_code: string;
+        nace_code: string;
+        nace_child_code: string;
+        nace_child_detail_code: string;
+        relevance_score: number;
+      }[] = [];
+
 
       // Stopwords to filter out (Indonesian & English)
       const stopwords = [
         // Indonesian stopwords
         'yang', 'dan', 'atau', 'adalah', 'untuk', 'dari', 'di', 'ke', 'pada',
         'dengan', 'ini', 'itu', 'saya', 'bergerak', 'menggunakan', 'bahan',
-        'membuat', 'melakukan', 'perusahaan',
+        'membuat', 'melakukan', 'perusahaan', 'kapal', 'laut', 'darat', 'udara',
         // English stopwords
         'the', 'a', 'an', 'and', 'or', 'for', 'of', 'in', 'to', 'on', 'with',
         'this', 'that', 'using', 'by', 'as', 'at', 'be', 'we', 'our', 'my',
@@ -238,7 +287,8 @@ Instructions:
       directSearchResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
       // Group results
-      const groupedResults: Record<string, any> = {};
+      // const groupedResults: Record<string, any> = {};
+      const groupedResults: Record<string, GroupedResult> = {};
 
       for (const result of directSearchResults) {
         const scopeKey = result.scope_key;
@@ -303,7 +353,8 @@ Instructions:
 
               for (const childDetail of sortedDetails) {
                 const alreadyExists = groupedResults[groupKey].nace_child_details.some(
-                  (d: any) => d.code === childDetail.code
+                  // (d: any) => d.code === childDetail.code
+                  (d: NaceChildDetail) => d.code === childDetail.code
                 );
 
                 if (!alreadyExists) {

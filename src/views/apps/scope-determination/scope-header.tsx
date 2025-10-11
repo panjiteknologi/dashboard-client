@@ -2,26 +2,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 // import { Separator } from "@/components/ui/separator";
+// import {
+//   Popover,
+//   PopoverTrigger,
+//   PopoverContent,
+// } from "@/components/ui/popover";
+// import {
+//   Command,
+//   CommandGroup,
+//   CommandItem,
+//   CommandList,
+//   CommandEmpty,
+// } from "@/components/ui/command";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-  CommandEmpty,
-} from "@/components/ui/command";
-import {
-  Filter,
-  ChevronDown,
+  // Filter,
+  // ChevronDown,
   X,
-  ListOrdered,
+  // ListOrdered,
   Search,
-  ChevronRight,
-  RotateCcw,
+  // ChevronRight,
+  // RotateCcw,
 } from "lucide-react";
 import { useScopeListQuery } from "@/hooks/use-scope-list";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
@@ -32,17 +32,17 @@ export const ScopeHeader = () => {
     setQuery,
     searchRef,
     quick,
-    showCodes,
-    setShowCodes,
+    // showCodes,
+    // setShowCodes,
     scopeId,
-    setScopeId,
-    scopeLabel,
-    isLoadingChips,
-    shouldQuery,
+    // setScopeId,
+    // scopeLabel,
+    // isLoadingChips,
+    // shouldQuery,
     // isLoadingList,
     // total,
     // AI Scope Determination from context
-    aiResponse,
+    // aiResponse,
     isLoadingAI,
     determinateScope,
   } = useScopeDeterminationContext();
@@ -51,12 +51,12 @@ export const ScopeHeader = () => {
   const scopeList = Array.isArray(listResp?.data) ? listResp!.data : [];
 
   // Check if any filter is active
-  const hasActiveFilters = query || scopeId !== scopeList?.[0]?.id;
+  // const hasActiveFilters = query || scopeId !== scopeList?.[0]?.id;
 
   // Refresh page
-  const handleReset = () => {
-    window.location.reload();
-  };
+  // const handleReset = () => {
+  //   window.location.reload();
+  // };
 
   // Handle AI scope determination
   const handleAIDetermination = async () => {
