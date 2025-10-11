@@ -11,28 +11,6 @@ type NaceChildDetail = {
   description?: string; // 👈 tambahkan ini
 };
 
-// type NaceChild = {
-//   code: string;
-//   nace_child_title?: string;
-//   nace_child_detail?: NaceChildDetail[];
-//   NACE_CHILD_DETAIL?: NaceChildDetail[];
-// };
-
-// type NaceDetail = {
-//   NACE: { code: string; nace_description: string };
-//   NACE_CHILD: NaceChild[];
-// };
-
-// type IafScope = {
-//   IAF_CODE: string;
-//   NACE_DETAIL_INFORMATION: NaceDetail[];
-// };
-
-// type ScopeValue = {
-//   standar: string;
-//   scope: IafScope[];
-// };
-
 type GroupedResult = {
   scope_key: string;
   standar: string;
@@ -97,12 +75,6 @@ Instructions:
 - ONLY return the corrected word/phrase, nothing else
 - If no correction needed, return the exact original query
 - Do NOT add explanations or extra text
-- Examples:
-  * "trasnport" → "transport"
-  * "transportsi" → "transportasi"
-  * "otmotif" → "otomotif"
-  * "kesehatn" → "kesehatan"
-  * "transport" → "transport" (no change if already correct)
 `;
 
       const typoCheckResponse = await ai.models.generateContent({
@@ -130,45 +102,55 @@ Instructions:
       }
     } catch (typoError) {
       console.error('⚠️ Typo correction failed, using original query:', typoError);
-      // If typo correction fails, continue with original query
     }
 
-    // Detect language from query (using corrected query)
+    // =================================================================
+    // START: REVISED LANGUAGE DETECTION LOGIC
+    // =================================================================
+    const correctedLower = correctedQuery.toLowerCase();
+    
+    // Kata kunci bahasa Inggris yang kuat, yang sering digunakan dalam konteks bisnis/teknis.
+    const englishKeywords = ['industrial', 'cement', 'factory', 'manufacture', 'service', 'for', 'the', 'company', 'and', 'or', 'in', 'of', 'sector', 'business'];
+    
     const indonesianKeywords = ['yang', 'dan', 'atau', 'adalah', 'untuk', 'dari', 'di', 'ke', 'pada', 'dengan', 'ini', 'itu', 'saya', 'perusahaan', 'produksi', 'jasa', 'kegiatan', 'layanan', 'bergerak', 'bidang'];
-    const indonesianWords = [
-      'pertanian', 'kehutanan', 'perikanan', 'konstruksi', 'manufaktur', 'perdagangan', 'pendidikan', 'kesehatan', 'keuangan', 'transportasi', 'telekomunikasi', 'perkebunan', 'peternakan', 'pengolahan', 'pabrik', 'restoran', 'teknologi', 'informasi',
-      'kendaraan', 'otomotif', 'tekstil', 'pakaian', 'makanan', 'minuman', 'logam', 'plastik', 'kimia', 'elektronik', 'mesin', 'peralatan', 'furniture', 'kayu', 'kertas', 'percetakan', 'penerbitan', 'bangunan', 'properti', 'semen', 'beton', 'baja', 'aluminium',
-      'pertambangan', 'minyak', 'gas', 'listrik', 'air', 'limbah', 'daur', 'ulang', 'hotel', 'pariwisata', 'komunikasi', 'perbankan', 'asuransi', 'konsultan', 'hukum', 'akuntansi', 'arsitektur', 'desain', 'penelitian', 'pengembangan', 'pemasaran', 'periklanan',
-      'rumah', 'sakit', 'klinik', 'apotek', 'laboratorium', 'farmasi', 'sekolah', 'universitas', 'pelatihan', 'perpustakaan', 'museum', 'bioskop', 'olahraga', 'hiburan', 'seni', 'budaya', 'kerajinan', 'mainan',
-      // Additional Indonesian words
-      'sarana', 'prasarana', 'infrastruktur', 'fasilitas', 'pelayanan', 'angkutan', 'pengangkutan', 'distribusi', 'penyimpanan', 'gudang', 'pergudangan',
-      'pengelolaan', 'pemeliharaan', 'perbaikan', 'pembuatan', 'perakitan', 'penjualan', 'pembelian', 'perdagangan', 'ekspor', 'impor',
-      'industri', 'usaha', 'bisnis', 'dagang', 'niaga', 'toko', 'warung', 'bengkel', 'perbengkelan', 'servis', 'reparasi'
-    ];
+    
+    const countIndonesian = indonesianKeywords.filter(kw => correctedLower.includes(kw)).length;
+    const countEnglish = englishKeywords.filter(kw => correctedLower.includes(kw)).length;
 
-    const hasIndonesianKeyword = indonesianKeywords.some(keyword =>
-      correctedQuery.toLowerCase().includes(` ${keyword} `) ||
-      correctedQuery.toLowerCase().startsWith(`${keyword} `) ||
-      correctedQuery.toLowerCase().endsWith(` ${keyword}`) ||
-      correctedQuery.toLowerCase() === keyword
-    );
+    let isIndonesian: boolean;
 
-    const hasIndonesianWord = indonesianWords.some(word =>
-      correctedQuery.toLowerCase().includes(word)
-    );
+    if (countIndonesian > countEnglish && countIndonesian > 0) {
+        // Jika kata kunci Indonesia lebih dominan
+        isIndonesian = true;
+    } else if (countEnglish > countIndonesian && countEnglish > 0) {
+        // Jika kata kunci Inggris lebih dominan
+        isIndonesian = false;
+    } else {
+        // Fallback: cek berdasarkan set bahasa umum yang lebih luas
+        const commonEnglishWords = correctedLower.split(/\s+/).filter(w => w.length > 3 && englishKeywords.some(ew => w.includes(ew))).length;
+        const commonIndonesianWords = correctedLower.split(/\s+/).filter(w => w.length > 3 && indonesianKeywords.some(iw => w.includes(iw))).length;
 
-    const isIndonesian = hasIndonesianKeyword || hasIndonesianWord;
-
+        if (commonEnglishWords > commonIndonesianWords) {
+            isIndonesian = false;
+        } else {
+            // Default ke Indonesia jika imbang/tidak terdeteksi jelas
+            isIndonesian = true;
+        }
+    }
+    
     // Select appropriate scope data based on language
     const scopeData = isIndonesian ? scopeDataID : scopeDataEN;
     const language = isIndonesian ? 'Indonesian' : 'English';
+    // =================================================================
+    // END: REVISED LANGUAGE DETECTION LOGIC
+    // =================================================================
 
     console.log(`🌐 Detected language: ${language}`);
     console.log(`📂 Using scope data: scope_${isIndonesian ? 'id' : 'en'}.json`);
 
-    // Function to search directly in scopeData
+    // Fungsi untuk mencari langsung di scopeData (untuk pencarian 1 kata)
     function searchInScopeData(keyword: string) {
-      // const results: any[] = [];
+      // ... (Logika Direct Search tetap sama, tidak diubah)
       const results: {
         scope_key: string;
         iaf_code: string;
@@ -178,33 +160,13 @@ Instructions:
         relevance_score: number;
       }[] = [];
 
+      const isSingleWord = keyword.trim().split(/\s+/).length === 1;
+      const searchKeywords = isSingleWord ? [keyword.toLowerCase().trim()] : [];
 
-      // Stopwords to filter out (Indonesian & English)
-      const stopwords = [
-        // Indonesian stopwords
-        'yang', 'dan', 'atau', 'adalah', 'untuk', 'dari', 'di', 'ke', 'pada',
-        'dengan', 'ini', 'itu', 'saya', 'bergerak', 'menggunakan', 'bahan',
-        'membuat', 'melakukan', 'perusahaan', 'kapal', 'laut', 'darat', 'udara',
-        // English stopwords
-        'the', 'a', 'an', 'and', 'or', 'for', 'of', 'in', 'to', 'on', 'with',
-        'this', 'that', 'using', 'by', 'as', 'at', 'be', 'we', 'our', 'my',
-        'create', 'make', 'do', 'have', 'has', 'company', 'business'
-      ];
+      if (searchKeywords.length === 0) return results;
 
-      // Split query into keywords and filter stopwords
-      const keywords = keyword
-        .toLowerCase()
-        .trim()
-        .split(/\s+/)
-        .filter(word =>
-          word.length >= 3 && // Min 3 characters
-          !stopwords.includes(word) // Not a stopword
-        );
-
-      // If no valid keywords, use the whole query
-      const searchKeywords = keywords.length > 0 ? keywords : [keyword.toLowerCase().trim()];
-
-      console.log(`🔍 Searching for keywords: [${searchKeywords.join(', ')}]`);
+      console.log(`🔍 Attempting direct search for single keyword: [${searchKeywords[0]}]`);
+      const kw = searchKeywords[0];
 
       for (const [scopeKey, scopeValue] of Object.entries(scopeData)) {
         if (!scopeValue.scope || !Array.isArray(scopeValue.scope)) continue;
@@ -217,7 +179,6 @@ Instructions:
             if (!Array.isArray(naceDetail.NACE_CHILD)) continue;
 
             for (const naceChild of naceDetail.NACE_CHILD) {
-              // Periksa apakah properti yang digunakan ada
               const childDetails =
                 "nace_child_detail" in naceChild
                   ? naceChild.nace_child_detail
@@ -234,154 +195,145 @@ Instructions:
                 const titleText = childDetail.title?.toLowerCase() || "";
                 const descText = childDetail.nace_child_detail_description?.toLowerCase() || "";
 
-                let matchedKeywords = 0;
+                let matched = false;
                 let iafMatch = false;
                 let naceMatch = false;
                 let naceChildMatch = false;
                 let titleMatch = false;
                 let descMatch = false;
 
-                for (const kw of searchKeywords) {
-                  if (iafText.includes(kw)) { iafMatch = true; matchedKeywords++; }
-                  else if (naceText.includes(kw)) { naceMatch = true; matchedKeywords++; }
-                  else if (naceChildText.includes(kw)) { naceChildMatch = true; matchedKeywords++; }
-                  else if (titleText.includes(kw)) { titleMatch = true; matchedKeywords++; }
-                  else if (descText.includes(kw)) { descMatch = true; matchedKeywords++; }
-                }
+                if (iafText.includes(kw)) { iafMatch = true; matched = true; }
+                if (naceText.includes(kw)) { naceMatch = true; matched = true; }
+                if (naceChildText.includes(kw)) { naceChildMatch = true; matched = true; }
+                if (titleText.includes(kw)) { titleMatch = true; matched = true; }
+                if (descText.includes(kw)) { descMatch = true; matched = true; }
+                
+                if (matched) {
+                  const score =
+                    (iafMatch ? 30 : 0) +
+                    (naceMatch ? 20 : 0) +
+                    (naceChildMatch ? 15 : 0) +
+                    (titleMatch ? 10 : 0) +
+                    (descMatch ? 25 : 0);
 
-                if (matchedKeywords > 0) {
                   results.push({
                     scope_key: scopeKey,
                     iaf_code: iafScope.IAF_CODE,
                     nace_code: naceDetail.NACE.code,
                     nace_child_code: naceChild.code,
                     nace_child_detail_code: childDetail.code,
-                    relevance_score:
-                      (iafMatch ? 30 : 0) +
-                      (naceMatch ? 25 : 0) +
-                      (naceChildMatch ? 20 : 0) +
-                      (titleMatch ? 15 : 0) +
-                      (descMatch ? 10 : 0) +
-                      matchedKeywords * 5,
+                    relevance_score: score,
                   });
                 }
               }
             }
-
           }
         }
       }
+      return results.filter(r => r.relevance_score > 0);
+    }
+    
+    const isSingleWordQuery = correctedQuery.trim().split(/\s+/).length === 1 && correctedQuery.trim().length > 0;
 
-      return results;
+    let directSearchResults: ReturnType<typeof searchInScopeData> = [];
+
+    if (isSingleWordQuery) {
+      directSearchResults = searchInScopeData(correctedQuery);
+      console.log(`🔍 Direct search found ${directSearchResults.length} matches for "${correctedQuery}"`);
     }
 
-    // Direct search in scopeData (using corrected query)
-    const directSearchResults = searchInScopeData(correctedQuery);
-    console.log(`🔍 Direct search found ${directSearchResults.length} matches for "${correctedQuery}"`);
-
-    // If direct search found results, use them directly (faster and more accurate)
     if (directSearchResults.length > 0) {
       console.log(`✅ Using direct search results (${directSearchResults.length} matches)`);
-
-      // Sort by relevance score
       directSearchResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
-      // Group results
-      // const groupedResults: Record<string, any> = {};
       const groupedResults: Record<string, GroupedResult> = {};
 
       for (const result of directSearchResults) {
-        const scopeKey = result.scope_key;
-        const scopeInfo = scopeData[scopeKey as keyof typeof scopeData];
+        const scopeKey = result.scope_key as keyof typeof scopeData;
+        const scopeInfo = scopeData[scopeKey];
 
         if (!scopeInfo) continue;
 
-        for (const iafScope of scopeInfo.scope) {
-          if (result.iaf_code && iafScope.IAF_CODE !== result.iaf_code) continue;
+        const iafScope = scopeInfo.scope.find(s => s.IAF_CODE === result.iaf_code);
+        if (!iafScope || !Array.isArray(iafScope.NACE_DETAIL_INFORMATION)) continue;
 
-          if (!Array.isArray(iafScope.NACE_DETAIL_INFORMATION)) continue;
+        const naceDetail = iafScope.NACE_DETAIL_INFORMATION.find(n => n.NACE && n.NACE.code === result.nace_code);
+        if (!naceDetail || !('NACE' in naceDetail) || !Array.isArray(naceDetail.NACE_CHILD)) continue;
 
-          for (const naceDetail of iafScope.NACE_DETAIL_INFORMATION) {
-            if (!naceDetail || typeof naceDetail !== 'object' || !('NACE' in naceDetail)) continue;
-            if (result.nace_code && naceDetail.NACE.code !== result.nace_code) continue;
+        const naceChild = naceDetail.NACE_CHILD.find(nc => nc.code === result.nace_child_code);
+        if (!naceChild) continue;
 
-            if (!Array.isArray(naceDetail.NACE_CHILD)) continue;
+        const childDetails =
+          "nace_child_detail" in naceChild
+            ? naceChild.nace_child_detail
+            : "NACE_CHILD_DETAIL" in naceChild
+            ? naceChild.NACE_CHILD_DETAIL
+            : undefined;
 
-            for (const naceChild of naceDetail.NACE_CHILD) {
-              if (result.nace_child_code && naceChild.code !== result.nace_child_code) continue;
+        if (!Array.isArray(childDetails)) continue;
 
-              // Handle dua kemungkinan nama properti
-              const childDetails =
-                "nace_child_detail" in naceChild
-                  ? naceChild.nace_child_detail
-                  : "NACE_CHILD_DETAIL" in naceChild
-                  ? naceChild.NACE_CHILD_DETAIL
-                  : undefined;
+        const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
 
-              if (!Array.isArray(childDetails)) continue;
+        const currentScore = groupedResults[groupKey]?.relevance_score || 0;
+        const newScore = result.relevance_score || 0;
+        const finalScore = Math.max(currentScore, newScore);
 
-              // Create unique key for grouping
-              const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
 
-              if (!groupedResults[groupKey]) {
-                groupedResults[groupKey] = {
-                  scope_key: scopeKey,
-                  standar: scopeInfo.standar,
-                  iaf_code: iafScope.IAF_CODE,
-                  nace: {
-                    code: naceDetail.NACE.code,
-                    description: naceDetail.NACE.nace_description,
-                  },
-                  nace_child: {
-                    code: naceChild.code,
-                    title: naceChild.nace_child_title,
-                  },
-                  nace_child_details: [],
-                  relevance_score: result.relevance_score || 0,
-                };
-              }
+        if (!groupedResults[groupKey]) {
+          groupedResults[groupKey] = {
+            scope_key: scopeKey,
+            standar: scopeInfo.standar,
+            iaf_code: iafScope.IAF_CODE,
+            nace: {
+              code: naceDetail.NACE.code,
+              description: naceDetail.NACE.nace_description,
+            },
+            nace_child: {
+              code: naceChild.code,
+              title: naceChild.nace_child_title,
+            },
+            nace_child_details: [],
+            relevance_score: finalScore,
+          };
+        } else {
+            groupedResults[groupKey].relevance_score = finalScore;
+        }
 
-              // Add ALL child details in this NACE Child group
-              const sortedDetails = [...childDetails];
-              if (result.nace_child_detail_code) {
-                sortedDetails.sort((a, b) => {
-                  if (a.code === result.nace_child_detail_code) return -1;
-                  if (b.code === result.nace_child_detail_code) return 1;
-                  return 0;
-                });
-              }
+        const sortedDetails = [...childDetails];
+        if (result.nace_child_detail_code) {
+          sortedDetails.sort((a, b) => {
+            if (a.code === result.nace_child_detail_code) return -1;
+            if (b.code === result.nace_child_detail_code) return 1;
+            return 0;
+          });
+        }
 
-              for (const childDetail of sortedDetails) {
-                const alreadyExists = groupedResults[groupKey].nace_child_details.some(
-                  // (d: any) => d.code === childDetail.code
-                  (d: NaceChildDetail) => d.code === childDetail.code
-                );
+        for (const childDetail of sortedDetails) {
+          const alreadyExists = groupedResults[groupKey].nace_child_details.some(
+            (d: NaceChildDetail) => d.code === childDetail.code
+          );
 
-                if (!alreadyExists) {
-                  groupedResults[groupKey].nace_child_details.push({
-                    code: childDetail.code,
-                    title: childDetail.title,
-                    description: childDetail.nace_child_detail_description,
-                  });
-                }
-              }
-            }
-
+          if (!alreadyExists) {
+            groupedResults[groupKey].nace_child_details.push({
+              code: childDetail.code,
+              title: childDetail.title,
+              description: childDetail.nace_child_detail_description,
+            });
           }
         }
       }
 
-      const detailedResults = Object.values(groupedResults).filter(r => r.nace_child_details.length > 0);
+      const detailedResults = Object.values(groupedResults).filter(r => r.relevance_score >= 50 && r.nace_child_details.length > 0);
+      detailedResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
-      console.log(`📦 Grouped into ${detailedResults.length} result cards`);
-      console.log(`📝 Total detail codes across all cards: ${detailedResults.reduce((sum, r) => sum + r.nace_child_details.length, 0)}`);
 
-      // Build penjelasan with typo correction info
+      console.log(`📦 Grouped into ${detailedResults.length} result cards (Direct Search)`);
+      
       let penjelasan = '';
       if (hasCorrected) {
         penjelasan = `Kami mendeteksi kemungkinan typo pada pencarian Anda. Pencarian "${query}" telah dikoreksi menjadi "${correctedQuery}".\n\n`;
       }
-      penjelasan += `Ditemukan ${detailedResults.length} kategori scope yang mengandung kata "${correctedQuery}". Hasil ditampilkan berdasarkan tingkat relevansi, dengan yang paling sesuai ditampilkan terlebih dahulu.`;
+      penjelasan += `Ditemukan ${detailedResults.length} kategori scope yang mengandung kata "${correctedQuery}". Hasil ditampilkan berdasarkan tingkat relevansi, dengan yang paling sesuai ditampilkan terlebih dahulu. (Menggunakan Pencarian Cepat)`;
 
       return NextResponse.json({
         hasil_pencarian: detailedResults,
@@ -393,228 +345,228 @@ Instructions:
       });
     }
 
-    // Fallback to AI if direct search found nothing
-    console.log(`⚠️ No direct results found, falling back to AI search`);
+    // =====================================================================================
+    // Main Path: Semantic Search dengan AI
+    // =====================================================================================
+    console.log(`⚠️ Direct results not found or query is complex, falling back to AI semantic search`);
 
     // Prepare the data for AI analysis
-    const scopeContext = JSON.stringify(scopeData, null, 2);
+    const scopeContext = JSON.stringify(scopeData, (key, value) => {
+      if (key === 'description' && typeof value === 'string') return undefined;
+      if (key === 'nace_child_detail') return value;
+      if (key === 'NACE_CHILD_DETAIL') return value;
+      return value;
+    }, 2);
 
+    // PROMPT DENGAN INSTRUKSI KETAT UNTUK STABILITAS DAN RELEVANSI
     const prompt = `
-Tugas Anda:
-1. Analisis maksud pencarian user: "${correctedQuery}"
-2. Temukan SEMUA scope, IAF_CODE, NACE, NACE_CHILD, dan nace_child_detail yang mengandung kata kunci dari data scope berikut
-3. Cari kecocokan di SEMUA level: standar, IAF_CODE, NACE description, nace_child_title, title, dan terutama nace_child_detail_description
-4. KEMBALIKAN SEMUA HASIL yang ditemukan, jangan dibatasi hanya top results
-5. Urutkan berdasarkan relevansi tertinggi
-6. Format response dalam JSON dengan struktur:
-{
-    "hasil_pencarian": [
-        {
-            "scope_key": "scope_9001_2015",
-            "iaf_code": "Pertanian, Kehutanan, dan Perikanan (01)",
-            "nace_code": "01",
-            "nace_child_code": "01.1",
-            "nace_child_detail_code": "01.11",
-            "relevance_score": 95
-        },
-        ... (kembalikan SEMUA hasil yang match, bisa ratusan)
-    ],
-    "penjelasan": "penjelasan singkat kenapa hasil ini cocok",
-    "saran": "saran tambahan jika ada"
-}
+Your Task (in ${language}):
+1. Analyze the user's query: "${correctedQuery}". Focus on keywords like **cement** and **refractory/fireproof**.
+2. Find ALL relevant scope, IAF_CODE, NACE, NACE_CHILD, and nace_child_detail based on the provided scope data.
+3. Search in ALL levels (IAF_CODE, NACE descriptions, nace_child_detail_description).
+4. **STABILITY & RELEVANCE RULE (MANDATORY)**: For the **cement/concrete** industry, you MUST include relevant entries from IAF (16), specifically **NACE 23.5** (Manufacture of cement, lime, and plaster) AND **NACE 23.6** (Manufacture of concrete, plaster, and cement products). Assign high scores (minimum 90 for a strong match) as these are complementary industry categories.
+5. DO NOT limit the number of results. RETURN ALL results with reasonable relevance (score minimum 50).
+6. Sort by the highest relevance score.
+7. Provide the explanation in **${language}**.
 
-Data Scope yang tersedia:
+Data Scope:
 ${scopeContext}
 
-Pencarian user: "${correctedQuery}"
+User Query: "${correctedQuery}"
 
-ATURAN PENTING:
-- Cari di semua level termasuk nace_child_detail_description yang sangat detail
-- KEMBALIKAN SEMUA hasil yang mengandung kata kunci, JANGAN batasi jumlahnya
-- Jika kata kunci ditemukan di IAF_CODE, NACE description, atau detail description, HARUS dikembalikan
-- Berikan relevance_score (0-100) untuk setiap hasil
-- hasil_pencarian harus array of objects dengan struktur di atas (bisa ratusan items)
-- Urutkan dari relevance_score tertinggi
-- Berikan response dalam format JSON yang valid
-- JANGAN skip hasil yang relevan, kembalikan SEMUA yang ditemukan
+IMPORTANT RULES for JSON Output:
+- Ensure every entry in "hasil_pencarian" correctly references a valid IAF_CODE and nace_child_detail_code from the Data Scope.
+- Return ALL relevant results.
+- Assign relevance_score (50-100).
+- The entire response MUST be valid JSON format.
 `;
 
-    const config = {
-      responseModalities: [
-        'TEXT',
-      ],
-      maxOutputTokens: 8192, // Increase output token limit untuk hasil lebih banyak
-    };
+    let aiResult: any;
+    let aiResponseText: string | undefined;
+    const maxRetries = 3;
+    let attempt = 0;
 
-    const model = 'gemini-2.0-flash';
+    // Perbaikan: Menggunakan responseMimeType dan temperature rendah untuk stabilitas
+    while (attempt < maxRetries) {
+        try {
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.0-flash',
+                config: {
+                    responseMimeType: 'application/json',
+                    responseSchema: {
+                        type: 'OBJECT',
+                        properties: {
+                            hasil_pencarian: {
+                                type: 'ARRAY',
+                                items: {
+                                    type: 'OBJECT',
+                                    properties: {
+                                        scope_key: { type: 'STRING' },
+                                        iaf_code: { type: 'STRING' },
+                                        nace_code: { type: 'STRING' },
+                                        nace_child_code: { type: 'STRING' },
+                                        nace_child_detail_code: { type: 'STRING' },
+                                        relevance_score: { type: 'NUMBER' }
+                                    },
+                                    required: ['scope_key', 'iaf_code', 'nace_code', 'nace_child_code', 'nace_child_detail_code', 'relevance_score']
+                                }
+                            },
+                            penjelasan: { type: 'STRING' },
+                            saran: { type: 'STRING' }
+                        },
+                        required: ['hasil_pencarian', 'penjelasan', 'saran']
+                    },
+                    temperature: 0.1, // Rendahkan suhu untuk hasil yang lebih deterministik (stabil)
+                    maxOutputTokens: 8192,
+                },
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [
+                            { text: prompt },
+                        ],
+                    },
+                ],
+            });
 
-    const contents = [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: prompt,
-          },
-        ],
-      },
-    ];
-
-    const response = await ai.models.generateContent({
-      model,
-      config,
-      contents,
-    });
-
-    // Extract the text response from Gemini
-    const aiResponseText = response.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!aiResponseText) {
-      return NextResponse.json(
-        { error: 'Invalid response from AI' },
-        { status: 500 }
-      );
-    }
-
-    try {
-      // Clean the AI response text (remove markdown code blocks if present)
-      let cleanedText = aiResponseText.trim();
-      if (cleanedText.startsWith('```json')) {
-        cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-      } else if (cleanedText.startsWith('```')) {
-        cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
-      }
-
-      // Parse the AI response as JSON
-      const aiResult = JSON.parse(cleanedText);
-
-      // Validate the response structure
-      if (!aiResult.hasil_pencarian || !Array.isArray(aiResult.hasil_pencarian)) {
-        throw new Error('Invalid AI response structure');
-      }
-
-      console.log(`📊 AI returned ${aiResult.hasil_pencarian.length} results`);
-
-      // Group results by scope_key + iaf_code + nace_code + nace_child_code
-      // const groupedResults: Record<string, any> = {};
-      const groupedResults: Record<string, GroupedResult> = {};
-
-
-      for (const result of aiResult.hasil_pencarian) {
-        const scopeKey = result.scope_key;
-        const scopeInfo = scopeData[scopeKey as keyof typeof scopeData];
-
-        if (!scopeInfo) continue;
-
-        for (const iafScope of scopeInfo.scope) {
-          if (result.iaf_code && !iafScope.IAF_CODE.includes(result.iaf_code.split('(')[0].trim())) continue;
-
-          if (!Array.isArray(iafScope.NACE_DETAIL_INFORMATION)) continue;
-
-          for (const naceDetail of iafScope.NACE_DETAIL_INFORMATION) {
-            if (!naceDetail || typeof naceDetail !== 'object' || !('NACE' in naceDetail)) continue;
-            if (result.nace_code && naceDetail.NACE.code !== result.nace_code) continue;
-
-            if (!Array.isArray(naceDetail.NACE_CHILD)) continue;
-
-            for (const naceChild of naceDetail.NACE_CHILD) {
-              if (result.nace_child_code && naceChild.code !== result.nace_child_code) continue;
-
-              // Aman: handle dua kemungkinan properti
-              const childDetails =
-                "nace_child_detail" in naceChild
-                  ? naceChild.nace_child_detail
-                  : "NACE_CHILD_DETAIL" in naceChild
-                  ? naceChild.NACE_CHILD_DETAIL
-                  : undefined;
-
-              if (!Array.isArray(childDetails)) continue;
-
-              // Create unique key for grouping
-              const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
-
-              if (!groupedResults[groupKey]) {
-                groupedResults[groupKey] = {
-                  scope_key: scopeKey,
-                  standar: scopeInfo.standar,
-                  iaf_code: iafScope.IAF_CODE,
-                  nace: {
-                    code: naceDetail.NACE.code,
-                    description: naceDetail.NACE.nace_description,
-                  },
-                  nace_child: {
-                    code: naceChild.code,
-                    title: naceChild.nace_child_title,
-                  },
-                  nace_child_details: [],
-                  relevance_score: result.relevance_score || 0,
-                };
-              }
-
-              // Sort jika perlu
-              const sortedDetails = [...childDetails];
-              if (result.nace_child_detail_code) {
-                sortedDetails.sort((a, b) => {
-                  if (a.code === result.nace_child_detail_code) return -1;
-                  if (b.code === result.nace_child_detail_code) return 1;
-                  return 0;
-                });
-              }
-
-              // Tambahkan child detail unik
-              for (const childDetail of sortedDetails) {
-                const alreadyExists = groupedResults[groupKey].nace_child_details.some(
-                  // (d: any) => d.code === childDetail.code
-                  (d: NaceChildDetail) => d.code === childDetail.code
-                );
-
-                if (!alreadyExists) {
-                  groupedResults[groupKey].nace_child_details.push({
-                    code: childDetail.code,
-                    title: childDetail.title,
-                    description: childDetail.nace_child_detail_description,
-                  });
+            aiResponseText = response.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!aiResponseText) {
+                console.error(`AI returned empty response on attempt ${attempt + 1}`);
+            } else {
+                // Bersihkan dan parse JSON
+                let cleanedText = aiResponseText.trim();
+                if (cleanedText.startsWith('```json')) {
+                    cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+                } else if (cleanedText.startsWith('```')) {
+                    cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
                 }
-              }
+                
+                aiResult = JSON.parse(cleanedText);
+                
+                // Validasi sukses
+                if (aiResult.hasil_pencarian && Array.isArray(aiResult.hasil_pencarian)) {
+                    break; // Berhasil, keluar dari loop
+                }
             }
 
-          }
+        } catch (error) {
+            console.error(`Error processing AI response on attempt ${attempt + 1}:`, error);
+        }
+        attempt++;
+    }
+
+    if (!aiResult || !Array.isArray(aiResult.hasil_pencarian)) {
+        return NextResponse.json({
+            hasil_pencarian: [],
+            penjelasan: `Terjadi kesalahan internal dalam memproses respons AI. Mohon coba kata kunci yang berbeda. Query: "${correctedQuery}"`,
+            saran: "Silakan coba dengan kata kunci yang lebih spesifik",
+            query: query
+        }, { status: 500 });
+    }
+
+    console.log(`📊 AI returned ${aiResult.hasil_pencarian.length} results (Semantic Search)`);
+
+    // Group results logic (sama seperti sebelumnya)
+    const groupedResults: Record<string, GroupedResult> = {};
+
+    for (const result of aiResult.hasil_pencarian) {
+      const scopeKey = result.scope_key as keyof typeof scopeData;
+      const scopeInfo = scopeData[scopeKey];
+
+      if (!scopeInfo) continue;
+
+      const iafScope = scopeInfo.scope.find(s => s.IAF_CODE === result.iaf_code);
+      if (!iafScope || !Array.isArray(iafScope.NACE_DETAIL_INFORMATION)) continue;
+
+      const naceDetail = iafScope.NACE_DETAIL_INFORMATION.find(n => n.NACE && n.NACE.code === result.nace_code);
+      if (!naceDetail || typeof naceDetail !== 'object' || !('NACE' in naceDetail) || !Array.isArray(naceDetail.NACE_CHILD)) continue;
+
+      const naceChild = naceDetail.NACE_CHILD.find(nc => nc.code === result.nace_child_code);
+      if (!naceChild) continue;
+
+      const childDetails =
+        "nace_child_detail" in naceChild
+          ? naceChild.nace_child_detail
+          : "NACE_CHILD_DETAIL" in naceChild
+          ? naceChild.NACE_CHILD_DETAIL
+          : undefined;
+
+      if (!Array.isArray(childDetails)) continue;
+
+      const detailResult = childDetails.find(cd => cd.code === result.nace_child_detail_code);
+      if (!detailResult) {
+          console.warn(`Skipping result: AI suggested code ${result.nace_child_detail_code} not found in source data.`);
+          continue;
+      }
+
+      const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
+      const currentScore = groupedResults[groupKey]?.relevance_score || 0;
+      const newScore = result.relevance_score || 0;
+      const finalScore = Math.max(currentScore, newScore);
+
+
+      if (!groupedResults[groupKey]) {
+        groupedResults[groupKey] = {
+          scope_key: scopeKey,
+          standar: scopeInfo.standar,
+          iaf_code: iafScope.IAF_CODE,
+          nace: {
+            code: naceDetail.NACE.code,
+            description: naceDetail.NACE.nace_description,
+          },
+          nace_child: {
+            code: naceChild.code,
+            title: naceChild.nace_child_title,
+          },
+          nace_child_details: [],
+          relevance_score: finalScore,
+        };
+      } else {
+          groupedResults[groupKey].relevance_score = finalScore;
+      }
+
+      const sortedDetails = [...childDetails];
+      sortedDetails.sort((a, b) => {
+        if (a.code === result.nace_child_detail_code) return -1;
+        if (b.code === result.nace_child_detail_code) return 1;
+        return 0;
+      });
+
+      for (const childDetail of sortedDetails) {
+        const alreadyExists = groupedResults[groupKey].nace_child_details.some(
+          (d: NaceChildDetail) => d.code === childDetail.code
+        );
+
+        if (!alreadyExists) {
+          groupedResults[groupKey].nace_child_details.push({
+            code: childDetail.code,
+            title: childDetail.title,
+            description: childDetail.nace_child_detail_description,
+          });
         }
       }
-
-      const detailedResults = Object.values(groupedResults).filter(r => r.nace_child_details.length > 0);
-
-      console.log(`📦 Grouped into ${detailedResults.length} result cards`);
-      console.log(`📝 Total detail codes across all cards: ${detailedResults.reduce((sum, r) => sum + r.nace_child_details.length, 0)}`);
-
-      // Build penjelasan with typo correction info for AI fallback
-      let aiPenjelasan = '';
-      if (hasCorrected) {
-        aiPenjelasan = `Kami mendeteksi kemungkinan typo pada pencarian Anda. Pencarian "${query}" telah dikoreksi menjadi "${correctedQuery}".\n\n`;
-      }
-      aiPenjelasan += aiResult.penjelasan;
-
-      return NextResponse.json({
-        hasil_pencarian: detailedResults,
-        penjelasan: aiPenjelasan,
-        saran: aiResult.saran,
-        total_hasil: detailedResults.length,
-        query: query,
-        corrected_query: hasCorrected ? correctedQuery : undefined
-      });
-
-    } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
-      console.error('AI Response Text:', aiResponseText);
-
-      // Fallback: return raw AI response
-      return NextResponse.json({
-        hasil_pencarian: [],
-        penjelasan: "Terjadi kesalahan dalam memproses respons AI",
-        saran: "Silakan coba dengan kata kunci yang lebih spesifik",
-        raw_ai_response: aiResponseText,
-        query: query
-      });
     }
+
+    const detailedResults = Object.values(groupedResults).filter(r => r.relevance_score >= 50 && r.nace_child_details.length > 0);
+    detailedResults.sort((a, b) => b.relevance_score - a.relevance_score);
+
+    console.log(`📦 Grouped into ${detailedResults.length} result cards (Semantic Search)`);
+
+    let penjelasan = '';
+    if (hasCorrected) {
+      penjelasan = `Kami mendeteksi kemungkinan typo pada pencarian Anda. Pencarian "${query}" telah dikoreksi menjadi "${correctedQuery}".\n\n`;
+    }
+    penjelasan += aiResult.penjelasan;
+
+    return NextResponse.json({
+      hasil_pencarian: detailedResults,
+      penjelasan: penjelasan,
+      saran: aiResult.saran,
+      total_hasil: detailedResults.length,
+      query: query,
+      corrected_query: hasCorrected ? correctedQuery : undefined
+    });
 
   } catch (error) {
     console.error('API Error:', error);

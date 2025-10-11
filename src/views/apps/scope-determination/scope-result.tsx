@@ -1,8 +1,8 @@
 import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Bot, Lightbulb, Target, ChevronDown, ChevronUp } from "lucide-react";
+import { Bot, Lightbulb, Target, ChevronDown, ChevronUp, Download } from "lucide-react"; // Import 'Copy' dihilangkan
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 import { ScopePagination } from "./scope-pagination";
 import { Toaster, toast } from "sonner";
@@ -24,39 +24,6 @@ export const ScopeResult = () => {
     isLoadingAI,
     aiError,
   } = useScopeDeterminationContext();
-
-  // const handleCopy = (text: string) => {
-  //   navigator.clipboard
-  //     .writeText(text)
-  //     .then(() => {
-  //       toast.success("Copied successfully!"); // ✅ Notifikasi sukses
-  //     })
-  //     .catch(() => {
-  //       toast.error("Failed to copy text."); // ❌ Notifikasi gagal
-  //     });
-  // };
-
-  // // Copy semua hasil
-  // const handleCopyAll = () => {
-  //   const allText = rows
-  //     .map((r) => `${r.idx}. ${r.label}${r.code ? ` (${r.code})` : ""}`)
-  //     .join("\n");
-    
-  //   navigator.clipboard
-  //     .writeText(allText)
-  //     .then(() => {
-  //       toast.success(`${rows.length} item berhasil di-copy!`);
-  //     })
-  //     .catch(() => {
-  //       toast.error("Gagal copy semua item.");
-  //     });
-  // };
-
-  // Export semua hasil
-  // const handleExportAll = () => {
-  //   exportCsv(rows);
-  //   toast.success(`${rows.length} item berhasil di-export!`);
-  // };
 
   const SkeletonResult = (
     <div className="space-y-4">
@@ -82,16 +49,7 @@ export const ScopeResult = () => {
     // Use corrected query for highlighting if available, otherwise use debounced
     const highlightQuery = aiResponse.corrected_query || debounced;
 
-    const handleCopyAIResult = (text: string) => {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          toast.success("AI result copied!");
-        })
-        .catch(() => {
-          toast.error("Failed to copy AI result.");
-        });
-    };
+    // Fungsi handleCopyAIResult telah dihapus karena semua tombol Copy dihilangkan
 
     type NaceChildMap = Map<string, string>;
 
@@ -118,7 +76,10 @@ export const ScopeResult = () => {
       };
       nace_child?: {
         code?: string;
+        title?: string;
       };
+      relevance_score?: number;
+      nace_child_details: NaceChildDetail[];
     }
 
     interface NaceChildDetail {
@@ -128,43 +89,6 @@ export const ScopeResult = () => {
     }
 
 
-    // Create summary grouped by standard
-    // const createSummary = () => {
-    //   const summary: Record<string, any> = {};
-
-    //   aiResponse.hasil_pencarian.forEach((result: any) => {
-    //     const standar = result.standar || result.scope_key;
-
-    //     if (!summary[standar]) {
-    //       summary[standar] = {};
-    //     }
-
-    //     const iaf = result.iaf_code;
-    //     if (!summary[standar][iaf]) {
-    //       summary[standar][iaf] = {};
-    //     }
-
-    //     const naceCode = result.nace?.code;
-    //     const naceDesc = result.nace?.description;
-    //     const naceChildCode = result.nace_child?.code;
-
-    //     // Create unique ID for linking
-    //     const linkId = `result-${result.scope_key}-${naceCode}-${naceChildCode}`.replace(/[^a-zA-Z0-9-_]/g, '-');
-
-    //     if (!summary[standar][iaf][naceCode]) {
-    //       summary[standar][iaf][naceCode] = {
-    //         description: naceDesc,
-    //         children: new Map() // Change to Map to store child code with linkId
-    //       };
-    //     }
-
-    //     if (naceChildCode) {
-    //       summary[standar][iaf][naceCode].children.set(naceChildCode, linkId);
-    //     }
-    //   });
-
-    //   return summary;
-    // };
     const createSummary = (): Summary => {
       const summary: Summary = {};
 
@@ -199,6 +123,68 @@ export const ScopeResult = () => {
     };              
 
     const summary = createSummary();
+    
+    // START: Logic Export All dengan format rapi
+    const handleExportAll = () => {
+      const resultsText = aiResponse.hasil_pencarian.map((res: HasilPencarian, index: number) => {
+        
+        // Build details list for each result
+        const details = res.nace_child_details.map((det: NaceChildDetail) => 
+          `      - Code ${det.code}: ${det.title} - ${det.description}`
+        ).join('\n');
+        
+        // Combine result info with clear formatting
+        return `
+--- REKOMENDASI KE-${index + 1} ---
+  Standar: ${res.standar || res.scope_key}
+  IAF Code: ${res.iaf_code}
+  NACE Code: ${res.nace?.code || '-'} (${res.nace?.description || '-'})
+  NACE Child: ${res.nace_child?.code || '-'} (${res.nace_child?.title || '-'})
+  Skor Relevansi: ${res.relevance_score || 0}%
+
+  Detail Kode NACE Child:
+${details}
+        `;
+      }).join('\n');
+
+      const fileContent = `
+=============================================
+  LAPORAN PENENTUAN SCOPE SERTIFIKASI (AI)
+=============================================
+
+Kata Kunci Pencarian: ${aiResponse.query}
+Hasil Koreksi (Jika Ada): ${aiResponse.corrected_query || '-'}
+
+=============================================
+  PENJELASAN AI
+=============================================
+${aiResponse.penjelasan}
+
+=============================================
+  SARAN TAMBAHAN
+=============================================
+${aiResponse.saran}
+
+=============================================
+  TOTAL REKOMENDASI (${aiResponse.hasil_pencarian.length} Hasil)
+=============================================
+${resultsText}
+`;
+
+      const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `scope-report-${Date.now()}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success(`Berhasil mengekspor ${aiResponse.hasil_pencarian.length} hasil ke file TXT!`);
+    };
+    // END: Logic Export All
+
 
     // Scroll to result handler
     const scrollToResult = (linkId: string, childCode: string) => {
@@ -262,6 +248,9 @@ export const ScopeResult = () => {
         {/* Hasil Pencarian */}
         {aiResponse.hasil_pencarian.length > 0 && (
           <div className="mb-4">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+              Berdasarkan hasil pencarian, <strong className="text-blue-600 dark:text-blue-400">PT TSI Sertifikasi Internasional</strong> menyarankan scope yang tersedia untuk perusahaan Anda.
+            </p>
             <div className="flex items-center gap-2 mb-4">
               <Target className="h-4 w-4 text-green-600" />
               <span className="text-sm font-medium text-green-800 dark:text-green-200">
@@ -285,6 +274,21 @@ export const ScopeResult = () => {
                   {showSummary ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                 </Button>
               </div>
+              {/* --- Export All Button --- */}
+              {showSummary && (
+                <div className="mb-4">
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={handleExportAll}
+                    className="w-full gap-2 bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export Semua Hasil
+                  </Button>
+                </div>
+              )}
+              {/* --- End Export All Button --- */}
               {showSummary && (
                 <div className="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-700">
                   {Object.entries(summary).map(([standar, iafData]) => (
@@ -300,7 +304,6 @@ export const ScopeResult = () => {
                           {Object.entries(naceData as Record<string, NaceInfo>).map(([naceCode, naceInfo]) => (
                             <div key={naceCode} className="ml-2 bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
                               <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                {/* <strong>NACE Code ( {naceCode} ) :</strong> {highlight(naceInfo.description, highlightQuery)} */}
                                 <strong>NACE Code ({naceCode}) :</strong>{" "}{highlight(naceInfo.description ?? "", highlightQuery)}
                               </p>
                               <p className="text-xs text-gray-500 dark:text-gray-500">
@@ -362,15 +365,7 @@ export const ScopeResult = () => {
                           </Badge>
                         )}
                       </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleCopyAIResult(JSON.stringify(result, null, 2))}
-                        className="text-xs"
-                      >
-                        <Copy className="h-3 w-3 mr-1" />
-                        Copy
-                      </Button>
+                      {/* Tombol Copy dihilangkan dari sini */}
                     </div>
 
                     <h5 className="font-medium text-sm mb-1">{highlight(result.standar, highlightQuery)}</h5>
@@ -452,15 +447,7 @@ export const ScopeResult = () => {
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               {highlight(aiResponse.penjelasan, highlightQuery)}
             </p>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleCopyAIResult(aiResponse.penjelasan)}
-              className="text-xs mt-1"
-            >
-              <Copy className="h-3 w-3 mr-1" />
-              Copy Penjelasan
-            </Button>
+            {/* Tombol Copy Penjelasan DIHAPUS */}
           </div>
         )}
 
@@ -476,30 +463,14 @@ export const ScopeResult = () => {
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
               {highlight(aiResponse.saran, highlightQuery)}
             </p>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => handleCopyAIResult(aiResponse.saran)}
-              className="text-xs mt-1"
-            >
-              <Copy className="h-3 w-3 mr-1" />
-              Copy Saran
-            </Button>
+            {/* Tombol Copy Saran DIHAPUS */}
           </div>
         )}
 
 
         {/* Copy All AI Response */}
         <div className="mt-4 pt-3 border-t">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => handleCopyAIResult(JSON.stringify(aiResponse, null, 2))}
-            className="w-full"
-          >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy Complete AI Response
-          </Button>
+          {/* Tombol Copy Complete AI Response DIHAPUS */}
         </div>
       </div>
     );
@@ -561,102 +532,12 @@ export const ScopeResult = () => {
 
         {!shouldQuery && !aiResponse && !isLoadingAI ? null : isLoadingList ? (
           SkeletonResult
-        // ) : rows.length === 0 ? (
-        //   <div className="text-sm text-muted-foreground">
-        //     Tidak ada hasil untuk{" "}
-        //     <span className="font-medium">&quot;{debounced}&quot;</span>.
-        //   </div>
         ) : (
           <>
-            {/* Bulk Actions - Copy All & Export All */}
-            {/* <div className="mb-4 flex items-center justify-between gap-2 flex-wrap">
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleCopyAll}
-                  className="gap-2"
-                >
-                  <Copy className="h-4 w-4" />
-                  <span className="hidden sm:inline">Copy All ({rows.length})</span>
-                  <span className="sm:hidden">Copy All</span>
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleExportAll}
-                  className="gap-2"
-                >
-                  <Download className="h-4 w-4" />
-                  <span className="hidden sm:inline">Export All ({rows.length})</span>
-                  <span className="sm:hidden">Export</span>
-                </Button>
-              </div>
-            </div> */}
-
-            <Separator className="mb-6" />
+            {/* Perubahan: Menghilangkan separator yang bermasalah */}
+            <div className="mb-6" /> 
 
             {/* Results List */}
-            {/* <div className="space-y-6">
-              {rows.map((r) => {
-                const textToCopy = `${r.idx}. ${r.label}${
-                  r.code ? ` (${r.code})` : ""
-                }`;
-
-                return (
-                  <div key={`${r.idx}-${r.code ?? "x"}`} className="group">
-                    <div className="text-xs text-muted-foreground">
-                      <span style={{ color: "#000097" }}>
-                        <b>{r.title}</b>
-                      </span>
-                      {showCodes && r.code ? (
-                        <>
-                          {" "}
-                          · <span className="font-medium">IAF Code {r.code}</span>
-                        </>
-                      ) : null}
-                    </div>
-
-                    <div className="mt-0.5 text-lg leading-snug">
-                      <button
-                        className="text-primary underline-offset-4 hover:underline"
-                        style={{ textAlign: "justify" }}
-                        onClick={() => handleCopy(textToCopy)}
-                        title="Salin item ini"
-                      >
-                        {highlight(r.label, debounced)}
-                      </button>
-                      <div>
-                        <table className="table-auto border border-border rounded w-full mt-1">
-                          <thead>
-                            <tr>
-                              <td className="text-sm p-1 text-center text-muted-foreground p-1" style={{ fontSize:'12px' }}>Nace Code</td>
-                              <td className="text-sm p-1 text-center text-muted-foreground"></td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td className="text-sm border border-border p-1 text-center text-muted-foreground" style={{ fontSize:'12px' }}>01</td>
-                              <td className="text-sm border border-border p-1 text-muted-foreground" style={{ fontSize:'12px' }}>{highlight('Pertanian tanaman, peternakan, perburuan dan kegiatan terkait', debounced)}</td>
-                            </tr>
-                            <tr>
-                              <td className="text-sm border border-border p-1 text-center text-muted-foreground" style={{ fontSize:'12px' }}>02</td>
-                              <td className="text-sm border border-border p-1 text-muted-foreground" style={{ fontSize:'12px' }}>{highlight('Pertanian tanaman, peternakan, perburuan dan kegiatan terkait', debounced)}</td>
-                            </tr>
-                            <tr>
-                              <td className="text-sm border border-border p-1 text-center text-muted-foreground" style={{ fontSize:'12px' }}>03</td>
-                              <td className="text-sm border border-border p-1 text-muted-foreground" style={{ fontSize:'12px' }}>{highlight('Pertanian tanaman, peternakan, perburuan dan kegiatan terkait', debounced)}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                    <Separator className="mt-6" />
-                  </div>
-                );
-              })}
-            </div> */}
           </>
         )}
       </div>
