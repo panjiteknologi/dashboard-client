@@ -168,15 +168,22 @@ Instructions:
             if (!Array.isArray(naceDetail.NACE_CHILD)) continue;
 
             for (const naceChild of naceDetail.NACE_CHILD) {
-              if (!Array.isArray(naceChild.nace_child_detail)) continue;
+              // Periksa apakah properti yang digunakan ada
+              const childDetails =
+                "nace_child_detail" in naceChild
+                  ? naceChild.nace_child_detail
+                  : "NACE_CHILD_DETAIL" in naceChild
+                  ? naceChild.NACE_CHILD_DETAIL
+                  : undefined;
 
-              for (const childDetail of naceChild.nace_child_detail) {
-                // Check if ANY keyword matches at ANY level
-                const iafText = iafScope.IAF_CODE?.toLowerCase() || '';
-                const naceText = naceDetail.NACE.nace_description?.toLowerCase() || '';
-                const naceChildText = naceChild.nace_child_title?.toLowerCase() || '';
-                const titleText = childDetail.title?.toLowerCase() || '';
-                const descText = childDetail.nace_child_detail_description?.toLowerCase() || '';
+              if (!Array.isArray(childDetails)) continue;
+
+              for (const childDetail of childDetails) {
+                const iafText = iafScope.IAF_CODE?.toLowerCase() || "";
+                const naceText = naceDetail.NACE.nace_description?.toLowerCase() || "";
+                const naceChildText = naceChild.nace_child_title?.toLowerCase() || "";
+                const titleText = childDetail.title?.toLowerCase() || "";
+                const descText = childDetail.nace_child_detail_description?.toLowerCase() || "";
 
                 let matchedKeywords = 0;
                 let iafMatch = false;
@@ -185,7 +192,6 @@ Instructions:
                 let titleMatch = false;
                 let descMatch = false;
 
-                // Check each keyword
                 for (const kw of searchKeywords) {
                   if (iafText.includes(kw)) { iafMatch = true; matchedKeywords++; }
                   else if (naceText.includes(kw)) { naceMatch = true; matchedKeywords++; }
@@ -194,7 +200,6 @@ Instructions:
                   else if (descText.includes(kw)) { descMatch = true; matchedKeywords++; }
                 }
 
-                // If any level matches, add this result
                 if (matchedKeywords > 0) {
                   results.push({
                     scope_key: scopeKey,
@@ -208,11 +213,12 @@ Instructions:
                       (naceChildMatch ? 20 : 0) +
                       (titleMatch ? 15 : 0) +
                       (descMatch ? 10 : 0) +
-                      (matchedKeywords * 5) // Bonus for multiple keyword matches
+                      matchedKeywords * 5,
                   });
                 }
               }
             }
+
           }
         }
       }
@@ -254,7 +260,15 @@ Instructions:
             for (const naceChild of naceDetail.NACE_CHILD) {
               if (result.nace_child_code && naceChild.code !== result.nace_child_code) continue;
 
-              if (!Array.isArray(naceChild.nace_child_detail)) continue;
+              // Handle dua kemungkinan nama properti
+              const childDetails =
+                "nace_child_detail" in naceChild
+                  ? naceChild.nace_child_detail
+                  : "NACE_CHILD_DETAIL" in naceChild
+                  ? naceChild.NACE_CHILD_DETAIL
+                  : undefined;
+
+              if (!Array.isArray(childDetails)) continue;
 
               // Create unique key for grouping
               const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
@@ -266,19 +280,19 @@ Instructions:
                   iaf_code: iafScope.IAF_CODE,
                   nace: {
                     code: naceDetail.NACE.code,
-                    description: naceDetail.NACE.nace_description
+                    description: naceDetail.NACE.nace_description,
                   },
                   nace_child: {
                     code: naceChild.code,
-                    title: naceChild.nace_child_title
+                    title: naceChild.nace_child_title,
                   },
                   nace_child_details: [],
-                  relevance_score: result.relevance_score || 0
+                  relevance_score: result.relevance_score || 0,
                 };
               }
 
               // Add ALL child details in this NACE Child group
-              const sortedDetails = [...naceChild.nace_child_detail];
+              const sortedDetails = [...childDetails];
               if (result.nace_child_detail_code) {
                 sortedDetails.sort((a, b) => {
                   if (a.code === result.nace_child_detail_code) return -1;
@@ -296,11 +310,12 @@ Instructions:
                   groupedResults[groupKey].nace_child_details.push({
                     code: childDetail.code,
                     title: childDetail.title,
-                    description: childDetail.nace_child_detail_description
+                    description: childDetail.nace_child_detail_description,
                   });
                 }
               }
             }
+
           }
         }
       }
@@ -451,7 +466,15 @@ ATURAN PENTING:
             for (const naceChild of naceDetail.NACE_CHILD) {
               if (result.nace_child_code && naceChild.code !== result.nace_child_code) continue;
 
-              if (!Array.isArray(naceChild.nace_child_detail)) continue;
+              // Aman: handle dua kemungkinan properti
+              const childDetails =
+                "nace_child_detail" in naceChild
+                  ? naceChild.nace_child_detail
+                  : "NACE_CHILD_DETAIL" in naceChild
+                  ? naceChild.NACE_CHILD_DETAIL
+                  : undefined;
+
+              if (!Array.isArray(childDetails)) continue;
 
               // Create unique key for grouping
               const groupKey = `${scopeKey}|${iafScope.IAF_CODE}|${naceDetail.NACE.code}|${naceChild.code}`;
@@ -463,20 +486,19 @@ ATURAN PENTING:
                   iaf_code: iafScope.IAF_CODE,
                   nace: {
                     code: naceDetail.NACE.code,
-                    description: naceDetail.NACE.nace_description
+                    description: naceDetail.NACE.nace_description,
                   },
                   nace_child: {
                     code: naceChild.code,
-                    title: naceChild.nace_child_title
+                    title: naceChild.nace_child_title,
                   },
-                  nace_child_details: [], // Array of all details
-                  relevance_score: result.relevance_score || 0
+                  nace_child_details: [],
+                  relevance_score: result.relevance_score || 0,
                 };
               }
 
-              // Add ALL child details in this NACE Child group
-              // If specific detail code is mentioned, prioritize it first
-              const sortedDetails = [...naceChild.nace_child_detail];
+              // Sort jika perlu
+              const sortedDetails = [...childDetails];
               if (result.nace_child_detail_code) {
                 sortedDetails.sort((a, b) => {
                   if (a.code === result.nace_child_detail_code) return -1;
@@ -485,7 +507,7 @@ ATURAN PENTING:
                 });
               }
 
-              // Add all details to the group (avoiding duplicates)
+              // Tambahkan child detail unik
               for (const childDetail of sortedDetails) {
                 const alreadyExists = groupedResults[groupKey].nace_child_details.some(
                   (d: any) => d.code === childDetail.code
@@ -495,11 +517,12 @@ ATURAN PENTING:
                   groupedResults[groupKey].nace_child_details.push({
                     code: childDetail.code,
                     title: childDetail.title,
-                    description: childDetail.nace_child_detail_description
+                    description: childDetail.nace_child_detail_description,
                   });
                 }
               }
             }
+
           }
         }
       }
