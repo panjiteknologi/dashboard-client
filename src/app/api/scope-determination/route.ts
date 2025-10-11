@@ -495,7 +495,9 @@ ATURAN PENTING:
       console.log(`📊 AI returned ${aiResult.hasil_pencarian.length} results`);
 
       // Group results by scope_key + iaf_code + nace_code + nace_child_code
-      const groupedResults: Record<string, any> = {};
+      // const groupedResults: Record<string, any> = {};
+      const groupedResults: Record<string, GroupedResult> = {};
+
 
       for (const result of aiResult.hasil_pencarian) {
         const scopeKey = result.scope_key;
@@ -561,7 +563,8 @@ ATURAN PENTING:
               // Tambahkan child detail unik
               for (const childDetail of sortedDetails) {
                 const alreadyExists = groupedResults[groupKey].nace_child_details.some(
-                  (d: any) => d.code === childDetail.code
+                  // (d: any) => d.code === childDetail.code
+                  (d: NaceChildDetail) => d.code === childDetail.code
                 );
 
                 if (!alreadyExists) {

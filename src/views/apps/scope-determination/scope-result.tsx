@@ -121,6 +121,13 @@ export const ScopeResult = () => {
       };
     }
 
+    interface NaceChildDetail {
+      code: string;
+      title: string;
+      description: string;
+    }
+
+
     // Create summary grouped by standard
     // const createSummary = () => {
     //   const summary: Record<string, any> = {};
@@ -285,15 +292,16 @@ export const ScopeResult = () => {
                       <h5 className="text-xs font-bold text-blue-900 dark:text-blue-100 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
                         {highlight(standar, highlightQuery)}
                       </h5>
-                      {Object.entries(iafData as Record<string, any>).map(([iaf, naceData]) => (
+                      {Object.entries(iafData as Record<string, Record<string, NaceInfo>>).map(([iaf, naceData]) => (
                         <div key={iaf} className="ml-3 space-y-1 border-l-2 border-gray-300 dark:border-gray-600 pl-3">
                           <p className="text-xs text-gray-700 dark:text-gray-300">
                             <strong>IAF:</strong> {highlight(iaf, highlightQuery)}
                           </p>
-                          {Object.entries(naceData as Record<string, any>).map(([naceCode, naceInfo]: [string, any]) => (
+                          {Object.entries(naceData as Record<string, NaceInfo>).map(([naceCode, naceInfo]) => (
                             <div key={naceCode} className="ml-2 bg-gray-50 dark:bg-gray-700/50 p-2 rounded">
                               <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                                <strong>NACE Code ( {naceCode} ) :</strong> {highlight(naceInfo.description, highlightQuery)}
+                                {/* <strong>NACE Code ( {naceCode} ) :</strong> {highlight(naceInfo.description, highlightQuery)} */}
+                                <strong>NACE Code ({naceCode}) :</strong>{" "}{highlight(naceInfo.description ?? "", highlightQuery)}
                               </p>
                               <p className="text-xs text-gray-500 dark:text-gray-500">
                                 <strong>NACE Child:</strong>{' '}
@@ -387,7 +395,8 @@ export const ScopeResult = () => {
 
                     {result.nace_child_details && Array.isArray(result.nace_child_details) && result.nace_child_details.length > 0 && (
                       <div className="mt-2 space-y-2">
-                        {result.nace_child_details.map((detail: any, idx: number) => {
+                        {/* {result.nace_child_details.map((detail: any, idx: number) => { */}
+                        {result.nace_child_details.map((detail: NaceChildDetail, idx: number) => {
                           // Check if this specific child detail is active
                           const isActiveChild = isActive && activeChildCode === result.nace_child?.code;
 
