@@ -11,22 +11,22 @@ type NaceChildDetail = {
   description?: string; // 👈 tambahkan ini
 };
 
-type NaceChild = {
-  code: string;
-  nace_child_title?: string;
-  nace_child_detail?: NaceChildDetail[];
-  NACE_CHILD_DETAIL?: NaceChildDetail[];
-};
+// type NaceChild = {
+//   code: string;
+//   nace_child_title?: string;
+//   nace_child_detail?: NaceChildDetail[];
+//   NACE_CHILD_DETAIL?: NaceChildDetail[];
+// };
 
-type NaceDetail = {
-  NACE: { code: string; nace_description: string };
-  NACE_CHILD: NaceChild[];
-};
+// type NaceDetail = {
+//   NACE: { code: string; nace_description: string };
+//   NACE_CHILD: NaceChild[];
+// };
 
-type IafScope = {
-  IAF_CODE: string;
-  NACE_DETAIL_INFORMATION: NaceDetail[];
-};
+// type IafScope = {
+//   IAF_CODE: string;
+//   NACE_DETAIL_INFORMATION: NaceDetail[];
+// };
 
 // type ScopeValue = {
 //   standar: string;
