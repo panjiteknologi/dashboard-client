@@ -1,23 +1,24 @@
 import { useState, useCallback } from 'react';
+import { ScopeDeterminationResponse } from "@/types/scope";
 
 // interface ScopeDeterminationRequest {
 //   query: string;
 // }
 
-interface ScopeDeterminationResponse {
-  hasil_pencarian: string[];
-  penjelasan: string;
-  saran: string;
-  detail_scope: Array<{
-    key: string;
-    standar: string;
-    description: string | null;
-    scope: unknown[];
-    // scope: any[];
-  }>;
-  query: string;
-  raw_ai_response?: string;
-}
+// interface ScopeDeterminationResponse {
+//   total_hasil: number; // ✅ tambahkan ini
+//   hasil_pencarian: string[];
+//   penjelasan: string;
+//   saran: string;
+//   detail_scope: Array<{
+//     key: string;
+//     standar: string;
+//     description: string | null;
+//     scope: any[];
+//   }>;
+//   query: string;
+//   raw_ai_response?: string;
+// }
 
 interface UseScopeDeterminationResult {
   isLoading: boolean;
