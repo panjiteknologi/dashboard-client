@@ -21,6 +21,22 @@ type GroupedResult = {
   relevance_score: number;
 };
 
+// NEW TYPES TO RESOLVE: Error: Unexpected any. Specify a different type.
+type AIResultItem = {
+  scope_key: string;
+  iaf_code: string;
+  nace_code: string;
+  nace_child_code: string;
+  nace_child_detail_code: string;
+  relevance_score: number;
+};
+
+type AIResponse = {
+  hasil_pencarian: AIResultItem[];
+  penjelasan: string;
+  saran: string;
+};
+
 export async function POST(request: NextRequest) {
   try {
     const { query } = await request.json();
@@ -150,7 +166,6 @@ Instructions:
 
     // Fungsi untuk mencari langsung di scopeData (untuk pencarian 1 kata)
     function searchInScopeData(keyword: string) {
-      // ... (Logika Direct Search tetap sama, tidak diubah)
       const results: {
         scope_key: string;
         iaf_code: string;
@@ -165,8 +180,13 @@ Instructions:
 
       if (searchKeywords.length === 0) return results;
 
-      console.log(`🔍 Attempting direct search for single keyword: [${searchKeywords[0]}]`);
       const kw = searchKeywords[0];
+      console.log(`🔍 Attempting direct search for single keyword: [${kw}]`);
+      
+      // PERBAIKAN UTAMA: Menggunakan regex dengan word boundaries (\b)
+      // Ini memastikan hanya kata "kw" utuh yang cocok, bukan substring seperti "cement" di "placement".
+      const searchRegex = new RegExp(`\\b${kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'i');
+
 
       for (const [scopeKey, scopeValue] of Object.entries(scopeData)) {
         if (!scopeValue.scope || !Array.isArray(scopeValue.scope)) continue;
@@ -194,6 +214,9 @@ Instructions:
                 const naceChildText = naceChild.nace_child_title?.toLowerCase() || "";
                 const titleText = childDetail.title?.toLowerCase() || "";
                 const descText = childDetail.nace_child_detail_description?.toLowerCase() || "";
+                
+                // Cek apakah IAF_CODE adalah kata kunci itu sendiri (e.g., kw = '17')
+                const isIafCodeExact = iafScope.IAF_CODE === kw.toUpperCase();
 
                 let matched = false;
                 let iafMatch = false;
@@ -201,12 +224,21 @@ Instructions:
                 let naceChildMatch = false;
                 let titleMatch = false;
                 let descMatch = false;
-
-                if (iafText.includes(kw)) { iafMatch = true; matched = true; }
-                if (naceText.includes(kw)) { naceMatch = true; matched = true; }
-                if (naceChildText.includes(kw)) { naceChildMatch = true; matched = true; }
-                if (titleText.includes(kw)) { titleMatch = true; matched = true; }
-                if (descText.includes(kw)) { descMatch = true; matched = true; }
+                
+                // Gunakan regex untuk pencocokan kata utuh
+                if (isIafCodeExact || iafText.match(searchRegex)) { iafMatch = true; matched = true; }
+                if (naceText.match(searchRegex)) { naceMatch = true; matched = true; }
+                if (naceChildText.match(searchRegex)) { naceChildMatch = true; matched = true; }
+                if (titleText.match(searchRegex)) { titleMatch = true; matched = true; }
+                if (descText.match(searchRegex)) { descMatch = true; matched = true; }
+                
+                // Fallback untuk pencarian kode (jika kode dimasukkan sebagai kata kunci)
+                if (!matched) {
+                    if (iafScope.IAF_CODE === kw) { iafMatch = true; matched = true; }
+                    if (naceDetail.NACE.code === kw) { naceMatch = true; matched = true; }
+                    if (naceChild.code === kw) { naceChildMatch = true; matched = true; }
+                    if (childDetail.code === kw) { titleMatch = true; matched = true; }
+                }
                 
                 if (matched) {
                   const score =
@@ -381,7 +413,7 @@ IMPORTANT RULES for JSON Output:
 - The entire response MUST be valid JSON format.
 `;
 
-    let aiResult: any;
+    let aiResult: AIResponse | undefined; // FIX: Replaced 'any' with 'AIResponse | undefined'
     let aiResponseText: string | undefined;
     const maxRetries = 3;
     let attempt = 0;
@@ -442,7 +474,8 @@ IMPORTANT RULES for JSON Output:
                     cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
                 }
                 
-                aiResult = JSON.parse(cleanedText);
+                // FIX: Use type assertion to avoid 'any' explicitly
+                aiResult = JSON.parse(cleanedText) as AIResponse;
                 
                 // Validasi sukses
                 if (aiResult.hasil_pencarian && Array.isArray(aiResult.hasil_pencarian)) {
