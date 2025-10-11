@@ -84,19 +84,25 @@ export const ScopeHeader = () => {
     <div className="sticky bottom-0 z-10 bg-background border-t">
       <div className="p-4">
         {/* Quick filters */}
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground mr-2">Quick search:</span>
-          {quick.map((k) => (
-            <Badge
-              key={k}
-              variant="secondary"
-              className="cursor-pointer rounded-lg text-xs hover:bg-secondary/80"
-              onClick={() => handleQuickSearch(k)}
-            >
-              {k}
-            </Badge>
-          ))}
+        <div className="mb-3">
+          {/* Scrollable horizontal badges */}
+          <div className="flex overflow-x-auto no-scrollbar gap-2 pb-3 pl-0">
+            <span className="text-xs text-muted-foreground pr-2 whitespace-nowrap sticky left-0 bg-background z-10">
+              Quick search:
+            </span>
+            {quick.map((k) => (
+              <Badge
+                key={k}
+                variant="secondary"
+                className="cursor-pointer rounded-lg text-xs whitespace-nowrap hover:bg-secondary/80 flex-shrink-0"
+                onClick={() => handleQuickSearch(k)}
+              >
+                {k}
+              </Badge>
+            ))}
+          </div>
         </div>
+
 
         {/* Search Input */}
         <div className="relative">
