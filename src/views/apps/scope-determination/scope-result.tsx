@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Download, Bot, Lightbulb, Target, ChevronDown, ChevronUp } from "lucide-react";
+import { Copy, Bot, Lightbulb, Target, ChevronDown, ChevronUp } from "lucide-react";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 import { ScopePagination } from "./scope-pagination";
 import { Toaster, toast } from "sonner";
@@ -11,11 +11,11 @@ export const ScopeResult = () => {
   const {
     shouldQuery,
     isLoadingList,
-    rows,
+    // rows,
     // scopeLabel,
     debounced,
-    showCodes,
-    exportCsv,
+    // showCodes,
+    // exportCsv,
     totalPages,
     highlight,
     page,
@@ -25,38 +25,38 @@ export const ScopeResult = () => {
     aiError,
   } = useScopeDeterminationContext();
 
-  const handleCopy = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        toast.success("Copied successfully!"); // ✅ Notifikasi sukses
-      })
-      .catch(() => {
-        toast.error("Failed to copy text."); // ❌ Notifikasi gagal
-      });
-  };
+  // const handleCopy = (text: string) => {
+  //   navigator.clipboard
+  //     .writeText(text)
+  //     .then(() => {
+  //       toast.success("Copied successfully!"); // ✅ Notifikasi sukses
+  //     })
+  //     .catch(() => {
+  //       toast.error("Failed to copy text."); // ❌ Notifikasi gagal
+  //     });
+  // };
 
-  // Copy semua hasil
-  const handleCopyAll = () => {
-    const allText = rows
-      .map((r) => `${r.idx}. ${r.label}${r.code ? ` (${r.code})` : ""}`)
-      .join("\n");
+  // // Copy semua hasil
+  // const handleCopyAll = () => {
+  //   const allText = rows
+  //     .map((r) => `${r.idx}. ${r.label}${r.code ? ` (${r.code})` : ""}`)
+  //     .join("\n");
     
-    navigator.clipboard
-      .writeText(allText)
-      .then(() => {
-        toast.success(`${rows.length} item berhasil di-copy!`);
-      })
-      .catch(() => {
-        toast.error("Gagal copy semua item.");
-      });
-  };
+  //   navigator.clipboard
+  //     .writeText(allText)
+  //     .then(() => {
+  //       toast.success(`${rows.length} item berhasil di-copy!`);
+  //     })
+  //     .catch(() => {
+  //       toast.error("Gagal copy semua item.");
+  //     });
+  // };
 
   // Export semua hasil
-  const handleExportAll = () => {
-    exportCsv(rows);
-    toast.success(`${rows.length} item berhasil di-export!`);
-  };
+  // const handleExportAll = () => {
+  //   exportCsv(rows);
+  //   toast.success(`${rows.length} item berhasil di-export!`);
+  // };
 
   const SkeletonResult = (
     <div className="space-y-4">
