@@ -34,7 +34,7 @@ export const ScopeHeader = () => {
     quick,
     // showCodes,
     // setShowCodes,
-    scopeId,
+    // scopeId,
     // setScopeId,
     // scopeLabel,
     // isLoadingChips,
@@ -48,7 +48,7 @@ export const ScopeHeader = () => {
   } = useScopeDeterminationContext();
 
   const { data: listResp } = useScopeListQuery();
-  const scopeList = Array.isArray(listResp?.data) ? listResp!.data : [];
+  // const scopeList = Array.isArray(listResp?.data) ? listResp!.data : [];
 
   // Check if any filter is active
   // const hasActiveFilters = query || scopeId !== scopeList?.[0]?.id;
