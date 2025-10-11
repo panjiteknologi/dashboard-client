@@ -5003,6 +5003,71 @@
         ]
       },
       {
+        "IAF_CODE": "Concrete, cement, lime, plaster etc. (16)",
+        "NACE_DETAIL_INFORMATION": [
+          {
+              "NACE": {
+                "code": "23",
+                "nace_description": "Manufacture of other non-metallic mineral products"
+              },
+              "NACE_CHILD": [
+                  {
+                      "code": "23.5",
+                      "nace_child_title": "Manufacture of cement, lime and plaster",
+                      "nace_child_detail": [
+                          {
+                              "code": "23.51",
+                              "title": "Manufacture of cement",
+                              "nace_child_detail_description": "This class includes: manufacture of clinkers and hydraulic cements, including Portland, aluminous cement, slag cement and superphosphate cements. This class excludes: manufacture of refractory mortars, concrete etc., see 23.20; manufacture of ready-mixed and dry-mix concrete and mortars, see 23.63, 23.64; manufacture of articles of cement, see 23.69; manufacture of cements used in dentistry, see 32.50"
+                          },
+                          {
+                              "code": "23.52",
+                              "title": "Manufacture of lime and plaster",
+                              "nace_child_detail_description": "This class includes: manufacture of quicklime, slaked lime and hydraulic lime; manufacture of plasters of calcined gypsum or calcined sulphate. This class also includes: manufacture of calcined dolomite. This class excludes: manufacture of articles of plaster, see 23.62, 23.69"
+                          }
+                      ]
+                  },
+                  {
+                      "code": "23.6",
+                      "nace_child_title": "Manufacture of articles of concrete, cement and plaster",
+                      "nace_child_detail": [
+                          {
+                              "code": "23.61",
+                              "title": "Manufacture of concrete products for construction purposes",
+                              "nace_child_detail_description": "This class includes: manufacture of precast concrete, cement or artificial stone articles for use in construction: tiles, flagstones, bricks, boards, sheets, panels, pipes, posts etc.; manufacture of prefabricated structural components for building or civil engineering of cement, concrete or artificial stone"
+                          },
+                          {
+                              "code": "23.62",
+                              "title": "Manufacture of plaster products for construction purposes",
+                              "nace_child_detail_description": "This class includes: manufacture of plaster articles for use in construction: boards, sheets, panels etc."
+                          },
+                          {
+                              "code": "23.63",
+                              "title": "Manufacture of ready-mixed concrete",
+                              "nace_child_detail_description": "This class includes: manufacture of ready-mix and dry-mix concrete and mortars. This class excludes: manufacture of refractory cements, see 23.20"
+                          },
+                          {
+                              "code": "23.64",
+                              "title": "Manufacture of mortars",
+                              "nace_child_detail_description": "This class includes: manufacture of powdered mortars. This class excludes: manufacture of refractory mortars, see 23.20; manufacture of dry-mixed concrete and mortars, see 23.63"
+                          },
+                          {
+                              "code": "23.65",
+                              "title": "Manufacture of fibre cement",
+                              "nace_child_detail_description": "This class includes: manufacture of building materials of vegetable substances (wood wool, straw, reeds, rushes) agglomerated with cement, plaster or other mineral binder; manufacture of articles of asbestos-cement or cellulose fibre-cement or the like: corrugated sheets, other sheets, panels, tiles, tubes, pipes, reservoirs, troughs, basins, sinks, jars, furniture, window frames etc."
+                          },
+                          {
+                              "code": "23.69",
+                              "title": "Manufacture of other articles of concrete, plaster and cement",
+                              "nace_child_detail_description": "This class includes: manufacture of other articles of concrete, plaster, cement or artificial stone: statuary, furniture, bas- and haut-reliefs, vases, flowerpots etc."
+                          }
+                      ]
+                  }
+              ]
+          }
+        ]
+      },
+      {
         "IAF_CODE": "Limited to fabricated metal products (17a)",
         "NACE_DETAIL_INFORMATION": [
           {

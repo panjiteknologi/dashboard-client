@@ -4935,6 +4935,71 @@
         ]
       },
       {
+        "IAF_CODE": "Beton, semen, kapur, plester, dll. (16)",
+        "NACE_DETAIL_INFORMATION": [
+          {
+            "NACE": {
+              "code": "23",
+              "nace_description": "Pembuatan produk mineral non-logam lainnya"
+            },
+            "NACE_CHILD": [
+              {
+                "code": "23.5",
+                "nace_child_title": "Pembuatan semen, kapur, dan plester",
+                "nace_child_detail": [
+                  {
+                    "code": "23.51",
+                    "title": "Pembuatan semen",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan klinker dan semen hidrolik, termasuk semen Portland, semen alumina, semen terak, dan semen superfosfat. Kelas ini tidak mencakup: pembuatan mortar tahan api, beton, dll., lihat 23.20; pembuatan beton siap-campur dan beton serta mortar campuran kering, lihat 23.63, 23.64; pembuatan barang-barang dari semen, lihat 23.69; pembuatan semen yang digunakan dalam kedokteran gigi, lihat 32.50"
+                  },
+                  {
+                    "code": "23.52",
+                    "title": "Pembuatan kapur dan plester",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan kapur tohor, kapur padam, dan kapur hidrolik; pembuatan plester dari gipsum yang dikalsinasi atau sulfat yang dikalsinasi. Kelas ini juga mencakup: pembuatan dolomit yang dikalsinasi. Kelas ini tidak mencakup: pembuatan barang-barang dari plester, lihat 23.62, 23.69"
+                  }
+                ]
+              },
+              {
+                "code": "23.6",
+                "nace_child_title": "Pembuatan barang-barang dari beton, semen, dan plester",
+                "nace_child_detail": [
+                  {
+                    "code": "23.61",
+                    "title": "Pembuatan produk beton untuk keperluan konstruksi",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan barang-barang beton pracetak, semen, atau batu buatan untuk digunakan dalam konstruksi: ubin, batu pelataran, batu bata, papan, lembaran, panel, pipa, tiang, dll.; pembuatan komponen struktural prefabrikasi untuk bangunan atau teknik sipil dari semen, beton, atau batu buatan"
+                  },
+                  {
+                    "code": "23.62",
+                    "title": "Pembuatan produk plester untuk keperluan konstruksi",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan barang-barang plester untuk digunakan dalam konstruksi: papan, lembaran, panel, dll."
+                  },
+                  {
+                    "code": "23.63",
+                    "title": "Pembuatan beton siap-campur",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan beton siap-campur dan beton serta mortar campuran kering. Kelas ini tidak mencakup: pembuatan semen tahan api, lihat 23.20"
+                  },
+                  {
+                    "code": "23.64",
+                    "title": "Pembuatan mortar",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan mortar serbuk. Kelas ini tidak mencakup: pembuatan mortar tahan api, lihat 23.20; pembuatan beton dan mortar campuran kering, lihat 23.63"
+                  },
+                  {
+                    "code": "23.65",
+                    "title": "Pembuatan semen serat",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan bahan bangunan dari zat nabati (wol kayu, jerami, gelagah, alang-alang) yang diagglomerasi dengan semen, plester, atau pengikat mineral lainnya; pembuatan barang-barang dari semen-asbes atau semen serat selulosa atau sejenisnya: lembaran bergelombang, lembaran lainnya, panel, ubin, tabung, pipa, waduk, palung, baskom, bak cuci, guci, perabotan, bingkai jendela, dll."
+                  },
+                  {
+                    "code": "23.69",
+                    "title": "Pembuatan barang-barang lain dari beton, plester, dan semen",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan barang-barang lain dari beton, plester, semen, atau batu buatan: patung, perabotan, relief rendah dan tinggi, vas, pot bunga, dll."
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "IAF_CODE": "Terbatas pada produk logam fabrikasi (17a)",
         "NACE_DETAIL_INFORMATION": [
           {
