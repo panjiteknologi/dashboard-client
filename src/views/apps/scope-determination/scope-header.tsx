@@ -23,7 +23,7 @@ import {
   // ChevronRight,
   // RotateCcw,
 } from "lucide-react";
-import { useScopeListQuery } from "@/hooks/use-scope-list";
+// import { useScopeListQuery } from "@/hooks/use-scope-list";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 
 export const ScopeHeader = () => {
@@ -47,7 +47,7 @@ export const ScopeHeader = () => {
     determinateScope,
   } = useScopeDeterminationContext();
 
-  const { data: listResp } = useScopeListQuery();
+  // const { data: listResp } = useScopeListQuery();
   // const scopeList = Array.isArray(listResp?.data) ? listResp!.data : [];
 
   // Check if any filter is active
