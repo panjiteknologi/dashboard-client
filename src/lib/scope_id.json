@@ -5647,22 +5647,22 @@
               {
                 "code": "41.1",
                 "nace_child_title": "Pengembangan proyek bangunan",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "41.10",
                     "title": "Pengembangan proyek bangunan",
-                    "nace_child_detail_description": "Kelas ini mencakup: pengembangan proyek bangunan untuk bangunan perumahan dan non-perumahan dengan menghimpun sarana keuangan, teknis dan fisik untuk mewujudkan proyek bangunan untuk dijual kemudian. Kelas ini tidak termasuk: konstruksi bangunan, lihat 41.20; kegiatan arsitektur dan teknik, lihat 71.1; layanan manajemen proyek terkait proyek bangunan, lihat 71.1"
+                    "nace_child_detail_description": "Kelas ini mencakup: pengembangan proyek bangunan untuk bangunan perumahan dan non-perumahan dengan menggabungkan sarana keuangan, teknis, dan fisik untuk merealisasikan proyek bangunan untuk penjualan selanjutnya. Kelas ini tidak termasuk: konstruksi bangunan, lihat 41.20; kegiatan arsitektur dan teknik, lihat 71.1; layanan manajemen proyek terkait dengan proyek bangunan, lihat 71.1"
                   }
                 ]
               },
               {
                 "code": "41.2",
                 "nace_child_title": "Konstruksi bangunan perumahan dan non-perumahan",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "41.20",
                     "title": "Konstruksi bangunan perumahan dan non-perumahan",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi semua jenis bangunan perumahan: rumah keluarga tunggal, bangunan multi-keluarga termasuk bangunan tinggi; konstruksi semua jenis bangunan non-perumahan: bangunan untuk produksi industri mis. pabrik bengkel pabrik perakitan dll., rumah sakit sekolah gedung perkantoran, hotel toko pusat perbelanjaan restoran, gedung bandara, fasilitas olahraga dalam ruangan, garasi parkir termasuk garasi parkir bawah tanah, gudang, bangunan keagamaan; perakitan dan pendirian konstruksi prefabrikasi di lokasi. Kelas ini juga mencakup: remodeling atau renovasi struktur perumahan yang ada. Kelas ini tidak termasuk: konstruksi fasilitas industri, kecuali bangunan, lihat 42.99; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
+                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi semua jenis bangunan perumahan: rumah keluarga tunggal, bangunan multi-keluarga termasuk bangunan bertingkat tinggi; konstruksi semua jenis bangunan non-perumahan: bangunan untuk produksi industri, misalnya pabrik bengkel pabrik perakitan, dll., rumah sakit sekolah gedung kantor, hotel toko pusat perbelanjaan restoran, bangunan bandara, fasilitas olahraga dalam ruangan, garasi parkir termasuk garasi parkir bawah tanah, gudang, bangunan keagamaan; perakitan dan pendirian konstruksi prefabrikasi di lokasi. Kelas ini juga mencakup: perombakan atau renovasi struktur perumahan yang ada. Kelas ini tidak termasuk: pembangunan fasilitas industri, kecuali bangunan, lihat 42.99; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   }
                 ]
               }
@@ -5677,53 +5677,53 @@
               {
                 "code": "42.1",
                 "nace_child_title": "Konstruksi jalan dan rel kereta api",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "42.11",
-                    "title": "Konstruksi jalan dan jalan raya",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi jalan raya, jalan, jalan lainnya untuk kendaraan dan pejalan kaki; pekerjaan permukaan pada jalan, jalan, jalan raya, jembatan atau terowongan: pengaspalan jalan, pengecatan jalan dan penandaan lainnya, pemasangan pembatas jalan rambu lalu lintas dan sejenisnya; konstruksi landasan pacu bandara. Kelas ini tidak termasuk: instalasi penerangan jalan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
+                    "title": "Konstruksi jalan dan jalan tol",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan jalan tol, jalan, jalan raya, jalur kendaraan dan pejalan kaki lainnya; pekerjaan permukaan di jalan, jalan raya, jembatan atau terowongan: pengaspalan jalan, pengecatan jalan dan penandaan lainnya, pemasangan pembatas jalan tanda lalu lintas dan sejenisnya; pembangunan landasan pacu lapangan terbang. Kelas ini tidak termasuk: pemasangan lampu jalan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   },
                   {
                     "code": "42.12",
                     "title": "Konstruksi rel kereta api dan kereta api bawah tanah",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi rel kereta api dan kereta bawah tanah. Kelas ini tidak termasuk: instalasi penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan rel kereta api dan kereta bawah tanah. Kelas ini tidak termasuk: pemasangan penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   },
                   {
                     "code": "42.13",
                     "title": "Konstruksi jembatan dan terowongan",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi jembatan, termasuk untuk jalan raya layang; konstruksi terowongan. Kelas ini tidak termasuk: instalasi penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan jembatan, termasuk untuk jalan raya layang; pembangunan terowongan. Kelas ini tidak termasuk: pemasangan penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   }
                 ]
               },
               {
                 "code": "42.2",
                 "nace_child_title": "Konstruksi proyek utilitas",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "42.21",
                     "title": "Konstruksi proyek utilitas untuk fluida",
-                    "nace_child_detail_description": "Kelas ini mencakup konstruksi saluran distribusi untuk transportasi fluida dan bangunan dan struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: konstruksi teknik sipil untuk: pipa jarak jauh dan perkotaan, konstruksi saluran air utama dan saluran, sistem irigasi (kanal), reservoir; konstruksi: sistem saluran pembuangan termasuk perbaikan, pabrik pembuangan limbah, stasiun pompa. Kelas ini juga mencakup: pengeboran sumur air. Kelas ini tidak termasuk: kegiatan manajemen proyek terkait pekerjaan teknik sipil, lihat 71.12"
+                    "nace_child_detail_description": "Kelas ini mencakup pembangunan jalur distribusi untuk pengangkutan fluida dan bangunan serta struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: pembangunan konstruksi teknik sipil untuk: pipa jarak jauh dan perkotaan, konstruksi saluran air utama dan saluran, sistem irigasi (saluran), waduk; pembangunan: sistem saluran pembuangan termasuk perbaikan, instalasi pembuangan limbah, stasiun pompa. Kelas ini juga mencakup: pengeboran sumur air. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   },
                   {
                     "code": "42.22",
                     "title": "Konstruksi proyek utilitas untuk listrik dan telekomunikasi",
-                    "nace_child_detail_description": "Kelas ini mencakup konstruksi saluran distribusi untuk listrik dan telekomunikasi dan bangunan dan struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: konstruksi teknik sipil untuk: saluran komunikasi dan tenaga jarak jauh dan perkotaan, pembangkit listrik. Kelas ini tidak termasuk: kegiatan manajemen proyek terkait pekerjaan teknik sipil, lihat 71.12"
+                    "nace_child_detail_description": "Kelas ini mencakup pembangunan jalur distribusi untuk listrik dan telekomunikasi serta bangunan dan struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: pembangunan konstruksi teknik sipil untuk: jalur komunikasi dan listrik jarak jauh dan perkotaan, pembangkit listrik. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   }
                 ]
               },
               {
                 "code": "42.9",
                 "nace_child_title": "Konstruksi proyek teknik sipil lainnya",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "42.91",
                     "title": "Konstruksi proyek air",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi: jalan air, pekerjaan pelabuhan dan sungai, pelabuhan pesiar (marina), kunci, dll., bendungan dan tanggul; pengerukan jalan air. Kelas ini tidak termasuk: kegiatan manajemen proyek terkait pekerjaan teknik sipil, lihat 71.12"
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan: jalur air, pekerjaan pelabuhan dan sungai, pelabuhan rekreasi (marina), kunci air, dll., bendungan dan tanggul; pengerukan jalur air. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   },
                   {
                     "code": "42.99",
-                    "title": "Konstruksi proyek teknik sipil lainnya tdkd",
-                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi fasilitas industri, kecuali bangunan, seperti: kilang, pabrik kimia; pekerjaan konstruksi, selain bangunan, seperti: fasilitas olahraga luar ruangan. Kelas ini juga mencakup: subdivisi lahan dengan perbaikan lahan (mis. penambahan jalan, infrastruktur utilitas dll.). Kelas ini tidak termasuk: instalasi mesin dan peralatan industri, lihat 33.20; subdivisi lahan tanpa perbaikan lahan, lihat 68.10; kegiatan manajemen proyek terkait pekerjaan teknik sipil, lihat 71.12"
+                    "title": "Konstruksi proyek teknik sipil lainnya n.e.c.",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan fasilitas industri, kecuali bangunan, seperti: kilang, pabrik kimia; pekerjaan konstruksi, selain bangunan, seperti: fasilitas olahraga luar ruangan. Kelas ini juga mencakup: pembagian tanah dengan perbaikan tanah (misalnya penambahan jalan, infrastruktur utilitas, dll.). Kelas ini tidak termasuk: pemasangan mesin dan peralatan industri, lihat 33.20; pembagian tanah tanpa perbaikan tanah, lihat 68.10; kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   }
                 ]
               }
@@ -5737,81 +5737,81 @@
             "NACE_CHILD": [
               {
                 "code": "43.1",
-                "nace_child_title": "Pembongkaran dan persiapan lokasi",
-                "nace_child_detail": [
+                "nace_child_title": "Pembongkaran dan penyiapan lokasi",
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "43.11",
                     "title": "Pembongkaran",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembongkaran atau perusakan bangunan dan struktur lainnya"
+                    "nace_child_detail_description": "Kelas ini mencakup: pembongkaran atau penghancuran bangunan dan struktur lainnya"
                   },
                   {
                     "code": "43.12",
-                    "title": "Persiapan lokasi",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan lokasi bangunan; penggalian: penggalian, penimbunan, leveling dan grading lokasi konstruksi, penggalian parit, penghilangan batu, peledakan, dll.; persiapan lokasi untuk pertambangan: penghilangan overburden dan pengembangan dan persiapan lainnya dari properti mineral dan situs, kecuali situs minyak dan gas. Kelas ini juga mencakup: drainase lokasi bangunan; drainase lahan pertanian atau kehutanan. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; dekontaminasi tanah, lihat 39.00; pengeboran sumur air, lihat 42.21; penurunan poros, lihat 43.99"
+                    "title": "Penyiapan lokasi",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan lokasi bangunan; pemindahan tanah: penggalian, penimbunan, perataan dan penggradian lokasi konstruksi, penggalian parit, pemindahan batu, peledakan, dll.; penyiapan lokasi untuk pertambangan: pemindahan lapisan penutup dan pengembangan serta penyiapan properti dan lokasi mineral lainnya, kecuali lokasi minyak dan gas. Kelas ini juga mencakup: drainase lokasi bangunan; drainase lahan pertanian atau kehutanan. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; dekontaminasi tanah, lihat 39.00; pengeboran sumur air, lihat 42.21; penenggelaman poros, lihat 43.99"
                   },
                   {
                     "code": "43.13",
-                    "title": "Pengeboran uji dan pengeboran",
-                    "nace_child_detail_description": "Kelas ini mencakup: pengeboran uji, pengeboran uji dan pengambilan sampel inti untuk konstruksi, geofisika, geologi atau tujuan serupa. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; layanan pendukung pengeboran uji dan pengeboran selama kegiatan pertambangan, lihat 09.90; pengeboran sumur air, lihat 42.21; penurunan poros, lihat 43.99; eksplorasi lapangan minyak dan gas, survei geofisika, geologi dan seismik, lihat 71.12"
+                    "title": "Pengeboran dan pemboran uji",
+                    "nace_child_detail_description": "Kelas ini mencakup: pengeboran uji, pemboran uji, dan pengambilan sampel inti untuk keperluan konstruksi, geofisika, geologis, atau serupa. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; layanan dukungan pengeboran dan pemboran uji selama kegiatan pertambangan, lihat 09.90; pengeboran sumur air, lihat 42.21; penenggelaman poros, lihat 43.99; eksplorasi ladang minyak dan gas, survei geofisika, geologis, dan seismik, lihat 71.12"
                   }
                 ]
               },
               {
                 "code": "43.2",
-                "nace_child_title": "Kegiatan instalasi listrik, pipa ledeng dan konstruksi lainnya",
-                "nace_child_detail": [
+                "nace_child_title": "Kegiatan pemasangan listrik, pipa, dan konstruksi lainnya",
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "43.21",
-                    "title": "Instalasi listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup instalasi sistem listrik di semua jenis bangunan dan struktur teknik sipil dari sistem listrik. Kelas ini mencakup: instalasi: kabel dan perlengkapan listrik, kabel telekomunikasi, kabel jaringan komputer dan televisi kabel termasuk serat optik, piringan satelit, sistem pencahayaan, alarm kebakaran, sistem alarm pencuri, penerangan jalan dan sinyal listrik, penerangan landasan pacu bandara, kolektor energi surya listrik. Kelas ini juga mencakup: menghubungkan peralatan listrik dan peralatan rumah tangga, termasuk pemanas dasar. Kelas ini tidak termasuk: konstruksi saluran komunikasi dan transmisi tenaga, lihat 42.22; pemantauan dan pemantauan jarak jauh sistem keamanan elektronik, seperti alarm pencuri dan alarm kebakaran, termasuk instalasi dan pemeliharaannya, lihat 80.20"
+                    "title": "Pemasangan listrik",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan sistem listrik di semua jenis bangunan dan struktur teknik sipil sistem listrik. Kelas ini mencakup: pemasangan: kabel dan fitting listrik, kabel telekomunikasi, jaringan komputer dan kabel televisi termasuk serat optik, parabola satelit, sistem penerangan, alarm kebakaran, sistem alarm pencuri, lampu jalan dan sinyal listrik, lampu landasan pacu bandara, kolektor energi surya listrik. Kelas ini juga mencakup: penyambungan peralatan listrik dan peralatan rumah tangga, termasuk pemanas alas tiang. Kelas ini tidak termasuk: pembangunan jalur komunikasi dan transmisi daya, lihat 42.22; pemantauan dan pemantauan jarak jauh sistem keamanan elektronik, seperti alarm pencuri dan alarm kebakaran, termasuk pemasangan dan pemeliharaannya, lihat 80.20"
                   },
                   {
                     "code": "43.22",
-                    "title": "Instalasi pipa ledeng, panas dan AC",
-                    "nace_child_detail_description": "Kelas ini mencakup instalasi sistem pipa ledeng, pemanas dan AC, termasuk penambahan, alterasi, pemeliharaan dan perbaikan. Kelas ini mencakup: instalasi di bangunan atau proyek konstruksi lainnya dari: sistem pemanas (listrik, gas dan minyak), tungku menara pendingin, kolektor energi surya non-listrik, peralatan pipa ledeng dan sanitasi, peralatan ventilasi dan AC dan saluran, perlengkapan gas, pipa uap, sistem sprinkler kebakaran, sistem sprinkler halaman; instalasi pekerjaan saluran. Kelas ini tidak termasuk: instalasi pemanas dasar listrik, lihat 43.21"
+                    "title": "Pemasangan pipa, pemanas, dan pendingin udara",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan sistem pipa, pemanas, dan pendingin udara, termasuk penambahan, perubahan, pemeliharaan, dan perbaikan. Kelas ini mencakup: pemasangan di bangunan atau proyek konstruksi lainnya: sistem pemanas (listrik, gas, dan minyak), menara pendingin tungku, kolektor energi surya non-listrik, peralatan pipa dan saniter, peralatan dan saluran ventilasi dan pendingin udara, fitting gas, pipa uap, sistem penyiram api, sistem penyiram rumput; pemasangan saluran. Kelas ini tidak termasuk: pemasangan pemanas alas tiang listrik, lihat 43.21"
                   },
                   {
                     "code": "43.29",
-                    "title": "Instalasi konstruksi lainnya",
-                    "nace_child_detail_description": "Kelas ini mencakup instalasi peralatan selain listrik, pipa ledeng, pemanas dan sistem AC atau mesin industri di bangunan dan struktur teknik sipil. Kelas ini mencakup: instalasi di bangunan atau proyek konstruksi lainnya dari: lift eskalator termasuk perbaikan dan pemeliharaan, pintu otomatis dan berputar, konduktor petir, sistem pembersihan vakum, insulasi suara atau getaran termal. Kelas ini tidak termasuk: instalasi mesin industri, lihat 33.20"
+                    "title": "Pemasangan konstruksi lainnya",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan peralatan selain sistem listrik, pipa, pemanas, dan pendingin udara atau mesin industri di bangunan dan struktur teknik sipil. Kelas ini mencakup: pemasangan di bangunan atau proyek konstruksi lainnya: elevator eskalator termasuk perbaikan dan pemeliharaan, pintu otomatis dan berputar, penangkal petir, sistem penyedot debu, isolasi termal suara atau getaran. Kelas ini tidak termasuk: pemasangan mesin industri, lihat 33.20"
                   }
                 ]
               },
               {
                 "code": "43.3",
                 "nace_child_title": "Penyelesaian dan penyelesaian bangunan",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "43.31",
                     "title": "Plesteran",
-                    "nace_child_detail_description": "Kelas ini mencakup: aplikasi di bangunan atau proyek konstruksi lainnya dari plester atau stuko interior dan eksterior, termasuk bahan lathe terkait"
+                    "nace_child_detail_description": "Kelas ini mencakup: aplikasi di bangunan atau proyek konstruksi lainnya dari plester atau stuko interior dan eksterior, termasuk bahan reng terkait"
                   },
                   {
                     "code": "43.32",
-                    "title": "Instalasi kayu",
-                    "nace_child_detail_description": "Kelas ini mencakup: instalasi pintu (kecuali otomatis dan berputar), jendela, bingkai pintu dan jendela, dari kayu atau bahan lainnya; instalasi dapur yang dipasang, lemari built-in, tangga, perlengkapan toko dan sejenisnya; penyelesaian interior seperti langit-langit, partisi yang dapat dipindahkan, dll. Kelas ini tidak termasuk: instalasi pintu otomatis dan berputar, lihat 43.29"
+                    "title": "Pemasangan kayu sambungan",
+                    "nace_child_detail_description": "Kelas ini mencakup: pemasangan pintu (kecuali otomatis dan berputar), jendela, kusen pintu dan jendela, dari kayu atau bahan lain; pemasangan dapur terpasang, lemari bawaan, tangga, perlengkapan toko, dan sejenisnya; penyelesaian interior seperti langit-langit, partisi bergerak, dll. Kelas ini tidak termasuk: pemasangan pintu otomatis dan berputar, lihat 43.29"
                   },
                   {
                     "code": "43.33",
-                    "title": "Penutup lantai dan dinding",
-                    "nace_child_detail_description": "Kelas ini mencakup: peletakan, ubin, menggantung atau memasang di bangunan atau proyek konstruksi lainnya dari: ubin dinding atau lantai keramik beton atau batu potong pemasangan kompor keramik, penutup lantai kayu parket dan lainnya penutup dinding kayu, karpet dan linoleum penutup lantai termasuk dari karet atau plastik, terrazzo marmer granit atau penutup lantai atau dinding batu tulis, wallpaper"
+                    "title": "Pelapis lantai dan dinding",
+                    "nace_child_detail_description": "Kelas ini mencakup: peletakan, pemasangan ubin, penggantungan, atau pemasangan di bangunan atau proyek konstruksi lainnya: ubin dinding atau lantai keramik beton atau batu potong, pemasangan kompor keramik, parket dan penutup lantai kayu lainnya, penutup dinding kayu, karpet dan penutup lantai linoleum termasuk dari karet atau plastik, teraso marmer granit atau penutup lantai atau dinding batu tulis, wallpaper"
                   },
                   {
                     "code": "43.34",
-                    "title": "Pengecatan dan pemasangan kaca",
-                    "nace_child_detail_description": "Kelas ini mencakup: pengecatan interior dan eksterior bangunan; pengecatan struktur teknik sipil; instalasi kaca, cermin, dll. Kelas ini tidak termasuk: instalasi jendela, lihat 43.32"
+                    "title": "Pengecatan dan kaca",
+                    "nace_child_detail_description": "Kelas ini mencakup: pengecatan interior dan eksterior bangunan; pengecatan struktur teknik sipil; pemasangan kaca, cermin, dll. Kelas ini tidak termasuk: pemasangan jendela, lihat 43.32"
                   },
                   {
                     "code": "43.39",
                     "title": "Penyelesaian dan penyelesaian bangunan lainnya",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan bangunan baru setelah konstruksi; pekerjaan penyelesaian dan penyelesaian bangunan lainnya tdkd. Kelas ini tidak termasuk: kegiatan desainer dekorasi interior, lihat 74.10; pembersihan interior umum bangunan dan struktur lainnya, lihat 81.21; pembersihan interior dan eksterior khusus bangunan, lihat 81.22"
+                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan bangunan baru setelah konstruksi; pekerjaan penyelesaian dan penyelesaian bangunan lainnya n.e.c. Kelas ini tidak termasuk: kegiatan desainer interior dekorasi, lihat 74.10; pembersihan interior umum bangunan dan struktur lainnya, lihat 81.21; pembersihan interior dan eksterior khusus bangunan, lihat 81.22"
                   }
                 ]
               },
               {
                 "code": "43.9",
                 "nace_child_title": "Kegiatan konstruksi khusus lainnya",
-                "nace_child_detail": [
+                "NACE_CHILD_DETAIL": [
                   {
                     "code": "43.91",
                     "title": "Kegiatan atap",
@@ -5819,8 +5819,8 @@
                   },
                   {
                     "code": "43.99",
-                    "title": "Kegiatan konstruksi khusus lainnya tdkd",
-                    "nace_child_detail_description": "Kelas ini mencakup: kegiatan konstruksi yang mengkhususkan pada satu aspek umum untuk berbagai jenis struktur, membutuhkan keterampilan atau peralatan khusus: konstruksi fondasi termasuk penggerakan tiang, pekerjaan anti lembab dan anti air, dehumidifikasi bangunan, penurunan poros, pendirian elemen baja, pembengkokan baja, bata dan penataan batu, pendirian dan pembongkaran perancah dan platform kerja tidak termasuk penyewaan perancah dan platform kerja, pendirian cerobong asap dan oven industri, pekerjaan dengan persyaratan akses spesialis yang membutuhkan keterampilan memanjat dan penggunaan peralatan terkait mis. bekerja di ketinggian pada struktur tinggi; pekerjaan bawah permukaan; konstruksi kolam renang luar ruangan; pembersihan uap, sand blasting dan kegiatan serupa untuk eksterior bangunan; penyewaan derek dan peralatan bangunan lainnya, yang tidak dapat dialokasikan ke jenis konstruksi tertentu, dengan operator. Kelas ini tidak termasuk: penyewaan mesin dan peralatan konstruksi tanpa operator, lihat 77.32"
+                    "title": "Kegiatan konstruksi khusus lainnya n.e.c.",
+                    "nace_child_detail_description": "Kelas ini mencakup: kegiatan konstruksi yang mengkhususkan diri pada satu aspek umum untuk berbagai jenis struktur, yang membutuhkan keterampilan atau peralatan khusus: pembangunan pondasi termasuk pemancangan tiang, pekerjaan kedap lembab dan kedap air, de-humidifikasi bangunan, penenggelaman poros, pendirian elemen baja, pembengkokan baja, pemasangan batu bata dan pemasangan batu, pendirian dan pembongkaran perancah dan platform kerja tidak termasuk penyewaan perancah dan platform kerja, pendirian cerobong asap dan oven industri, pekerjaan dengan persyaratan akses spesialis yang membutuhkan keterampilan memanjat dan penggunaan peralatan terkait, misalnya bekerja di ketinggian pada struktur tinggi; pekerjaan bawah permukaan; pembangunan kolam renang luar ruangan; pembersihan uap, peledakan pasir, dan kegiatan serupa untuk eksterior bangunan; penyewaan derek dan peralatan bangunan lainnya, yang tidak dapat dialokasikan ke jenis konstruksi tertentu, dengan operator. Kelas ini tidak termasuk: penyewaan mesin dan peralatan konstruksi tanpa operator, lihat 77.32"
                   }
                 ]
               }
@@ -7500,105 +7500,29 @@
         "NACE_DETAIL_INFORMATION": [
           {
             "NACE": {
-              "code": "26",
-              "nace_description": "Pembuatan produk komputer, elektronik, dan optik"
+              "code": "41",
+              "nace_description": "Konstruksi bangunan"
             },
             "NACE_CHILD": [
               {
-                "code": "26.1",
-                "nace_child_title": "Pembuatan komponen dan papan elektronik",
-                "nace_child_detail": [
+                "code": "41.1",
+                "nace_child_title": "Pengembangan proyek bangunan",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "26.11",
-                    "title": "Pembuatan komponen elektronik",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan semikonduktor dan komponen lainnya untuk aplikasi elektronik. Kelas ini mencakup: pembuatan kapasitor elektronik; pembuatan resistor elektronik; pembuatan mikroprosesor; pembuatan tabung elektron; pembuatan konektor elektronik; pembuatan papan sirkuit cetak kosong; pembuatan sirkuit terpadu (analog, digital, atau hibrid); pembuatan dioda, transistor, dan perangkat diskrit terkait; pembuatan induktor (misalnya choke, kumparan, transformator) jenis komponen elektronik; pembuatan kristal elektronik dan rakitan kristal; pembuatan solenoid, sakelar, dan transduser untuk aplikasi elektronik; pembuatan dadu atau wafer semikonduktor, jadi atau setengah jadi; pembuatan komponen tampilan (plasma, polimer, LCD); pembuatan dioda pemancar cahaya (LED). Kelas ini juga mencakup: pembuatan kabel printer, kabel monitor, kabel USB, konektor, dll. Kelas ini tidak mencakup: pencetakan kartu pintar, lihat 18.12; pembuatan tampilan komputer dan televisi, lihat 26.20, 26.40; pembuatan modem (peralatan pembawa), lihat 26.30; pembuatan tabung sinar-X dan perangkat iradiasi serupa, lihat 26.60; pembuatan peralatan dan instrumen optik, lihat 26.70; pembuatan perangkat serupa untuk aplikasi listrik, lihat divisi 27; pembuatan ballast fluoresen, lihat 27.11; pembuatan relay listrik, lihat 27.12; pembuatan perangkat kabel listrik, lihat 27.33; pembuatan peralatan lengkap diklasifikasikan di tempat lain berdasarkan klasifikasi peralatan lengkap"
-                  },
-                  {
-                    "code": "26.12",
-                    "title": "Pembuatan papan elektronik berisi komponen",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan papan sirkuit cetak berisi komponen; pemasangan komponen ke papan sirkuit cetak; pembuatan kartu antarmuka (misalnya suara, video, pengontrol, jaringan, modem). Kelas ini tidak mencakup: pencetakan kartu pintar, lihat 18.12; pembuatan papan sirkuit cetak kosong, lihat 26.11"
+                    "code": "41.10",
+                    "title": "Pengembangan proyek bangunan",
+                    "nace_child_detail_description": "Kelas ini mencakup: pengembangan proyek bangunan untuk bangunan perumahan dan non-perumahan dengan menggabungkan sarana keuangan, teknis, dan fisik untuk merealisasikan proyek bangunan untuk penjualan selanjutnya. Kelas ini tidak termasuk: konstruksi bangunan, lihat 41.20; kegiatan arsitektur dan teknik, lihat 71.1; layanan manajemen proyek terkait dengan proyek bangunan, lihat 71.1"
                   }
                 ]
               },
               {
-                "code": "26.2",
-                "nace_child_title": "Pembuatan komputer dan peralatan pendukung",
-                "nace_child_detail": [
+                "code": "41.2",
+                "nace_child_title": "Konstruksi bangunan perumahan dan non-perumahan",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "26.20",
-                    "title": "Pembuatan komputer dan peralatan pendukung",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan dan/atau perakitan komputer elektronik, seperti mainframe, komputer desktop, laptop, dan server komputer; serta peralatan pendukung komputer, seperti perangkat penyimpanan dan perangkat input/output (printer, monitor, keyboard). Komputer dapat berupa analog, digital, atau hibrid. Komputer digital, yang paling umum, adalah perangkat yang melakukan semua hal berikut: (1) menyimpan program pemrosesan atau program dan data yang segera diperlukan untuk menjalankan program, (2) dapat diprogram secara bebas sesuai kebutuhan pengguna, (3) melakukan perhitungan aritmatika yang ditentukan pengguna, dan (4) menjalankan, tanpa campur tangan manusia, program pemrosesan yang mengharuskan komputer memodifikasi eksekusinya dengan keputusan logis selama proses berjalan. Komputer analog mampu mensimulasikan model matematika dan terdiri setidaknya dari elemen kontrol dan pemrograman analog. Kelas ini mencakup: pembuatan komputer desktop; pembuatan komputer laptop; pembuatan komputer mainframe; pembuatan komputer genggam (misalnya PDA); pembuatan drive disk magnetik, drive flash, dan perangkat penyimpanan lainnya; pembuatan drive disk optik (misalnya CD-RW, CD-ROM, DVD-ROM, DVD-RW); pembuatan printer; pembuatan monitor; pembuatan keyboard; pembuatan semua jenis mouse, joystick, dan aksesori trackball; pembuatan terminal komputer khusus; pembuatan server komputer; pembuatan pemindai, termasuk pemindai kode batang; pembuatan pembaca kartu pintar; pembuatan helm realitas virtual; pembuatan proyektor komputer (video beamer). Kelas ini juga mencakup: pembuatan terminal komputer, seperti mesin teller otomatis (ATM), terminal point-of-sale (POS), tidak dioperasikan secara mekanis; pembuatan peralatan kantor multifungsi yang melakukan dua atau lebih fungsi berikut: pencetakan, pemindaian, penyalinan, faksimili. Kelas ini tidak mencakup: reproduksi media rekaman (media komputer, suara, video, dll.), lihat 18.20; pembuatan komponen elektronik dan rakitan elektronik yang digunakan dalam komputer dan peralatan pendukung, lihat 26.1; pembuatan modem komputer internal/eksternal, lihat 26.12; pembuatan kartu, modul, dan rakitan antarmuka, lihat 26.12; pembuatan papan elektronik berisi komponen, lihat 26.12; pembuatan modem, peralatan pembawa, lihat 26.30; pembuatan switch komunikasi digital, peralatan komunikasi data (misalnya bridge, router, gateway), lihat 26.30; pembuatan perangkat elektronik konsumen, seperti pemutar CD dan DVD, lihat 26.40; pembuatan monitor dan tampilan televisi, lihat 26.40; pembuatan konsol permainan video, lihat 26.40; pembuatan media optik dan magnetik kosong untuk digunakan dengan komputer atau perangkat lain, lihat 26.80"
-                  }
-                ]
-              },
-              {
-                "code": "26.3",
-                "nace_child_title": "Pembuatan peralatan komunikasi",
-                "nace_child_detail": [
-                  {
-                    "code": "26.30",
-                    "title": "Pembuatan peralatan komunikasi",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan peralatan telepon dan komunikasi data yang digunakan untuk memindahkan sinyal secara elektronik melalui kabel atau melalui udara seperti peralatan siaran radio dan televisi serta peralatan komunikasi nirkabel. Kelas ini mencakup: pembuatan peralatan switching kantor pusat; pembuatan telepon cordless; pembuatan peralatan private branch exchange (PBX); pembuatan peralatan telepon dan faksimili, termasuk mesin penjawab telepon; pembuatan peralatan komunikasi data, seperti bridge, router, dan gateway; pembuatan antena pemancar dan penerima; pembuatan peralatan televisi kabel; pembuatan pager; pembuatan telepon seluler; pembuatan peralatan komunikasi seluler; pembuatan peralatan studio dan siaran radio dan televisi, termasuk kamera televisi; pembuatan modem, peralatan pembawa; pembuatan sistem alarm pencuri dan kebakaran yang mengirim sinyal ke stasiun kontrol; pembuatan pemancar radio dan televisi; pembuatan perangkat komunikasi yang menggunakan sinyal inframerah (misalnya remote control). Kelas ini tidak mencakup: pembuatan komponen elektronik dan sub-rakitan yang digunakan dalam peralatan komunikasi, termasuk modem komputer internal/eksternal, lihat 26.1; pembuatan papan elektronik berisi komponen, lihat 26.12; pembuatan komputer dan peralatan pendukung komputer, lihat 26.20; pembuatan perangkat audio dan video konsumen, lihat 26.40; pembuatan perangkat GPS, lihat 26.51; pembuatan papan skor elektronik, lihat 27.90; pembuatan lampu lalu lintas, lihat 27.90"
-                  }
-                ]
-              },
-              {
-                "code": "26.4",
-                "nace_child_title": "Pembuatan elektronik konsumen",
-                "nace_child_detail": [
-                  {
-                    "code": "26.40",
-                    "title": "Pembuatan elektronik konsumen",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan peralatan audio dan video elektronik untuk hiburan rumah, kendaraan bermotor, sistem alamat publik, dan penguatan instrumen musik. Kelas ini mencakup: pembuatan perekam dan peralatan duplikasi video kaset; pembuatan televisi; pembuatan monitor dan tampilan televisi; pembuatan sistem perekaman dan duplikasi audio; pembuatan peralatan stereo; pembuatan penerima radio; pembuatan sistem speaker; pembuatan kamera video rumah tangga; pembuatan jukebox; pembuatan penguat untuk instrumen musik dan sistem alamat publik; pembuatan mikrofon; pembuatan pemutar CD dan DVD; pembuatan mesin karaoke; pembuatan headphone (misalnya radio, stereo, komputer); pembuatan konsol permainan video. Kelas ini tidak mencakup: reproduksi media rekaman (media komputer, suara, video, dll.), lihat 18.2; pembuatan perangkat pendukung komputer dan monitor komputer, lihat 26.20; pembuatan mesin penjawab telepon, lihat 26.30; pembuatan peralatan paging, lihat 26.30; pembuatan perangkat remote control (radio dan inframerah), lihat 26.30; pembuatan peralatan studio siaran seperti peralatan reproduksi, antena pemancar dan penerima, kamera video komersial, lihat 26.30; pembuatan antena, lihat 26.30; pembuatan kamera digital, lihat 26.70; pembuatan permainan elektronik dengan perangkat lunak tetap (non-dapat diganti), lihat 32.40"
-                  }
-                ]
-              },
-              {
-                "code": "26.5",
-                "nace_child_title": "Pembuatan instrumen dan peralatan untuk pengukuran, pengujian, dan navigasi; jam tangan dan jam",
-                "nace_child_detail": [
-                  {
-                    "code": "26.51",
-                    "title": "Pembuatan instrumen dan peralatan untuk pengukuran, pengujian, dan navigasi",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan sistem dan instrumen pencarian, deteksi, navigasi, panduan, aeronautika, dan kelautan; kontrol dan pengatur otomatis untuk aplikasi seperti pemanasan, pendinginan udara, pendinginan, dan peralatan; instrumen dan perangkat untuk mengukur, menampilkan, mengindikasikan, merekam, mengirimkan, dan mengontrol suhu, kelembapan, tekanan, vakum, pembakaran, aliran, tingkat, viskositas, kepadatan, keasaman, konsentrasi, dan rotasi; meter fluida totalisasi (yaitu, pendaftar) dan perangkat penghitung; instrumen untuk mengukur dan menguji karakteristik listrik dan sinyal listrik; instrumen dan sistem instrumentasi untuk analisis laboratorium komposisi kimia atau fisik atau konsentrasi sampel material padat, cair, gas, atau komposit; instrumen pengukuran dan pengujian lainnya dan bagiannya. Pembuatan peralatan pengukuran, pengujian, dan navigasi non-listrik (kecuali alat mekanis sederhana) juga termasuk di sini. Kelas ini mencakup: pembuatan instrumen mesin pesawat; pembuatan peralatan pengujian emisi otomotif; pembuatan instrumen meteorologi; pembuatan peralatan pengujian dan inspeksi sifat fisik; pembuatan mesin poligraf; pembuatan instrumen deteksi dan pemantauan radiasi; pembuatan instrumen survei; pembuatan termometer cair-dalam-kaca dan jenis bimetal (kecuali medis); pembuatan humidistat; pembuatan kontrol batas hidronik; pembuatan kontrol nyala api dan pembakar; pembuatan spektrometer; pembuatan pengukur pneumatik; pembuatan meter konsumsi (misalnya air, gas, listrik); pembuatan meter aliran dan perangkat penghitung; pembuatan penghitung tally; pembuatan detektor tambang, generator pulsa (sinyal); detektor logam; pembuatan peralatan pencarian, deteksi, navigasi, aeronautika, dan kelautan, termasuk sonobuoy; pembuatan peralatan radar; pembuatan perangkat GPS; pembuatan kontrol lingkungan dan kontrol otomatis untuk peralatan; pembuatan peralatan pengukuran dan perekaman (misalnya perekam penerbangan); pembuatan detektor gerak; pembuatan radar; pembuatan instrumen analitik laboratorium (misalnya peralatan analisis darah); pembuatan skala laboratorium, neraca, inkubator, dan peralatan laboratorium lainnya untuk pengukuran, pengujian, dll. Kelas ini tidak mencakup: pembuatan mesin penjawab telepon, lihat 26.30; pembuatan peralatan iradiasi, lihat 26.60; pembuatan peralatan pemosisian optik, lihat 26.70; pembuatan mesin dikte, lihat 28.23; pembuatan perangkat penimbang (kecuali neraca laboratorium), alat ukur tingkat, pita ukur, dll., lihat 28.29; pembuatan termometer medis, lihat 32.50; instalasi peralatan kontrol proses industri, lihat 33.20; pembuatan alat ukur mekanis sederhana (misalnya pita ukur, jangka sorong), lihat kelas manufaktur sesuai bahan utama yang digunakan"
-                  },
-                  {
-                    "code": "26.52",
-                    "title": "Pembuatan jam tangan dan jam",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan jam tangan, jam, dan mekanisme pengatur waktu serta bagiannya. Kelas ini mencakup: pembuatan jam tangan dan jam segala jenis, termasuk jam panel instrumen; pembuatan kotak jam tangan dan jam, termasuk kotak dari logam mulia; pembuatan peralatan pencatat waktu dan peralatan untuk mengukur, merekam, dan menampilkan interval waktu lainnya dengan gerakan jam atau jam atau dengan motor sinkron, seperti: meter parkir, jam pencatat waktu, stempel tanggal/waktu, timer proses; pembuatan sakelar waktu dan rilis lainnya dengan gerakan jam atau jam atau dengan motor sinkron: kunci waktu; pembuatan komponen untuk jam tangan dan jam: gerakan segala jenis untuk jam tangan dan jam, pegas, permata, dial, jarum, pelat, jembatan, dan bagian lainnya, kotak dan rumah jam tangan dan jam dari semua bahan. Kelas ini tidak mencakup: pembuatan tali jam tangan non-logam (tekstil, kulit, plastik), lihat 15.12; pembuatan tali jam tangan dari logam mulia, lihat 32.12; pembuatan tali jam tangan dari logam non-mulia, lihat 32.13"
-                  }
-                ]
-              },
-              {
-                "code": "26.6",
-                "nace_child_title": "Pembuatan peralatan iradiasi, elektromedis, dan elektroterapi",
-                "nace_child_detail": [
-                  {
-                    "code": "26.60",
-                    "title": "Pembuatan peralatan iradiasi, elektromedis, dan elektroterapi",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan peralatan dan tabung iradiasi (misalnya industri, diagnostik medis, terapi medis, penelitian, ilmiah): peralatan radiasi beta, gamma, sinar-X, atau lainnya; pembuatan pemindai CT; pembuatan pemindai PET; pembuatan peralatan pencitraan resonansi magnetik (MRI); pembuatan peralatan ultrasonografi medis; pembuatan elektrokardiograf; pembuatan peralatan endoskopi elektromedis; pembuatan peralatan laser medis; pembuatan alat pacu jantung; pembuatan alat bantu dengar. Kelas ini juga mencakup: pembuatan peralatan iradiasi makanan dan susu. Kelas ini tidak mencakup: pembuatan tempat tidur penyamakan, lihat 28.99"
-                  }
-                ]
-              },
-              {
-                "code": "26.7",
-                "nace_child_title": "Pembuatan instrumen optik dan peralatan fotografi",
-                "nace_child_detail": [
-                  {
-                    "code": "26.70",
-                    "title": "Pembuatan instrumen optik dan peralatan fotografi",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan instrumen optik dan lensa, seperti teropong, mikroskop (kecuali elektron, proton), teleskop, prisma, dan lensa (kecuali oftalmik); pelapisan atau pemolesan lensa (kecuali oftalmik); pemasangan lensa (kecuali oftalmik) dan pembuatan peralatan fotografi seperti kamera dan pengukur cahaya. Kelas ini mencakup: pembuatan cermin optik; pembuatan peralatan bidik senjata optik; pembuatan peralatan pemosisian optik; pembuatan instrumen pembesar optik; pembuatan perkakas presisi optik tukang mesin; pembuatan komparator optik; pembuatan kamera film dan kamera digital; pembuatan proyektor film dan slide; pembuatan proyektor transparansi overhead; pembuatan perangkat dan instrumen pengukuran dan pemeriksaan optik (misalnya peralatan kontrol tembak, pengukur cahaya fotografi, pengukur jarak); pembuatan lensa, mikroskop optik, teropong, dan teleskop; pembuatan rakitan laser. Kelas ini tidak mencakup: pembuatan proyektor komputer, lihat 26.20; pembuatan kamera TV dan video komersial, lihat 26.30; pembuatan kamera video rumah tangga, lihat 26.40; pembuatan peralatan lengkap yang menggunakan komponen laser, lihat kelas manufaktur berdasarkan jenis mesin (misalnya peralatan laser medis, lihat 26.60); pembuatan mesin fotokopi, lihat 28.23; pembuatan barang oftalmik, lihat 32.50"
-                  }
-                ]
-              },
-              {
-                "code": "26.8",
-                "nace_child_title": "Pembuatan media magnetik dan optik",
-                "nace_child_detail": [
-                  {
-                    "code": "26.80",
-                    "title": "Pembuatan media magnetik dan optik",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan media rekaman magnetik dan optik. Kelas ini mencakup: pembuatan kaset audio dan video magnetik kosong; pembuatan kaset audio dan video magnetik kosong; pembuatan disket kosong; pembuatan cakram optik kosong; pembuatan media hard drive. Kelas ini tidak mencakup: reproduksi media rekaman (media komputer, suara, video, dll.), lihat 18.2"
+                    "code": "41.20",
+                    "title": "Konstruksi bangunan perumahan dan non-perumahan",
+                    "nace_child_detail_description": "Kelas ini mencakup: konstruksi semua jenis bangunan perumahan: rumah keluarga tunggal, bangunan multi-keluarga termasuk bangunan bertingkat tinggi; konstruksi semua jenis bangunan non-perumahan: bangunan untuk produksi industri, misalnya pabrik bengkel pabrik perakitan, dll., rumah sakit sekolah gedung kantor, hotel toko pusat perbelanjaan restoran, bangunan bandara, fasilitas olahraga dalam ruangan, garasi parkir termasuk garasi parkir bawah tanah, gudang, bangunan keagamaan; perakitan dan pendirian konstruksi prefabrikasi di lokasi. Kelas ini juga mencakup: perombakan atau renovasi struktur perumahan yang ada. Kelas ini tidak termasuk: pembangunan fasilitas industri, kecuali bangunan, lihat 42.99; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   }
                 ]
               }
@@ -7606,93 +7530,60 @@
           },
           {
             "NACE": {
-              "code": "27",
-              "nace_description": "Pembuatan peralatan listrik"
+              "code": "42",
+              "nace_description": "Teknik sipil"
             },
             "NACE_CHILD": [
               {
-                "code": "27.1",
-                "nace_child_title": "Pembuatan motor listrik, generator, transformator, dan peralatan distribusi serta kontrol listrik",
-                "nace_child_detail": [
+                "code": "42.1",
+                "nace_child_title": "Konstruksi jalan dan rel kereta api",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "27.11",
-                    "title": "Pembuatan motor listrik, generator, dan transformator",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan semua motor listrik dan transformator: AC, DC, dan AC/DC. Kelas ini mencakup: pembuatan motor listrik (kecuali motor starter mesin pembakaran dalam); pembuatan transformator distribusi listrik; pembuatan transformator las busur; pembuatan ballast fluoresen (yaitu transformator); pembuatan transformator gardu induk untuk distribusi daya listrik; pembuatan pengatur tegangan transmisi dan distribusi; pembuatan generator daya (kecuali alternator pengisi baterai untuk mesin pembakaran dalam); pembuatan set motor-generator (kecuali unit set generator-turbin); penggulungan ulang armatur secara pabrik. Kelas ini tidak mencakup: pembuatan transformator dan sakelar jenis komponen elektronik, lihat 26.11; pembuatan peralatan las dan solder listrik, lihat 27.90; pembuatan inverter, penyearah, dan konverter solid state, lihat 27.90; pembuatan set generator-turbin, lihat 28.11; pembuatan motor starter dan generator untuk mesin pembakaran dalam, lihat 29.31"
+                    "code": "42.11",
+                    "title": "Konstruksi jalan dan jalan tol",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan jalan tol, jalan, jalan raya, jalur kendaraan dan pejalan kaki lainnya; pekerjaan permukaan di jalan, jalan raya, jembatan atau terowongan: pengaspalan jalan, pengecatan jalan dan penandaan lainnya, pemasangan pembatas jalan tanda lalu lintas dan sejenisnya; pembangunan landasan pacu lapangan terbang. Kelas ini tidak termasuk: pemasangan lampu jalan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   },
                   {
-                    "code": "27.12",
-                    "title": "Pembuatan peralatan distribusi dan kontrol listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan pemutus sirkuit daya; pembuatan penekan lonjakan (untuk tegangan tingkat distribusi); pembuatan panel kontrol untuk distribusi daya listrik; pembuatan relay listrik; pembuatan saluran untuk peralatan switchboard listrik; pembuatan sekering listrik; pembuatan peralatan switching daya; pembuatan switch daya listrik (kecuali pushbutton, snap, solenoid, tumbler); pembuatan set generator penggerak utama. Kelas ini tidak mencakup: pembuatan kontrol lingkungan dan instrumen kontrol proses industri, lihat 26.51; pembuatan sakelar untuk sirkuit listrik, seperti sakelar pushbutton dan snap, lihat 27.33"
-                  }
-                ]
-              },
-              {
-                "code": "27.2",
-                "nace_child_title": "Pembuatan baterai dan aki",
-                "nace_child_detail": [
-                  {
-                    "code": "27.20",
-                    "title": "Pembuatan baterai dan aki",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan baterai sekali pakai dan isi ulang. Kelas ini mencakup: pembuatan sel primer dan baterai primer: sel yang mengandung mangan dioksida, merkuri dioksida, oksida perak, dll.; pembuatan aki listrik, termasuk bagiannya: separator, wadah, penutup; pembuatan baterai asam timbal; pembuatan baterai NiCad; pembuatan baterai NiMH; pembuatan baterai litium; pembuatan baterai sel kering; pembuatan baterai sel basah"
-                  }
-                ]
-              },
-              {
-                "code": "27.3",
-                "nace_child_title": "Pembuatan kabel dan perangkat kabel",
-                "nace_child_detail": [
-                  {
-                    "code": "27.31",
-                    "title": "Pembuatan kabel serat optik",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan kabel serat optik untuk transmisi data atau transmisi langsung gambar. Kelas ini tidak mencakup: pembuatan serat atau untai kaca, lihat 23.14; pembuatan set atau rakitan kabel optik dengan konektor atau aksesori lainnya, lihat tergantung aplikasi, misalnya 26.11"
+                    "code": "42.12",
+                    "title": "Konstruksi rel kereta api dan kereta api bawah tanah",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan rel kereta api dan kereta bawah tanah. Kelas ini tidak termasuk: pemasangan penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
                   },
                   {
-                    "code": "27.32",
-                    "title": "Pembuatan kabel dan kawat elektronik dan listrik lainnya",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan kawat dan kabel berisolasi, terbuat dari baja, tembaga, aluminium. Kelas ini tidak mencakup: pembuatan (penarikan) kawat, lihat 24.34, 24.41, 24.42, 24.43, 24.44, 24.45; pembuatan kabel komputer, kabel printer, kabel USB, dan set atau rakitan kabel serupa, lihat 26.11; pembuatan set kabel listrik dengan kawat berisolasi dan konektor, lihat 27.90; pembuatan set kabel, harness kabel, dan set atau rakitan kabel serupa untuk aplikasi otomotif, lihat 29.31"
+                    "code": "42.13",
+                    "title": "Konstruksi jembatan dan terowongan",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan jembatan, termasuk untuk jalan raya layang; pembangunan terowongan. Kelas ini tidak termasuk: pemasangan penerangan dan sinyal listrik, lihat 43.21; kegiatan arsitektur dan teknik, lihat 71.1; manajemen proyek untuk konstruksi, lihat 71.1"
+                  }
+                ]
+              },
+              {
+                "code": "42.2",
+                "nace_child_title": "Konstruksi proyek utilitas",
+                "NACE_CHILD_DETAIL": [
+                  {
+                    "code": "42.21",
+                    "title": "Konstruksi proyek utilitas untuk fluida",
+                    "nace_child_detail_description": "Kelas ini mencakup pembangunan jalur distribusi untuk pengangkutan fluida dan bangunan serta struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: pembangunan konstruksi teknik sipil untuk: pipa jarak jauh dan perkotaan, konstruksi saluran air utama dan saluran, sistem irigasi (saluran), waduk; pembangunan: sistem saluran pembuangan termasuk perbaikan, instalasi pembuangan limbah, stasiun pompa. Kelas ini juga mencakup: pengeboran sumur air. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   },
                   {
-                    "code": "27.33",
-                    "title": "Pembuatan perangkat kabel",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan perangkat kabel pembawa arus dan non-pembawa arus untuk sirkuit listrik terlepas dari bahannya. Kelas ini mencakup: pembuatan busbar, konduktor listrik (kecuali jenis switchgear); pembuatan GFCI (ground fault circuit interrupters); pembuatan dudukan lampu; pembuatan penangkal petir dan kumparan; pembuatan sakelar untuk kabel listrik (misalnya tekanan, pushbutton, snap, tumbler); pembuatan stopkontak atau soket listrik; pembuatan kotak untuk kabel listrik (misalnya kotak sambungan, stopkontak, kotak sakelar); pembuatan konduit listrik dan fitting; pembuatan perangkat keras tiang dan saluran transmisi; pembuatan perangkat kabel non-pembawa arus dari plastik termasuk kotak sambungan plastik, pelat muka, dan sejenisnya, fitting tiang saluran plastik, dan penutup sakelar. Kelas ini tidak mencakup: pembuatan isolator keramik, lihat 23.43; pembuatan konektor, soket, dan sakelar jenis komponen elektronik, lihat 26.11"
+                    "code": "42.22",
+                    "title": "Konstruksi proyek utilitas untuk listrik dan telekomunikasi",
+                    "nace_child_detail_description": "Kelas ini mencakup pembangunan jalur distribusi untuk listrik dan telekomunikasi serta bangunan dan struktur terkait yang merupakan bagian integral dari sistem ini. Kelas ini mencakup: pembangunan konstruksi teknik sipil untuk: jalur komunikasi dan listrik jarak jauh dan perkotaan, pembangkit listrik. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   }
                 ]
               },
               {
-                "code": "27.4",
-                "nace_child_title": "Pembuatan peralatan penerangan listrik",
-                "nace_child_detail": [
+                "code": "42.9",
+                "nace_child_title": "Konstruksi proyek teknik sipil lainnya",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "27.40",
-                    "title": "Pembuatan peralatan penerangan listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan bola lampu dan tabung listrik serta bagian dan komponennya (kecuali blanko kaca untuk bola lampu listrik), perlengkapan penerangan listrik dan komponen perlengkapan penerangan (kecuali perangkat kabel pembawa arus). Kelas ini mencakup: pembuatan lampu, perlengkapan, dan bola lampu pelepasan, pijar, fluoresen, ultraungu, inframerah, dll.; pembuatan perlengkapan penerangan langit-langit; pembuatan lampu gantung; pembuatan lampu meja (yaitu perlengkapan penerangan); pembuatan set lampu pohon Natal; pembuatan kayu bakar listrik; pembuatan lampu serangga listrik; pembuatan lentera (misalnya karbit, listrik, gas, bensin, minyak tanah); pembuatan lampu sorot; pembuatan perlengkapan penerangan jalan (kecuali lampu lalu lintas); pembuatan peralatan penerangan untuk peralatan transportasi (misalnya untuk kendaraan bermotor, pesawat terbang, perahu). Kelas ini juga mencakup: pembuatan peralatan penerangan non-listrik. Kelas ini tidak mencakup: pembuatan barang kaca dan bagian kaca untuk perlengkapan penerangan, lihat 23.19; pembuatan perangkat kabel pembawa arus untuk perlengkapan penerangan, lihat 27.33; pembuatan kipas langit-langit atau kipas kamar mandi dengan perlengkapan penerangan terintegrasi, lihat 27.51; pembuatan peralatan sinyal listrik seperti lampu lalu lintas dan peralatan sinyal pejalan kaki, lihat 27.90; pembuatan rambu listrik, lihat 27.90"
-                  }
-                ]
-              },
-              {
-                "code": "27.5",
-                "nace_child_title": "Pembuatan peralatan rumah tangga",
-                "nace_child_detail": [
-                  {
-                    "code": "27.51",
-                    "title": "Pembuatan peralatan rumah tangga listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan peralatan rumah tangga listrik: lemari es, freezer, mesin pencuci piring, mesin cuci dan pengering, penyedot debu, pengilap lantai, penghancur limbah, penggiling, blender, pemeras jus, pembuka kaleng, alat cukur listrik, sikat gigi listrik, dan perangkat perawatan pribadi listrik lainnya, pengasah pisau, tudung ventilasi atau daur ulang; pembuatan peralatan elektrotermik rumah tangga: pemanas air listrik, selimut listrik, pengering rambut, sisir, sikat, penggulung rambut listrik, setrika listrik, pemanas ruangan dan kipas rumah tangga portabel, oven listrik, oven microwave, kompor, hotplate, pemanggang roti, pembuat kopi atau teh, wajan penggoreng, pemanggang, pemanggang, tudung, resistor pemanas listrik, dll. Kelas ini tidak mencakup: pembuatan lemari es dan freezer komersial dan industri, pendingin ruangan, kipas loteng, pemanas ruangan tetap, dan kipas ventilasi dan pembuangan komersial; peralatan memasak komersial; peralatan laundry, dry-cleaning, dan pengepresan komersial; penyedot debu komersial, industri, dan institusional, lihat divisi 28; pembuatan mesin jahit rumah tangga, lihat 28.94; instalasi sistem pembersih vakum pusat, lihat 43.29"
+                    "code": "42.91",
+                    "title": "Konstruksi proyek air",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan: jalur air, pekerjaan pelabuhan dan sungai, pelabuhan rekreasi (marina), kunci air, dll., bendungan dan tanggul; pengerukan jalur air. Kelas ini tidak termasuk: kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   },
                   {
-                    "code": "27.52",
-                    "title": "Pembuatan peralatan rumah tangga non-listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup: pembuatan peralatan memasak dan pemanas rumah tangga non-listrik: pemanas ruangan non-listrik, kompor memasak, kisi-kisi, kompor, pemanas air, peralatan memasak, penghangat piring"
-                  }
-                ]
-              },
-              {
-                "code": "27.9",
-                "nace_child_title": "Pembuatan peralatan listrik lainnya",
-                "nace_child_detail": [
-                  {
-                    "code": "27.90",
-                    "title": "Pembuatan peralatan listrik lainnya",
-                    "nace_child_detail_description": "Kelas ini mencakup pembuatan peralatan listrik lainnya yang tidak termasuk motor, generator, dan transformator, baterai dan aki, kabel dan perangkat kabel, peralatan penerangan, atau peralatan rumah tangga. Kelas ini mencakup: pembuatan pengisi baterai solid-state; pembuatan perangkat pembuka dan penutup pintu listrik; pembuatan bel listrik; pembuatan kabel ekstensi dari kawat berisolasi yang dibeli; pembuatan mesin pembersih ultrasonik (kecuali laboratorium dan gigi); pembuatan inverter solid-state, peralatan penyearah, sel bahan bakar, catu daya diatur dan tidak diatur; pembuatan catu daya tak terputus (UPS); pembuatan penekan lonjakan (kecuali untuk tegangan tingkat distribusi); pembuatan kabel ekstensi, kabel peralatan, dan set kabel listrik lainnya dengan kawat berisolasi dan konektor; pembuatan elektroda, kontak karbon dan grafit, dan produk karbon dan grafit listrik lainnya; pembuatan akselerator partikel; pembuatan kapasitor listrik, resistor, kondensor, dan komponen serupa; pembuatan elektromagnet; pembuatan sirene; pembuatan papan skor elektronik; pembuatan rambu listrik; pembuatan peralatan sinyal listrik seperti lampu lalu lintas dan peralatan sinyal pejalan kaki; pembuatan isolator listrik (kecuali kaca atau porselen); pembuatan peralatan las dan solder listrik, termasuk setrika solder genggam. Kelas ini tidak mencakup: pembuatan isolator listrik porselen, lihat 23.43; pembuatan serat dan produk karbon dan grafit (kecuali elektroda dan aplikasi listrik), lihat 23.99; pembuatan penyearah jenis komponen elektronik, sirkuit terpadu pengatur tegangan, sirkuit terpadu konversi daya, kapasitor elektronik, resistor elektronik, dan perangkat serupa, lihat 26.11; pembuatan transformator, motor, generator, switchgear, relay, dan kontrol industri, lihat 27.1; pembuatan baterai, lihat 27.20; pembuatan kabel komunikasi dan energi, perangkat kabel pembawa arus dan non-pembawa arus, lihat 27.3; pembuatan peralatan penerangan, lihat 27.40; pembuatan peralatan rumah tangga, lihat 27.5; pembuatan peralatan las dan solder non-listrik, lihat 28.29; pembuatan peralatan listrik kendaraan bermotor, seperti generator, alternator, busi, harness kabel pengapian, sistem jendela dan pintu bertenaga, pengatur tegangan, lihat 29.31"
+                    "code": "42.99",
+                    "title": "Konstruksi proyek teknik sipil lainnya n.e.c.",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembangunan fasilitas industri, kecuali bangunan, seperti: kilang, pabrik kimia; pekerjaan konstruksi, selain bangunan, seperti: fasilitas olahraga luar ruangan. Kelas ini juga mencakup: pembagian tanah dengan perbaikan tanah (misalnya penambahan jalan, infrastruktur utilitas, dll.). Kelas ini tidak termasuk: pemasangan mesin dan peralatan industri, lihat 33.20; pembagian tanah tanpa perbaikan tanah, lihat 68.10; kegiatan manajemen proyek yang terkait dengan pekerjaan teknik sipil, lihat 71.12"
                   }
                 ]
               }
@@ -7700,53 +7591,96 @@
           },
           {
             "NACE": {
-              "code": "33",
-              "nace_description": "Perbaikan dan instalasi mesin dan peralatan"
+              "code": "43",
+              "nace_description": "Kegiatan konstruksi khusus"
             },
             "NACE_CHILD": [
               {
-                "code": "33.13",
-                "nace_child_title": "Perbaikan peralatan elektronik dan optik",
-                "nace_child_detail": [
+                "code": "43.1",
+                "nace_child_title": "Pembongkaran dan penyiapan lokasi",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "33.13",
-                    "title": "Perbaikan peralatan elektronik dan optik",
-                    "nace_child_detail_description": "Kelas ini mencakup perbaikan dan pemeliharaan barang yang diproduksi dalam kelompok 26.5, 26.6, dan 26.7, kecuali yang dianggap barang rumah tangga. Kelas ini mencakup: perbaikan dan pemeliharaan peralatan pengukuran, pengujian, navigasi, dan kontrol kelompok 26.5, seperti: instrumen mesin pesawat, peralatan pengujian emisi otomotif, instrumen meteorologi, peralatan pengujian dan inspeksi sifat fisik, listrik, dan kimia, instrumen survei, instrumen deteksi dan pemantauan radiasi; perbaikan dan pemeliharaan peralatan iradiasi, elektromedis, dan elektroterapi kelas 26.60, seperti: peralatan pencitraan resonansi magnetik, peralatan ultrasonografi medis, alat pacu jantung, alat bantu dengar, elektrokardiograf, peralatan endoskopi elektromedis, peralatan iradiasi; perbaikan dan pemeliharaan instrumen dan peralatan optik kelas 26.70, jika penggunaannya terutama komersial, seperti: teropong, mikroskop (kecuali mikroskop elektron dan proton), teleskop, prisma dan lensa (kecuali oftalmik), peralatan fotografi. Kelas ini tidak mencakup: perbaikan dan pemeliharaan mesin fotokopi, lihat 33.12; perbaikan dan pemeliharaan komputer dan peralatan pendukung, lihat 95.11; perbaikan dan pemeliharaan proyektor komputer, lihat 95.11; perbaikan dan pemeliharaan peralatan komunikasi, lihat 95.12; perbaikan dan pemeliharaan kamera TV dan video komersial, lihat 95.12; perbaikan kamera video rumah tangga, lihat 95.21; perbaikan jam tangan dan jam, lihat 95.25"
+                    "code": "43.11",
+                    "title": "Pembongkaran",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembongkaran atau penghancuran bangunan dan struktur lainnya"
+                  },
+                  {
+                    "code": "43.12",
+                    "title": "Penyiapan lokasi",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan lokasi bangunan; pemindahan tanah: penggalian, penimbunan, perataan dan penggradian lokasi konstruksi, penggalian parit, pemindahan batu, peledakan, dll.; penyiapan lokasi untuk pertambangan: pemindahan lapisan penutup dan pengembangan serta penyiapan properti dan lokasi mineral lainnya, kecuali lokasi minyak dan gas. Kelas ini juga mencakup: drainase lokasi bangunan; drainase lahan pertanian atau kehutanan. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; dekontaminasi tanah, lihat 39.00; pengeboran sumur air, lihat 42.21; penenggelaman poros, lihat 43.99"
+                  },
+                  {
+                    "code": "43.13",
+                    "title": "Pengeboran dan pemboran uji",
+                    "nace_child_detail_description": "Kelas ini mencakup: pengeboran uji, pemboran uji, dan pengambilan sampel inti untuk keperluan konstruksi, geofisika, geologis, atau serupa. Kelas ini tidak termasuk: pengeboran sumur produksi minyak atau gas, lihat 06.10, 06.20; layanan dukungan pengeboran dan pemboran uji selama kegiatan pertambangan, lihat 09.90; pengeboran sumur air, lihat 42.21; penenggelaman poros, lihat 43.99; eksplorasi ladang minyak dan gas, survei geofisika, geologis, dan seismik, lihat 71.12"
                   }
                 ]
               },
               {
-                "code": "33.14",
-                "nace_child_title": "Perbaikan peralatan listrik",
-                "nace_child_detail": [
+                "code": "43.2",
+                "nace_child_title": "Kegiatan pemasangan listrik, pipa, dan konstruksi lainnya",
+                "NACE_CHILD_DETAIL": [
                   {
-                    "code": "33.14",
-                    "title": "Perbaikan peralatan listrik",
-                    "nace_child_detail_description": "Kelas ini mencakup perbaikan dan pemeliharaan barang divisi 27, kecuali yang ada di kelompok kelas 27.5 (peralatan rumah tangga). Kelas ini mencakup: perbaikan dan pemeliharaan transformator daya, distribusi, dan khusus; perbaikan dan pemeliharaan motor listrik, generator, dan set motor-generator; perbaikan dan pemeliharaan switchgear dan peralatan switchboard; perbaikan dan pemeliharaan relay dan kontrol industri; perbaikan dan pemeliharaan baterai primer dan penyimpanan; perbaikan dan pemeliharaan peralatan penerangan listrik; perbaikan dan pemeliharaan perangkat kabel pembawa arus dan non-pembawa arus untuk kabel sirkuit listrik. Kelas ini tidak mencakup: perbaikan dan pemeliharaan komputer dan peralatan komputer pendukung, lihat 95.11; perbaikan dan pemeliharaan peralatan telekomunikasi, lihat 95.12; perbaikan dan pemeliharaan elektronik konsumen, lihat 95.21; perbaikan jam tangan dan jam, lihat 95.25"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "NACE": {
-              "code": "95",
-              "nace_description": "Perbaikan komputer dan barang pribadi serta rumah tangga"
-            },
-            "NACE_CHILD": [
-              {
-                "code": "95.1",
-                "nace_child_title": "Perbaikan komputer dan peralatan komunikasi",
-                "nace_child_detail": [
-                  {
-                    "code": "95.11",
-                    "title": "Perbaikan komputer dan peralatan pendukung",
-                    "nace_child_detail_description": "Kelas ini mencakup perbaikan peralatan elektronik, seperti komputer dan mesin komputasi serta peralatan pendukung. Kelas ini mencakup perbaikan dan pemeliharaan: komputer desktop; komputer laptop; drive disk magnetik, drive flash, dan perangkat penyimpanan lainnya; drive disk optik (CD-RW, CD-ROM, DVD-ROM, DVD-RW); printer; monitor; keyboard; mouse, joystick, dan aksesori trackball; modem komputer internal dan eksternal; terminal komputer khusus; server komputer; pemindai, termasuk pemindai kode batang; pembaca kartu pintar; helm realitas virtual; proyektor komputer. Kelas ini juga mencakup perbaikan dan pemeliharaan: terminal komputer seperti mesin teller otomatis (ATM); terminal point-of-sale (POS), tidak dioperasikan secara mekanis; komputer genggam (PDA). Kelas ini tidak mencakup: perbaikan dan pemeliharaan modem peralatan pembawa, lihat 95.12"
+                    "code": "43.21",
+                    "title": "Pemasangan listrik",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan sistem listrik di semua jenis bangunan dan struktur teknik sipil sistem listrik. Kelas ini mencakup: pemasangan: kabel dan fitting listrik, kabel telekomunikasi, jaringan komputer dan kabel televisi termasuk serat optik, parabola satelit, sistem penerangan, alarm kebakaran, sistem alarm pencuri, lampu jalan dan sinyal listrik, lampu landasan pacu bandara, kolektor energi surya listrik. Kelas ini juga mencakup: penyambungan peralatan listrik dan peralatan rumah tangga, termasuk pemanas alas tiang. Kelas ini tidak termasuk: pembangunan jalur komunikasi dan transmisi daya, lihat 42.22; pemantauan dan pemantauan jarak jauh sistem keamanan elektronik, seperti alarm pencuri dan alarm kebakaran, termasuk pemasangan dan pemeliharaannya, lihat 80.20"
                   },
                   {
-                    "code": "95.12",
-                    "title": "Perbaikan peralatan komunikasi",
-                    "nace_child_detail_description": "Kelas ini mencakup perbaikan dan pemeliharaan peralatan komunikasi seperti: telepon cordless; telepon seluler; modem peralatan pembawa; mesin faks; peralatan transmisi komunikasi (misalnya router, bridge, modem); radio dua arah; kamera TV dan video komersial"
+                    "code": "43.22",
+                    "title": "Pemasangan pipa, pemanas, dan pendingin udara",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan sistem pipa, pemanas, dan pendingin udara, termasuk penambahan, perubahan, pemeliharaan, dan perbaikan. Kelas ini mencakup: pemasangan di bangunan atau proyek konstruksi lainnya: sistem pemanas (listrik, gas, dan minyak), menara pendingin tungku, kolektor energi surya non-listrik, peralatan pipa dan saniter, peralatan dan saluran ventilasi dan pendingin udara, fitting gas, pipa uap, sistem penyiram api, sistem penyiram rumput; pemasangan saluran. Kelas ini tidak termasuk: pemasangan pemanas alas tiang listrik, lihat 43.21"
+                  },
+                  {
+                    "code": "43.29",
+                    "title": "Pemasangan konstruksi lainnya",
+                    "nace_child_detail_description": "Kelas ini mencakup pemasangan peralatan selain sistem listrik, pipa, pemanas, dan pendingin udara atau mesin industri di bangunan dan struktur teknik sipil. Kelas ini mencakup: pemasangan di bangunan atau proyek konstruksi lainnya: elevator eskalator termasuk perbaikan dan pemeliharaan, pintu otomatis dan berputar, penangkal petir, sistem penyedot debu, isolasi termal suara atau getaran. Kelas ini tidak termasuk: pemasangan mesin industri, lihat 33.20"
+                  }
+                ]
+              },
+              {
+                "code": "43.3",
+                "nace_child_title": "Penyelesaian dan penyelesaian bangunan",
+                "NACE_CHILD_DETAIL": [
+                  {
+                    "code": "43.31",
+                    "title": "Plesteran",
+                    "nace_child_detail_description": "Kelas ini mencakup: aplikasi di bangunan atau proyek konstruksi lainnya dari plester atau stuko interior dan eksterior, termasuk bahan reng terkait"
+                  },
+                  {
+                    "code": "43.32",
+                    "title": "Pemasangan kayu sambungan",
+                    "nace_child_detail_description": "Kelas ini mencakup: pemasangan pintu (kecuali otomatis dan berputar), jendela, kusen pintu dan jendela, dari kayu atau bahan lain; pemasangan dapur terpasang, lemari bawaan, tangga, perlengkapan toko, dan sejenisnya; penyelesaian interior seperti langit-langit, partisi bergerak, dll. Kelas ini tidak termasuk: pemasangan pintu otomatis dan berputar, lihat 43.29"
+                  },
+                  {
+                    "code": "43.33",
+                    "title": "Pelapis lantai dan dinding",
+                    "nace_child_detail_description": "Kelas ini mencakup: peletakan, pemasangan ubin, penggantungan, atau pemasangan di bangunan atau proyek konstruksi lainnya: ubin dinding atau lantai keramik beton atau batu potong, pemasangan kompor keramik, parket dan penutup lantai kayu lainnya, penutup dinding kayu, karpet dan penutup lantai linoleum termasuk dari karet atau plastik, teraso marmer granit atau penutup lantai atau dinding batu tulis, wallpaper"
+                  },
+                  {
+                    "code": "43.34",
+                    "title": "Pengecatan dan kaca",
+                    "nace_child_detail_description": "Kelas ini mencakup: pengecatan interior dan eksterior bangunan; pengecatan struktur teknik sipil; pemasangan kaca, cermin, dll. Kelas ini tidak termasuk: pemasangan jendela, lihat 43.32"
+                  },
+                  {
+                    "code": "43.39",
+                    "title": "Penyelesaian dan penyelesaian bangunan lainnya",
+                    "nace_child_detail_description": "Kelas ini mencakup: pembersihan bangunan baru setelah konstruksi; pekerjaan penyelesaian dan penyelesaian bangunan lainnya n.e.c. Kelas ini tidak termasuk: kegiatan desainer interior dekorasi, lihat 74.10; pembersihan interior umum bangunan dan struktur lainnya, lihat 81.21; pembersihan interior dan eksterior khusus bangunan, lihat 81.22"
+                  }
+                ]
+              },
+              {
+                "code": "43.9",
+                "nace_child_title": "Kegiatan konstruksi khusus lainnya",
+                "NACE_CHILD_DETAIL": [
+                  {
+                    "code": "43.91",
+                    "title": "Kegiatan atap",
+                    "nace_child_detail_description": "Kelas ini mencakup: pendirian atap; penutup atap. Kelas ini tidak termasuk: penyewaan mesin dan peralatan konstruksi tanpa operator, lihat 77.32"
+                  },
+                  {
+                    "code": "43.99",
+                    "title": "Kegiatan konstruksi khusus lainnya n.e.c.",
+                    "nace_child_detail_description": "Kelas ini mencakup: kegiatan konstruksi yang mengkhususkan diri pada satu aspek umum untuk berbagai jenis struktur, yang membutuhkan keterampilan atau peralatan khusus: pembangunan pondasi termasuk pemancangan tiang, pekerjaan kedap lembab dan kedap air, de-humidifikasi bangunan, penenggelaman poros, pendirian elemen baja, pembengkokan baja, pemasangan batu bata dan pemasangan batu, pendirian dan pembongkaran perancah dan platform kerja tidak termasuk penyewaan perancah dan platform kerja, pendirian cerobong asap dan oven industri, pekerjaan dengan persyaratan akses spesialis yang membutuhkan keterampilan memanjat dan penggunaan peralatan terkait, misalnya bekerja di ketinggian pada struktur tinggi; pekerjaan bawah permukaan; pembangunan kolam renang luar ruangan; pembersihan uap, peledakan pasir, dan kegiatan serupa untuk eksterior bangunan; penyewaan derek dan peralatan bangunan lainnya, yang tidak dapat dialokasikan ke jenis konstruksi tertentu, dengan operator. Kelas ini tidak termasuk: penyewaan mesin dan peralatan konstruksi tanpa operator, lihat 77.32"
                   }
                 ]
               }
