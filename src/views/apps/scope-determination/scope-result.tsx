@@ -508,7 +508,7 @@ ${resultsText}
                 <div className="h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
               </div>
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                Tunggu sebentar, Tasia sedang mencarikan scope yang tersedia dan cocok dengan perusahaan kamu ^_^
+                Tunggu sebentar, AI sendang menganalisis scope yang tersedia dan cocok dengan perusahaan Anda ^_^
               </p>
             </div>
           </div>
