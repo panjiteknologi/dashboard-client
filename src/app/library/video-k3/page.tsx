@@ -20,12 +20,12 @@ export default function Page() {
   return (
     <DashboardLayout
       href="/library/video-k3"
-      titleHeader="Video K3"
+      titleHeader="Video"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">List Video K3</h1>
+        <h1 className="text-md font-bold">List Video</h1>
         <VideoListView />
       </div>
     </DashboardLayout>

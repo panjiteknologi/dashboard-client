@@ -9,28 +9,16 @@ import { ArrowLeft } from "lucide-react";
 const videoData: VideoTypes[] = [
   {
     id: 1,
-    title: "Workplace Safety",
-    description: "Stay safe at work",
-    url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    title: "Webinar dasar dasar k3 u sawit",
+    description: "Webinar dasar dasar k3 u sawit",
+    url: "https://www.youtube.com/embed/XnKXs1CfrEA",
   },
   {
     id: 2,
-    title: "Code of Conduct",
-    description: "Company rules overview",
-    url: "https://www.youtube.com/embed/tgbNymZ7vqY",
-  },
-  {
-    id: 3,
-    title: "Compliance Training",
-    description: "Ethical standards",
-    url: "https://www.youtube.com/embed/oHg5SJYRHA0",
-  },
-  {
-    id: 4,
-    title: "Cybersecurity",
-    description: "Protecting digital assets",
-    url: "https://www.youtube.com/embed/aqz-KE-bpKQ",
-  },
+    title: "Tsi talk 3",
+    description: "Perubahan 37k versi 2016 dan 2025",
+    url: "https://www.youtube.com/embed/67RfluXSUxY",
+  }
 ];
 
 export const VideoListView = () => {

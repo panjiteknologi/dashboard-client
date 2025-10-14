@@ -190,7 +190,7 @@ export const SidebarAppsMenu: {
       icon: LibraryIcon,
       children: [
         {
-          title: "Video K3",
+          title: "Video",
           url: "/library/video-k3",
           icon: Video,
         },
