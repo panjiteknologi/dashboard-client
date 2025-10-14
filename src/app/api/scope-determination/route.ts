@@ -155,8 +155,6 @@ Instructions:
 
             console.log(`🔍 Attempting direct search for: "${trimmedKeyword}" (${isSingleWord ? 'single word' : 'phrase'})`);
 
-            const searchLower = trimmedKeyword.toLowerCase();
-
             // Common words to filter out (Indonesian and English)
             const stopWords = [
                 // Question words
