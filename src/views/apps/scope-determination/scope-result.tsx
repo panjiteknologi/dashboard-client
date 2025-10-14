@@ -23,6 +23,8 @@ export const ScopeResult = () => {
     aiResponse,
     isLoadingAI,
     aiError,
+    // Language Selection
+    selectedLang,
   } = useScopeDeterminationContext();
 
   const SkeletonResult = (
@@ -249,7 +251,7 @@ ${resultsText}
         {aiResponse.hasil_pencarian.length > 0 && (
           <div className="mb-4">
             <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-              Berdasarkan hasil pencarian, <strong className="text-blue-600 dark:text-blue-400">PT TSI Sertifikasi Internasional</strong> menyarankan scope yang tersedia untuk perusahaan Anda.
+              <strong className="text-blue-600 dark:text-blue-400">PT TSI Sertifikasi Internasional</strong> memiliki scope yang tersedia untuk perusahaan Anda, berikut ini scope yang disarankan :
             </p>
             <div className="flex items-center gap-2 mb-4">
               <Target className="h-4 w-4 text-green-600" />
@@ -493,8 +495,15 @@ ${resultsText}
                 />
               </div>
               <h1 className="text-3xl font-bold mb-3">Scope Determination</h1>
-              <p className="text-base text-muted-foreground">
-                Cari scope sertifikasi yang sesuai dengan perusahaan Anda
+              <p className="text-base text-muted-foreground mb-2">
+                {selectedLang === 'IDN'
+                  ? 'Cari scope sertifikasi yang sesuai dengan perusahaan Anda'
+                  : 'Find certification scopes that match your company'}
+              </p>
+              <p className="text-sm text-muted-foreground/80">
+                {selectedLang === 'IDN'
+                  ? '🇮🇩 Anda sedang dalam mode Bahasa Indonesia'
+                  : '🇬🇧 You are in English mode'}
               </p>
             </div>
           </div>
@@ -508,7 +517,9 @@ ${resultsText}
                 <div className="h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent" />
               </div>
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                Tunggu sebentar, AI sendang menganalisis scope yang tersedia dan cocok dengan perusahaan Anda ^_^
+                {selectedLang === 'IDN'
+                  ? 'Tunggu sebentar, AI sedang menganalisis scope yang tersedia dan cocok dengan perusahaan Anda ^_^'
+                  : 'Please wait, AI is analyzing available scopes that match your company ^_^'}
               </p>
             </div>
           </div>
@@ -520,7 +531,9 @@ ${resultsText}
             <div className="max-w-md p-6 border border-red-200 rounded-lg bg-red-50 dark:bg-red-900/20">
               <div className="flex items-center gap-2 text-red-800 dark:text-red-200 mb-2">
                 <Bot className="h-5 w-5" />
-                <span className="text-sm font-medium">AI Error:</span>
+                <span className="text-sm font-medium">
+                  {selectedLang === 'IDN' ? 'AI Error:' : 'AI Error:'}
+                </span>
               </div>
               <p className="text-sm text-red-700 dark:text-red-300">{aiError}</p>
             </div>

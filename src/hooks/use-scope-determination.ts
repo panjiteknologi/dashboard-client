@@ -24,7 +24,7 @@ interface UseScopeDeterminationResult {
   isLoading: boolean;
   error: string | null;
   response: ScopeDeterminationResponse | null;
-  determinateScope: (query: string) => Promise<void>;
+  determinateScope: (query: string, selectedLang?: 'IDN' | 'EN') => Promise<void>;
   reset: () => void;
 }
 
@@ -33,7 +33,7 @@ export const useScopeDetermination = (): UseScopeDeterminationResult => {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<ScopeDeterminationResponse | null>(null);
 
-  const determinateScope = useCallback(async (query: string) => {
+  const determinateScope = useCallback(async (query: string, selectedLang: 'IDN' | 'EN' = 'IDN') => {
     if (!query.trim()) {
       setError('Query cannot be empty');
       return;
@@ -49,7 +49,7 @@ export const useScopeDetermination = (): UseScopeDeterminationResult => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: query.trim() }),
+        body: JSON.stringify({ query: query.trim(), selectedLang }),
       });
 
       if (!res.ok) {

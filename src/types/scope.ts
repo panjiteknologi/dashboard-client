@@ -77,4 +77,7 @@ export type ScopeCTX = {
   aiError: string | null;
   determinateScope: (query: string) => Promise<void>;
   resetAI: () => void;
+  // Language Selection
+  selectedLang: 'IDN' | 'EN';
+  setSelectedLang: React.Dispatch<React.SetStateAction<'IDN' | 'EN'>>;
 };
