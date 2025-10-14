@@ -30,7 +30,7 @@ export const AuditStatusView = ({
 
     return data.map((item) => ({
       ...item,
-      sv: stat[item.tahapan as keyof typeof stat] ?? item.tahapan,
+      sv: stat[item?.tahapan as keyof typeof stat] ?? item?.tahapan,
     }));
   }, [data]);
 
@@ -41,7 +41,7 @@ export const AuditStatusView = ({
         accessorKey: "customer",
         cell: ({ row }) => (
           <p className="text-sm font-bold text-blue-900">
-            {row.original.customer ?? "-"}
+            {row?.original?.customer ?? "-"}
           </p>
         ),
       },
@@ -50,7 +50,7 @@ export const AuditStatusView = ({
         accessorKey: "sales_person",
         cell: ({ row }) => (
           <p className="text-sm font-bold text-blue-900">
-            {row.original.sales_person ?? "-"}
+            {row?.original?.sales_person ?? "-"}
           </p>
         ),
       },
@@ -58,7 +58,7 @@ export const AuditStatusView = ({
         header: "Standar",
         accessorKey: "iso_standards",
         cell: ({ row }) => {
-          const standar = row.original.iso_standards;
+          const standar = row?.original?.iso_standards;
           return Array.isArray(standar) && standar.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {standar.map((item, index) => (
@@ -72,7 +72,7 @@ export const AuditStatusView = ({
           );
         },
         filterFn: (row, columnId, filterValue) => {
-          const values: string[] = row.getValue(columnId);
+          const values: string[] = row?.getValue(columnId);
           return values?.some((v) =>
             v.toLowerCase().includes(filterValue.toLowerCase())
           );
@@ -82,7 +82,7 @@ export const AuditStatusView = ({
         header: "Akreditasi",
         accessorKey: "accreditation",
         cell: ({ row }) => {
-          const accreditations = row.original.accreditation;
+          const accreditations = row?.original?.accreditation;
           return Array.isArray(accreditations) && accreditations.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {accreditations.map((item, index) => (
@@ -100,7 +100,7 @@ export const AuditStatusView = ({
         header: "Tahapan",
         accessorKey: "tahapan",
         cell: ({ row }) => {
-          const normalizedField = findTahapan(row.original.tahapan as string);
+          const normalizedField = findTahapan(row?.original?.tahapan as string);
           return (
             <p className="text-sm font-bold text-blue-900">
               {normalizedField?.nama_tahapan ?? "-"}
@@ -115,7 +115,7 @@ export const AuditStatusView = ({
         id: "latest_progress",
         cell: ({ row }) => (
           <p className="text-sm font-bold text-green-500 text-left capitalize italic">
-            {getlatestProgress(row.original)}
+            {getlatestProgress(row?.original)}
           </p>
         ),
       },
@@ -126,7 +126,7 @@ export const AuditStatusView = ({
         id: "next_step",
         cell: ({ row }) => (
           <p className="text-sm font-bold text-orange-600 text-left capitalize italic">
-            {getNextStep(row.original)}
+            {getNextStep(row?.original)}
           </p>
         ),
       },
@@ -135,7 +135,7 @@ export const AuditStatusView = ({
         accessorKey: "lead_time_finish",
         cell: ({ row }) => (
           <p className="text-sm font-bold text-blue-900 text-left capitalize italic">
-            {row.original.lead_time_finish ?? "-"}
+            {row?.original?.lead_time_finish ?? "-"}
           </p>
         ),
       },
@@ -149,18 +149,18 @@ export const AuditStatusView = ({
     filterValue: string
   ) => {
     const filter = filterValue.toLowerCase();
-    const flatString = Object.values(row.original)
+    const flatString = Object.values(row?.original)
       .map((val) => (Array.isArray(val) ? val.join(" ") : val ?? ""))
       .join(" ")
       .toLowerCase();
 
     if (columnId === "next_step") {
-      const next = getNextStep(row.original);
+      const next = getNextStep(row?.original);
       return next.toLowerCase().includes(filter);
     }
 
     if (columnId === "latest_progress") {
-      const latest = getlatestProgress(row.original);
+      const latest = getlatestProgress(row?.original);
       return latest.toLowerCase().includes(filter);
     }
 

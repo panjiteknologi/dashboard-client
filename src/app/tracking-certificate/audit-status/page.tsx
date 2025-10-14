@@ -24,7 +24,7 @@ export default function Page() {
 
   const uniqueStandards = useMemo(() => {
     const allStandards = standards.flatMap(
-      (item: { standard_name: string }) => item.standard_name || []
+      (item: { standard_name: string }) => item?.standard_name || []
     );
     return Array.from(new Set(allStandards));
   }, [standards]);

@@ -209,9 +209,9 @@ function DataTable<TData extends object>({
             </TableHeader>
 
             <TableBody>
-              {table.getRowModel().rows.length ? (
+              {table.getRowModel().rows?.length ? (
                 <>
-                  {table.getRowModel().rows.map((row) => (
+                  {table.getRowModel().rows?.map((row) => (
                     <React.Fragment key={row.id}>
                       <TableRow
                         data-state={row.getIsSelected() && "selected"}
@@ -235,11 +235,11 @@ function DataTable<TData extends object>({
                         (renderExpanded || children) && (
                           <TableRow>
                             <TableCell
-                              colSpan={row.getVisibleCells().length}
+                              colSpan={row.getVisibleCells()?.length}
                               className="w-full min-h-[150px] p-6 border border-gray-100 shadow-inner"
                             >
                               {(renderExpanded ?? children)!(
-                                row.original as TData
+                                row?.original as TData
                               )}
                             </TableCell>
                           </TableRow>
@@ -250,7 +250,7 @@ function DataTable<TData extends object>({
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={composedColumns.length}
+                    colSpan={composedColumns?.length}
                     className="h-24 text-center text-gray-500 italic"
                   >
                     No results.
@@ -262,7 +262,7 @@ function DataTable<TData extends object>({
         </div>
 
         <Pagination
-          totalItems={table.getFilteredRowModel().rows.length}
+          totalItems={table.getFilteredRowModel().rows?.length}
           page={table.getState().pagination.pageIndex + 1}
           onChangePage={(pg) => table.setPageIndex(pg - 1)}
           totalPages={totalPages}
