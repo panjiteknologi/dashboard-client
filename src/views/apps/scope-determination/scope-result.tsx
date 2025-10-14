@@ -238,57 +238,99 @@ ${resultsText}
       const lines = text.split('\n');
 
       return lines.map((line, idx) => {
+        // Check if line is a numbered header (starts with **1. or **2.)
+        const numberedHeaderMatch = line.match(/^\*\*(\d+\.\s+.+?)\*\*\s*\((\d+)%\)/);
+        if (numberedHeaderMatch) {
+          return (
+            <div key={idx} className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <h4 className="text-base font-bold text-blue-900 dark:text-blue-100">
+                  {numberedHeaderMatch[1]}
+                </h4>
+                <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-semibold rounded">
+                  {numberedHeaderMatch[2]}% Match
+                </span>
+              </div>
+            </div>
+          );
+        }
+
         // Check if line is a bold header (starts with **)
         const boldMatch = line.match(/^\*\*(.+?)\*\*/);
         if (boldMatch) {
           return (
-            <p key={idx} className="font-bold text-gray-900 dark:text-gray-100 mt-3 mb-1">
+            <p key={idx} className="font-bold text-lg text-gray-900 dark:text-gray-100 mt-4 mb-2">
               {boldMatch[1]}
             </p>
           );
         }
 
+        // Check if line starts with IAF:
+        if (line.startsWith('IAF:')) {
+          return (
+            <div key={idx} className="mt-3 mb-2 pl-3 border-l-4 border-blue-400 dark:border-blue-600">
+              <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">
+                {highlight(line, highlightQuery)}
+              </p>
+            </div>
+          );
+        }
+
+        // Check if line starts with NACE Code
+        if (line.startsWith('NACE Code')) {
+          return (
+            <div key={idx} className="mt-2 pl-6">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {highlight(line, highlightQuery)}
+              </p>
+            </div>
+          );
+        }
+
         // Check if line contains NACE Child pattern
-        const naceChildMatch = line.match(/NACE Child: (.+?)$/);
+        const naceChildMatch = line.match(/^NACE Child: (.+?)$/);
         if (naceChildMatch) {
           const codesString = naceChildMatch[1];
           const codes = codesString.split(',').map(c => c.trim());
 
           return (
-            <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              NACE Child: {codes.map((code, codeIdx) => {
-                // Find the corresponding linkId for this code
-                const linkId = findLinkIdForNaceChildCode(code);
+            <div key={idx} className="mb-3 pl-6">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                <span className="font-medium">NACE Child: </span>
+                {codes.map((code, codeIdx) => {
+                  // Find the corresponding linkId for this code
+                  const linkId = findLinkIdForNaceChildCode(code);
 
-                if (linkId) {
-                  return (
-                    <span key={codeIdx}>
-                      <button
-                        onClick={() => scrollToResult(linkId, code)}
-                        className="text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer font-medium"
-                      >
-                        {code}
-                      </button>
-                      {codeIdx < codes.length - 1 && ', '}
-                    </span>
-                  );
-                }
-                return <span key={codeIdx}>{code}{codeIdx < codes.length - 1 && ', '}</span>;
-              })}
-            </p>
+                  if (linkId) {
+                    return (
+                      <span key={codeIdx}>
+                        <button
+                          onClick={() => scrollToResult(linkId, code)}
+                          className="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60 font-medium text-xs transition-colors"
+                        >
+                          {code}
+                        </button>
+                        {codeIdx < codes.length - 1 && <span className="mx-1">,</span>}
+                      </span>
+                    );
+                  }
+                  return <span key={codeIdx}>{code}{codeIdx < codes.length - 1 && ', '}</span>;
+                })}
+              </p>
+            </div>
           );
         }
 
         // Regular line
         if (line.trim()) {
           return (
-            <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+            <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-1">
               {highlight(line, highlightQuery)}
             </p>
           );
         }
 
-        return <br key={idx} />;
+        return null;
       });
     };
 
@@ -514,10 +556,10 @@ ${resultsText}
 
         {/* Penjelasan */}
         {aiResponse.penjelasan && (
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="h-4 w-4 text-amber-600" />
-              <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+          <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <span className="text-base font-semibold text-amber-900 dark:text-amber-100">
                 Penjelasan
               </span>
             </div>
@@ -530,10 +572,10 @@ ${resultsText}
 
         {/* Saran */}
         {aiResponse.saran && (
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="h-4 w-4 text-purple-600" />
-              <span className="text-sm font-medium text-purple-800 dark:text-purple-200">
+          <div className="mb-4 p-4 bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800 rounded-lg">
+            <div className="flex items-center gap-2 mb-3">
+              <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              <span className="text-base font-semibold text-purple-900 dark:text-purple-100">
                 Saran
               </span>
             </div>

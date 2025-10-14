@@ -397,38 +397,49 @@ Instructions:
                     : `We detected a possible typo in your search. Search "${query}" has been corrected to "${correctedQuery}".\n\n`;
             }
 
-            // Get top results (top 5 or results with score >= 70%)
-            const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 10);
-            const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 10);
+            // Get top results (top 10 or results with score >= 70%)
+            const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 15);
+            const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 15);
 
-            // Group results by standar + IAF only (not NACE)
+            // Group results by standar only
             const explanationGroups: Record<string, {
                 standar: string;
-                iaf_code: string;
-                nace_items: Map<string, {
-                    nace_code: string;
-                    nace_description: string;
-                    nace_children: Set<string>;
+                iaf_items: Map<string, {
+                    iaf_code: string;
+                    nace_items: Map<string, {
+                        nace_code: string;
+                        nace_description: string;
+                        nace_children: Set<string>;
+                    }>;
                 }>;
                 max_score: number;
             }> = {};
 
             for (const result of resultsToShow) {
-                const groupKey = `${result.standar || result.scope_key}|${result.iaf_code}`;
+                const groupKey = result.standar || result.scope_key;
 
                 if (!explanationGroups[groupKey]) {
                     explanationGroups[groupKey] = {
                         standar: result.standar || result.scope_key,
-                        iaf_code: result.iaf_code,
-                        nace_items: new Map(),
+                        iaf_items: new Map(),
                         max_score: result.relevance_score
                     };
                 }
 
-                // Add or update NACE item
+                // Add or update IAF item
+                const iafKey = result.iaf_code;
+                if (!explanationGroups[groupKey].iaf_items.has(iafKey)) {
+                    explanationGroups[groupKey].iaf_items.set(iafKey, {
+                        iaf_code: result.iaf_code,
+                        nace_items: new Map()
+                    });
+                }
+
+                // Add or update NACE item within IAF
                 const naceKey = result.nace.code;
-                if (!explanationGroups[groupKey].nace_items.has(naceKey)) {
-                    explanationGroups[groupKey].nace_items.set(naceKey, {
+                const iafItem = explanationGroups[groupKey].iaf_items.get(iafKey)!;
+                if (!iafItem.nace_items.has(naceKey)) {
+                    iafItem.nace_items.set(naceKey, {
                         nace_code: result.nace.code,
                         nace_description: result.nace.description,
                         nace_children: new Set()
@@ -437,7 +448,7 @@ Instructions:
 
                 // Add NACE Child code (parent code, e.g., 23.5 from 23.51)
                 if (result.nace_child?.code) {
-                    explanationGroups[groupKey].nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
+                    iafItem.nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
                 }
 
                 // Update max score
@@ -455,16 +466,19 @@ Instructions:
             // Add simplified breakdown
             groupedForExplanation.forEach((group, idx) => {
                 penjelasan += isIndonesian
-                    ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`
-                    : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`;
+                    ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n\n`
+                    : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n\n`;
 
-                penjelasan += `IAF: ${group.iaf_code}\n\n`;
+                // List all IAF items in this standard
+                Array.from(group.iaf_items.values()).forEach(iafItem => {
+                    penjelasan += `IAF: ${iafItem.iaf_code}\n\n`;
 
-                // List all NACE items in this group
-                Array.from(group.nace_items.values()).forEach(naceItem => {
-                    const childCodes = Array.from(naceItem.nace_children).sort();
-                    penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
-                    penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+                    // List all NACE items in this IAF
+                    Array.from(iafItem.nace_items.values()).forEach(naceItem => {
+                        const childCodes = Array.from(naceItem.nace_children).sort();
+                        penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
+                        penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+                    });
                 });
             });
 
@@ -812,38 +826,49 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
         // Add AI explanation first
         penjelasan += aiResult.penjelasan + '\n\n';
 
-        // Get top results (top 10 or results with score >= 70%)
-        const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 10);
-        const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 10);
+        // Get top results (top 15 or results with score >= 70%)
+        const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 15);
+        const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 15);
 
-        // Group results by standar + IAF only (not NACE)
+        // Group results by standar only
         const explanationGroups: Record<string, {
             standar: string;
-            iaf_code: string;
-            nace_items: Map<string, {
-                nace_code: string;
-                nace_description: string;
-                nace_children: Set<string>;
+            iaf_items: Map<string, {
+                iaf_code: string;
+                nace_items: Map<string, {
+                    nace_code: string;
+                    nace_description: string;
+                    nace_children: Set<string>;
+                }>;
             }>;
             max_score: number;
         }> = {};
 
         for (const result of resultsToShow) {
-            const groupKey = `${result.standar || result.scope_key}|${result.iaf_code}`;
+            const groupKey = result.standar || result.scope_key;
 
             if (!explanationGroups[groupKey]) {
                 explanationGroups[groupKey] = {
                     standar: result.standar || result.scope_key,
-                    iaf_code: result.iaf_code,
-                    nace_items: new Map(),
+                    iaf_items: new Map(),
                     max_score: result.relevance_score
                 };
             }
 
-            // Add or update NACE item
+            // Add or update IAF item
+            const iafKey = result.iaf_code;
+            if (!explanationGroups[groupKey].iaf_items.has(iafKey)) {
+                explanationGroups[groupKey].iaf_items.set(iafKey, {
+                    iaf_code: result.iaf_code,
+                    nace_items: new Map()
+                });
+            }
+
+            // Add or update NACE item within IAF
             const naceKey = result.nace.code;
-            if (!explanationGroups[groupKey].nace_items.has(naceKey)) {
-                explanationGroups[groupKey].nace_items.set(naceKey, {
+            const iafItem = explanationGroups[groupKey].iaf_items.get(iafKey)!;
+            if (!iafItem.nace_items.has(naceKey)) {
+                iafItem.nace_items.set(naceKey, {
                     nace_code: result.nace.code,
                     nace_description: result.nace.description,
                     nace_children: new Set()
@@ -852,7 +877,7 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
 
             // Add NACE Child code (parent code, e.g., 23.5 from 23.51)
             if (result.nace_child?.code) {
-                explanationGroups[groupKey].nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
+                iafItem.nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
             }
 
             // Update max score
@@ -870,16 +895,19 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
         // Add simplified breakdown
         groupedForExplanation.forEach((group, idx) => {
             penjelasan += isIndonesian
-                ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`
-                : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`;
+                ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n\n`
+                : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n\n`;
 
-            penjelasan += `IAF: ${group.iaf_code}\n\n`;
+            // List all IAF items in this standard
+            Array.from(group.iaf_items.values()).forEach(iafItem => {
+                penjelasan += `IAF: ${iafItem.iaf_code}\n\n`;
 
-            // List all NACE items in this group
-            Array.from(group.nace_items.values()).forEach(naceItem => {
-                const childCodes = Array.from(naceItem.nace_children).sort();
-                penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
-                penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+                // List all NACE items in this IAF
+                Array.from(iafItem.nace_items.values()).forEach(naceItem => {
+                    const childCodes = Array.from(naceItem.nace_children).sort();
+                    penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
+                    penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+                });
             });
         });
 
