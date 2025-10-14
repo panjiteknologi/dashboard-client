@@ -43,7 +43,6 @@ const useFileTools = () => {
   );
 
   const detectMimeAndExtFromBase64 = (src: string) => {
-    // data URL? ex: data:application/pdf;base64,JVBERi0...
     const dataMatch = /^data:([\w/+.-]+);base64,(.*)$/i.exec(src);
     if (dataMatch) {
       const mime = dataMatch[1] || "application/octet-stream";
@@ -56,9 +55,8 @@ const useFileTools = () => {
         : "bin";
       return { mime, ext, b64: dataMatch[2] };
     }
-    // plain base64 (tanpa prefix) — deteksi signature sederhana
     const head = src.slice(0, 24);
-    const isPdf = head.startsWith("JVBERi0"); // %PDF -> JVBERi0=
+    const isPdf = head.startsWith("JVBERi0");
     const isPng = head.startsWith("iVBORw0KGgo");
     const isJpg = head.startsWith("/9j/");
     const mime = isPdf
@@ -82,7 +80,6 @@ const useFileTools = () => {
 
   const getFromSource = useCallback(
     async (source: string) => {
-      // HTTP(S) URL
       if (/^https?:\/\//i.test(source)) {
         const res = await fetch(source, { credentials: "include" });
         if (!res.ok)
@@ -97,7 +94,6 @@ const useFileTools = () => {
         return { objectUrl, name };
       }
 
-      // Base64 (data URL atau plain base64)
       const { mime, ext, b64 } = detectMimeAndExtFromBase64(source);
       const blob = base64ToBlob(b64, mime);
       const objectUrl = URL.createObjectURL(blob);
@@ -110,14 +106,13 @@ const useFileTools = () => {
   return { getFromSource };
 };
 
-/** Helper anti popup-blocker: buka URL di tab baru via anchor click */
 const openInNewTab = (href: string) => {
   const a = document.createElement("a");
   a.href = href;
   a.target = "_blank";
   a.rel = "noopener noreferrer";
   document.body.appendChild(a);
-  a.click(); // dianggap user gesture
+  a.click();
   a.remove();
 };
 
