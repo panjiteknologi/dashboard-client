@@ -237,18 +237,24 @@ ${resultsText}
       // Split text by lines
       const lines = text.split('\n');
 
+      // Track current standard for context-aware linking
+      let currentStandard = '';
+
       return lines.map((line, idx) => {
         // Check if line is a numbered header (starts with **1. or **2.)
-        const numberedHeaderMatch = line.match(/^\*\*(\d+\.\s+.+?)\*\*\s*\((\d+)%\)/);
+        const numberedHeaderMatch = line.match(/^\*\*(\d+\.\s+(.+?))\*\*\s*\((\d+)%\)/);
         if (numberedHeaderMatch) {
+          // Extract standard name (e.g., "Standard 9001:2015" from "1. Standard 9001:2015")
+          currentStandard = numberedHeaderMatch[2].trim();
+
           return (
-            <div key={idx} className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <div key={idx} className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700" data-standard={currentStandard}>
               <div className="flex items-center justify-between">
                 <h4 className="text-base font-bold text-blue-900 dark:text-blue-100">
                   {numberedHeaderMatch[1]}
                 </h4>
                 <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-semibold rounded">
-                  {numberedHeaderMatch[2]}% Match
+                  {numberedHeaderMatch[3]}% Match
                 </span>
               </div>
             </div>
@@ -298,8 +304,8 @@ ${resultsText}
               <p className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">NACE Child: </span>
                 {codes.map((code, codeIdx) => {
-                  // Find the corresponding linkId for this code
-                  const linkId = findLinkIdForNaceChildCode(code);
+                  // Find the corresponding linkId for this code with current standard context
+                  const linkId = findLinkIdForNaceChildCode(code, currentStandard);
 
                   if (linkId) {
                     return (
@@ -334,8 +340,23 @@ ${resultsText}
       });
     };
 
-    // Helper function to find linkId for a NACE Child code
-    const findLinkIdForNaceChildCode = (naceChildCode: string): string | null => {
+    // Helper function to find linkId for a NACE Child code with standard context
+    const findLinkIdForNaceChildCode = (naceChildCode: string, standardContext: string = ''): string | null => {
+      // If we have standard context, try to find result matching both standard and NACE Child
+      if (standardContext) {
+        for (const result of aiResponse.hasil_pencarian) {
+          const resultStandard = result.standar || result.scope_key;
+          // Check if this result matches the standard context and has the NACE Child code
+          if (resultStandard === standardContext && result.nace_child?.code === naceChildCode) {
+            return `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(
+              /[^a-zA-Z0-9-_]/g,
+              "-"
+            );
+          }
+        }
+      }
+
+      // Fallback: find first result with matching NACE Child code (original behavior)
       for (const result of aiResponse.hasil_pencarian) {
         if (result.nace_child?.code === naceChildCode) {
           return `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(
