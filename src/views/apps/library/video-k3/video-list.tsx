@@ -18,12 +18,34 @@ const videoData: VideoTypes[] = [
     title: "Tsi talk 3",
     description: "Perubahan 37k versi 2016 dan 2025",
     url: "https://www.youtube.com/embed/67RfluXSUxY",
+  },
+  {
+    id: 3,
+    title: "Edukasi Animasi TSI - Cara Memilih TBS",
+    description: "Edukasi Animasi TSI - Cara Memilih TBS",
+    url: "https://www.youtube.com/embed/C2GMvj_LH9I",
+  },
+  {
+    id: 4,
+    title: "Animasi Edukasi TSI - Job Safety Analysis",
+    description: "Animasi Edukasi TSI - Job Safety Analysis",
+    url: "https://www.youtube.com/embed/n73Kz44Wmdw",
+  },
+  {
+    id: 5,
+    title: "Animasi Edukasi TSI - Lock Out Take Out",
+    description: "Animasi Edukasi TSI - Lock Out Take Out",
+    url: "https://www.youtube.com/embed/8DjD26UKgXg",
   }
 ];
 
 export const VideoListView = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoTypes | null>(null);
   const [isWide, setIsWide] = useState(false);
+
+  // Separate videos by category
+  const webinarVideos = videoData.filter(v => v.id <= 2);
+  const animationVideos = videoData.filter(v => v.id >= 3);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -38,16 +60,42 @@ export const VideoListView = () => {
   return (
     <div className="space-y-6 max-w-screen">
       {!selectedVideo ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {videoData.map((video) => (
-            <div
-              key={video.id}
-              onClick={() => setSelectedVideo(video)}
-              className="cursor-pointer"
-            >
-              <VideoItem video={video} />
+        <div className="space-y-8">
+          {/* Webinar Section */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+              📺 Webinar
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {webinarVideos.map((video) => (
+                <div
+                  key={video.id}
+                  onClick={() => setSelectedVideo(video)}
+                  className="cursor-pointer"
+                >
+                  <VideoItem video={video} />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Animation Section */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+              🎬 Animasi Edukasi
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {animationVideos.map((video) => (
+                <div
+                  key={video.id}
+                  onClick={() => setSelectedVideo(video)}
+                  className="cursor-pointer"
+                >
+                  <VideoItem video={video} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
