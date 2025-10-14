@@ -230,6 +230,81 @@ ${resultsText}
       }
     };
 
+    // Function to render explanation text with markdown and clickable NACE Child codes
+    const renderExplanationText = (text: string) => {
+      if (!text) return null;
+
+      // Split text by lines
+      const lines = text.split('\n');
+
+      return lines.map((line, idx) => {
+        // Check if line is a bold header (starts with **)
+        const boldMatch = line.match(/^\*\*(.+?)\*\*/);
+        if (boldMatch) {
+          return (
+            <p key={idx} className="font-bold text-gray-900 dark:text-gray-100 mt-3 mb-1">
+              {boldMatch[1]}
+            </p>
+          );
+        }
+
+        // Check if line contains NACE Child pattern
+        const naceChildMatch = line.match(/NACE Child: (.+?)$/);
+        if (naceChildMatch) {
+          const codesString = naceChildMatch[1];
+          const codes = codesString.split(',').map(c => c.trim());
+
+          return (
+            <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              NACE Child: {codes.map((code, codeIdx) => {
+                // Find the corresponding linkId for this code
+                const linkId = findLinkIdForNaceChildCode(code);
+
+                if (linkId) {
+                  return (
+                    <span key={codeIdx}>
+                      <button
+                        onClick={() => scrollToResult(linkId, code)}
+                        className="text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-800 dark:hover:text-blue-300 cursor-pointer font-medium"
+                      >
+                        {code}
+                      </button>
+                      {codeIdx < codes.length - 1 && ', '}
+                    </span>
+                  );
+                }
+                return <span key={codeIdx}>{code}{codeIdx < codes.length - 1 && ', '}</span>;
+              })}
+            </p>
+          );
+        }
+
+        // Regular line
+        if (line.trim()) {
+          return (
+            <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+              {highlight(line, highlightQuery)}
+            </p>
+          );
+        }
+
+        return <br key={idx} />;
+      });
+    };
+
+    // Helper function to find linkId for a NACE Child code
+    const findLinkIdForNaceChildCode = (naceChildCode: string): string | null => {
+      for (const result of aiResponse.hasil_pencarian) {
+        if (result.nace_child?.code === naceChildCode) {
+          return `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(
+            /[^a-zA-Z0-9-_]/g,
+            "-"
+          );
+        }
+      }
+      return null;
+    };
+
     return (
       <div className="mb-6 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
         <div className="flex items-center gap-2 mb-3 flex-wrap">
@@ -446,9 +521,9 @@ ${resultsText}
                 Penjelasan
               </span>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              {highlight(aiResponse.penjelasan, highlightQuery)}
-            </p>
+            <div className="space-y-1">
+              {renderExplanationText(aiResponse.penjelasan)}
+            </div>
             {/* Tombol Copy Penjelasan DIHAPUS */}
           </div>
         )}
@@ -462,9 +537,9 @@ ${resultsText}
                 Saran
               </span>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              {highlight(aiResponse.saran, highlightQuery)}
-            </p>
+            <div className="space-y-1">
+              {renderExplanationText(aiResponse.saran)}
+            </div>
             {/* Tombol Copy Saran DIHAPUS */}
           </div>
         )}

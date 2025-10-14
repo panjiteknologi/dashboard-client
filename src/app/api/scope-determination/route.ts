@@ -389,19 +389,92 @@ Instructions:
 
             console.log(`📦 Grouped into ${detailedResults.length} result cards (Direct Search)`);
 
+            // Build detailed explanation with IAF and NACE Child information
             let penjelasan = '';
             if (hasCorrected) {
                 penjelasan = isIndonesian
                     ? `Kami mendeteksi kemungkinan typo pada pencarian Anda. Pencarian "${query}" telah dikoreksi menjadi "${correctedQuery}".\n\n`
                     : `We detected a possible typo in your search. Search "${query}" has been corrected to "${correctedQuery}".\n\n`;
             }
+
+            // Get top results (top 5 or results with score >= 70%)
+            const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 10);
+            const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 10);
+
+            // Group results by standar + IAF only (not NACE)
+            const explanationGroups: Record<string, {
+                standar: string;
+                iaf_code: string;
+                nace_items: Map<string, {
+                    nace_code: string;
+                    nace_description: string;
+                    nace_children: Set<string>;
+                }>;
+                max_score: number;
+            }> = {};
+
+            for (const result of resultsToShow) {
+                const groupKey = `${result.standar || result.scope_key}|${result.iaf_code}`;
+
+                if (!explanationGroups[groupKey]) {
+                    explanationGroups[groupKey] = {
+                        standar: result.standar || result.scope_key,
+                        iaf_code: result.iaf_code,
+                        nace_items: new Map(),
+                        max_score: result.relevance_score
+                    };
+                }
+
+                // Add or update NACE item
+                const naceKey = result.nace.code;
+                if (!explanationGroups[groupKey].nace_items.has(naceKey)) {
+                    explanationGroups[groupKey].nace_items.set(naceKey, {
+                        nace_code: result.nace.code,
+                        nace_description: result.nace.description,
+                        nace_children: new Set()
+                    });
+                }
+
+                // Add NACE Child code (parent code, e.g., 23.5 from 23.51)
+                if (result.nace_child?.code) {
+                    explanationGroups[groupKey].nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
+                }
+
+                // Update max score
+                if (result.relevance_score > explanationGroups[groupKey].max_score) {
+                    explanationGroups[groupKey].max_score = result.relevance_score;
+                }
+            }
+
+            const groupedForExplanation = Object.values(explanationGroups);
+
             penjelasan += isIndonesian
-                ? `Ditemukan ${detailedResults.length} kategori scope yang mengandung kata "${correctedQuery}". Hasil ditampilkan berdasarkan tingkat relevansi, dengan yang paling sesuai ditampilkan terlebih dahulu. (Menggunakan Pencarian Cepat)`
-                : `Found ${detailedResults.length} scope categories containing the word "${correctedQuery}". Results are displayed based on relevance level, with the most relevant displayed first. (Using Quick Search)`;
+                ? `Ditemukan ${detailedResults.length} kategori scope yang sesuai dengan pencarian "${correctedQuery}". Berikut adalah scope dengan relevansi tertinggi:\n\n`
+                : `Found ${detailedResults.length} scope categories matching "${correctedQuery}". Here are scopes with highest relevance:\n\n`;
+
+            // Add simplified breakdown
+            groupedForExplanation.forEach((group, idx) => {
+                penjelasan += isIndonesian
+                    ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`
+                    : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`;
+
+                penjelasan += `IAF: ${group.iaf_code}\n\n`;
+
+                // List all NACE items in this group
+                Array.from(group.nace_items.values()).forEach(naceItem => {
+                    const childCodes = Array.from(naceItem.nace_children).sort();
+                    penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
+                    penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+                });
+            });
+
+            penjelasan += isIndonesian
+                ? `Semua hasil ditampilkan berdasarkan tingkat relevansi tertinggi ke terendah. (Menggunakan Pencarian Cepat)`
+                : `All results are displayed from highest to lowest relevance. (Using Quick Search)`;
 
             const saran = isIndonesian
-                ? `Periksa setiap kategori untuk menemukan scope yang paling sesuai dengan kegiatan perusahaan Anda. Anda dapat memilih lebih dari satu scope jika perusahaan memiliki berbagai jenis kegiatan.`
-                : `Check each category to find the scope that best suits your company's activities. You can select more than one scope if the company has various types of activities.`;
+                ? `Periksa setiap kategori untuk menemukan scope yang paling sesuai dengan kegiatan perusahaan Anda. Anda dapat mengklik kode NACE Child di bagian ringkasan untuk langsung melihat detail scope tersebut. Anda dapat memilih lebih dari satu scope jika perusahaan memiliki berbagai jenis kegiatan.`
+                : `Check each category to find the scope that best suits your company's activities. You can click on NACE Child codes in the summary section to directly view the details of that scope. You can select more than one scope if the company has various types of activities.`;
 
             return NextResponse.json({
                 hasil_pencarian: detailedResults,
@@ -728,18 +801,102 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
 
         console.log(`📦 Grouped into ${detailedResults.length} result cards (Semantic Search)`);
 
+        // Build detailed explanation with IAF and NACE Child information
         let penjelasan = '';
         if (hasCorrected) {
             penjelasan = isIndonesian
                 ? `Kami mendeteksi kemungkinan typo pada pencarian Anda. Pencarian "${query}" telah dikoreksi menjadi "${correctedQuery}".\n\n`
                 : `We detected a possible typo in your search. Search "${query}" has been corrected to "${correctedQuery}".\n\n`;
         }
-        penjelasan += aiResult.penjelasan;
+
+        // Add AI explanation first
+        penjelasan += aiResult.penjelasan + '\n\n';
+
+        // Get top results (top 10 or results with score >= 70%)
+        const topResults = detailedResults.filter(r => r.relevance_score >= 70).slice(0, 10);
+        const resultsToShow = topResults.length > 0 ? topResults : detailedResults.slice(0, 10);
+
+        // Group results by standar + IAF only (not NACE)
+        const explanationGroups: Record<string, {
+            standar: string;
+            iaf_code: string;
+            nace_items: Map<string, {
+                nace_code: string;
+                nace_description: string;
+                nace_children: Set<string>;
+            }>;
+            max_score: number;
+        }> = {};
+
+        for (const result of resultsToShow) {
+            const groupKey = `${result.standar || result.scope_key}|${result.iaf_code}`;
+
+            if (!explanationGroups[groupKey]) {
+                explanationGroups[groupKey] = {
+                    standar: result.standar || result.scope_key,
+                    iaf_code: result.iaf_code,
+                    nace_items: new Map(),
+                    max_score: result.relevance_score
+                };
+            }
+
+            // Add or update NACE item
+            const naceKey = result.nace.code;
+            if (!explanationGroups[groupKey].nace_items.has(naceKey)) {
+                explanationGroups[groupKey].nace_items.set(naceKey, {
+                    nace_code: result.nace.code,
+                    nace_description: result.nace.description,
+                    nace_children: new Set()
+                });
+            }
+
+            // Add NACE Child code (parent code, e.g., 23.5 from 23.51)
+            if (result.nace_child?.code) {
+                explanationGroups[groupKey].nace_items.get(naceKey)!.nace_children.add(result.nace_child.code);
+            }
+
+            // Update max score
+            if (result.relevance_score > explanationGroups[groupKey].max_score) {
+                explanationGroups[groupKey].max_score = result.relevance_score;
+            }
+        }
+
+        const groupedForExplanation = Object.values(explanationGroups);
+
+        penjelasan += isIndonesian
+            ? `**Scope dengan Relevansi Tertinggi:**\n\n`
+            : `**Scopes with Highest Relevance:**\n\n`;
+
+        // Add simplified breakdown
+        groupedForExplanation.forEach((group, idx) => {
+            penjelasan += isIndonesian
+                ? `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`
+                : `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n`;
+
+            penjelasan += `IAF: ${group.iaf_code}\n\n`;
+
+            // List all NACE items in this group
+            Array.from(group.nace_items.values()).forEach(naceItem => {
+                const childCodes = Array.from(naceItem.nace_children).sort();
+                penjelasan += `NACE Code (${naceItem.nace_code}): ${naceItem.nace_description}\n`;
+                penjelasan += `NACE Child: ${childCodes.join(', ')}\n\n`;
+            });
+        });
+
+        penjelasan += isIndonesian
+            ? `Total ${detailedResults.length} hasil ditemukan. Semua hasil ditampilkan berdasarkan tingkat relevansi tertinggi ke terendah. (Menggunakan AI Semantic Search)`
+            : `Total ${detailedResults.length} results found. All results are displayed from highest to lowest relevance. (Using AI Semantic Search)`;
+
+        // Enhance saran with clickable link instruction
+        let saran = aiResult.saran;
+        saran += isIndonesian
+            ? `\n\nAnda dapat mengklik kode NACE Child di bagian ringkasan untuk langsung melihat detail scope tersebut.`
+            : `\n\nYou can click on NACE Child codes in the summary section to directly view the details of that scope.`;
 
         return NextResponse.json({
             hasil_pencarian: detailedResults,
             penjelasan: penjelasan,
-            saran: aiResult.saran,
+            saran: saran,
             total_hasil: detailedResults.length,
             query: query,
             corrected_query: hasCorrected ? correctedQuery : undefined
