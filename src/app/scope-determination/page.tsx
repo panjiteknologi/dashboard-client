@@ -8,6 +8,7 @@ import { SidebarAppsMenu } from "@/utils";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { ScopeDeterminationView } from "@/views/apps/scope-determination";
 import { ScopeSearchProvider } from "@/context/scope-determination-context";
+import WhatsappButton from "@/components/ui/whatsapp-button";
 
 export default function Page() {
   const router = useRouter();
@@ -28,6 +29,8 @@ export default function Page() {
         <div className="space-y-4">
           <ScopeDeterminationView />
         </div>
+        {/* Floating WhatsApp button */}
+        <WhatsappButton />
       </ScopeSearchProvider>
     </DashboardLayout>
   );

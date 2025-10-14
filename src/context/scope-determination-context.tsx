@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useCallback,
 } from "react";
 import { useScopeListQuery } from "@/hooks/use-scope-list";
 import { useScopeLibraryQuery } from "@/hooks/use-scope-library";
@@ -103,8 +104,15 @@ export const ScopeSearchProvider = ({
   const [query, setQuery] = useState<string>("");
   const debounced = useDebounce(query, 250);
   const [showCodes, setShowCodes] = useState<boolean>(true);
+  const [selectedLang, setSelectedLang] = useState<'IDN' | 'EN'>('IDN');
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const quick = ["pertanian", "kehutanan", "perikanan", "konstruksi", "logam", "teknologi informasi", "keuangan", "beton", "kelistrikan"] as const;
+
+  // Quick search keywords
+  const quickIDN = ["pertanian", "kehutanan", "perikanan", "konstruksi", "logam", "teknologi informasi", "keuangan", "beton", "kelistrikan"] as const;
+  const quickEN = ["agriculture", "forestry", "fisheries", "construction", "metal", "information technology", "finance", "concrete", "electrical"] as const;
+
+  // Dynamic quick based on selected language
+  const quick = selectedLang === 'IDN' ? quickIDN : quickEN;
 
   const [page, setPage] = useState<number>(1);
   const pageSize = 10;
@@ -116,9 +124,14 @@ export const ScopeSearchProvider = ({
     response: aiResponse,
     isLoading: isLoadingAI,
     error: aiError,
-    determinateScope,
+    determinateScope: determinateScopeHook,
     reset: resetAI
   } = useScopeDetermination();
+
+  // Wrapper function to pass selectedLang
+  const determinateScope = useCallback(async (query: string) => {
+    await determinateScopeHook(query, selectedLang);
+  }, [selectedLang, determinateScopeHook]);
 
   const rawList = useMemo<unknown[]>(
     () =>
@@ -307,11 +320,22 @@ export const ScopeSearchProvider = ({
     aiError,
     determinateScope,
     resetAI,
+    // Language Selection
+    selectedLang,
+    setSelectedLang,
   };
 
   useEffect(() => {
     setPage(1);
   }, [debounced]);
+
+  useEffect(() => {
+    // Reset AI response when language changes
+    if (aiResponse) {
+      resetAI();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLang]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
