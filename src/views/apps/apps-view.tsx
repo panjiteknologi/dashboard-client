@@ -152,7 +152,7 @@ const appCategories: AppCategory[] = [
     apps: [
       {
         id: "videok3",
-        title: "Video K3",
+        title: "Video",
         description:
           "Watch curated safety training and K3 (Occupational Health and Safety) videos.",
         icon: Video,
