@@ -1,268 +1,103 @@
-"use client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { RegulationType } from "@/types/projects";
-import Image from "next/image";
-import { useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
-export const RegulationDetail = ({ data }: { data: RegulationType }) => {
-  const [activeTab, setActiveTab] = useState<
-    "ringkasan" | "seksi" | "lampiran"
-  >("ringkasan");
+const DetailSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="py-4 border-b border-slate-200">
+    <h3 className="text-sm font-semibold text-slate-500 mb-2">{title}</h3>
+    <div className="text-sm text-slate-800 space-y-1">{children}</div>
+  </div>
+);
 
-  const statusStyle = useMemo(() => {
-    if (data.status === "Berlaku") return "bg-emerald-100 text-emerald-700";
-    if (data.status === "Dicabut") return "bg-rose-100 text-rose-700";
-    return "bg-amber-100 text-amber-800"; // Draft
-  }, [data.status]);
+const InfoPair = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div className="grid grid-cols-3 gap-2">
+    <span className="font-medium text-slate-600 col-span-1">{label}</span>
+    <span className="col-span-2">{value}</span>
+  </div>
+);
 
-  const initials = useMemo(() => {
-    const issuer = data.issuer || "";
-    const parts = issuer.trim().split(/\s+/);
-    return (parts[0]?.[0] || "R") + (parts[1]?.[0] || "");
-  }, [data.issuer]);
-
-  const formatID = (d?: string) => {
-    if (!d) return "-";
-    try {
-      return new Date(d).toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      });
-    } catch {
-      return d;
-    }
+export const RegulationDetailView = ({ regulation }: { regulation: RegulationType }) => {
+  const statusStyle = {
+    Berlaku: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    Dicabut: "bg-rose-100 text-rose-800 border-rose-200",
+    Draft: "bg-amber-100 text-amber-800 border-amber-200",
   };
 
   return (
-    <div className="max-w-6xl grid md:grid-cols-3 gap-8 p-4">
-      {/* Kiri: Info Utama */}
-      <div className="md:col-span-2 space-y-4">
-        {/* Header */}
-        <div className="space-y-3">
-          <div className="relative w-full h-52 rounded-xl overflow-hidden border">
-            <Image
-              src={data.image}
-              alt={data.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 66vw"
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {data.number && (
-              <Badge variant="outline" className="font-medium">
-                {data.number}
-              </Badge>
-            )}
-            {data.type && <Badge variant="secondary">{data.type}</Badge>}
-            {data.jurisdiction && (
-              <Badge variant="outline">{data.jurisdiction}</Badge>
-            )}
-            {data.status && (
-              <span className={`px-2 py-1 rounded-full text-xs ${statusStyle}`}>
-                {data.status}
-              </span>
-            )}
-          </div>
-
-          <h1 className="text-3xl font-bold">{data.title}</h1>
-          {data.subtitle && (
-            <p className="text-muted-foreground">{data.subtitle}</p>
-          )}
-
-          <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-            <div>
-              <span className="font-medium text-gray-700">Penerbit:</span>{" "}
-              {data.issuer || "-"}
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Sektor:</span>{" "}
-              {data.sector || "-"}
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Terbit:</span>{" "}
-              {formatID(data.publishedAt)}
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Berlaku:</span>{" "}
-              {formatID(data.effectiveAt)}
-            </div>
-          </div>
-        </div>
-
-        {/* “Penerbit” avatar ringkas */}
-        {data.issuer && (
-          <div className="flex items-center gap-3 mt-2">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-700">
-              {initials}
-            </div>
-            <div>
-              <p className="font-medium">{data.issuer}</p>
-              <p className="text-sm text-muted-foreground">Issuer</p>
-            </div>
-          </div>
-        )}
-
-        {/* Tabs */}
-        <div className="mt-6 border rounded-lg overflow-hidden">
-          <div className="flex">
-            {(["ringkasan", "seksi", "lampiran"] as const).map((t) => (
-              <button
-                key={t}
-                onClick={() => setActiveTab(t)}
-                className={`w-1/3 px-4 py-2 font-medium ${
-                  activeTab === t
-                    ? "bg-white border-b-2 border-black"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {t === "ringkasan"
-                  ? "Ringkasan"
-                  : t === "seksi"
-                  ? "Seksi"
-                  : "Lampiran"}
-              </button>
-            ))}
-          </div>
-
-          <div className="p-4">
-            {activeTab === "ringkasan" && (
-              <div className="space-y-3 text-sm leading-relaxed">
-                <p>{data.summary || "Belum ada ringkasan."}</p>
-
-                {/* Kata kunci */}
-                {Array.isArray(data.keywords) && data.keywords.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {data.keywords.map((k, i) => (
-                      <Badge key={i} variant="outline">
-                        #{k}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-
-                {/* Sumber */}
-                {data.sourceUrl && (
-                  <div className="pt-3">
-                    <Button asChild variant="link" className="px-0">
-                      <a href={data.sourceUrl} target="_blank" rel="noreferrer">
-                        Lihat Sumber Resmi ↗
-                      </a>
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {activeTab === "seksi" && (
-              <div className="divide-y">
-                {Array.isArray(data.sections) && data.sections.length > 0 ? (
-                  data.sections.map((s, i) => (
-                    <div key={i} className="py-4">
-                      <p className="font-medium">{s.title}</p>
-                      {s.description && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {s.description}
-                        </p>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Belum ada seksi.
-                  </p>
-                )}
-              </div>
-            )}
-
-            {activeTab === "lampiran" && (
-              <div className="space-y-3">
-                {Array.isArray(data.attachments) &&
-                data.attachments.length > 0 ? (
-                  data.attachments.map((f, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between border rounded-md p-3"
-                    >
-                      <div className="truncate">
-                        <p className="text-sm font-medium truncate">
-                          {f.filename}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {f.url}
-                        </p>
-                      </div>
-                      <Button asChild variant="outline" size="sm">
-                        <a href={f.url} target="_blank" rel="noreferrer">
-                          Unduh
-                        </a>
-                      </Button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Tidak ada lampiran.
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Regulasi Terkait */}
-        {Array.isArray(data.relatedRegulations) &&
-          data.relatedRegulations.length > 0 && (
-            <div>
-              <h2 className="text-xl font-semibold">Regulasi Terkait</h2>
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {data.relatedRegulations.map((r) => (
-                  <div
-                    key={r.id}
-                    className="border rounded-xl p-3 hover:shadow-sm transition"
-                  >
-                    <p className="font-medium text-sm">{r.title}</p>
-                    <Button
-                      asChild
-                      variant="link"
-                      className="px-0 text-blue-600 text-sm"
-                    >
-                      <a href={`/apps/library/regulation/${r.id}`}>
-                        Lihat Detail →
-                      </a>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+    <div className="bg-white border border-slate-200 rounded-lg p-6 animate-fade-in">
+      {/* Header */}
+      <div className="pb-4 border-b border-slate-200 mb-4">
+        <h2 className="text-xl font-bold text-slate-900">{regulation.title}</h2>
+        <p className="text-sm text-slate-500 mt-1">{regulation.subtitle}</p>
       </div>
 
-      {/* Kanan: Ringkasan Singkat */}
+      {/* Main Content */}
       <div className="space-y-4">
-        <div className="border rounded-xl p-6 space-y-3 bg-white shadow-sm">
-          <h2 className="text-lg font-semibold">Info Regulasi</h2>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p>📄 Nomor: {data.number || "-"}</p>
-            <p>🏷️ Jenis: {data.type || "-"}</p>
-            <p>🌍 Yurisdiksi: {data.jurisdiction || "-"}</p>
-            <p>🏛️ Penerbit: {data.issuer || "-"}</p>
-            <p>🏭 Sektor: {data.sector || "-"}</p>
-            <p>🗓️ Terbit: {formatID(data.publishedAt)}</p>
-            <p>🗓️ Berlaku: {formatID(data.effectiveAt)}</p>
-            <p>🔖 Kata Kunci: {data.keywords?.length || 0}</p>
-            <p>📎 Lampiran: {data.attachments?.length || 0}</p>
+        <DetailSection title="Ringkasan">
+          <p className="leading-relaxed">{regulation.summary}</p>
+        </DetailSection>
+
+        <DetailSection title="Detail Utama">
+          <div className="space-y-2">
+            <InfoPair label="Nomor Regulasi" value={regulation.number} />
+            <InfoPair label="Status" value={
+              <span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full border", statusStyle[regulation.status])}>
+                {regulation.status}
+              </span>
+            } />
+            <InfoPair label="Jenis" value={regulation.type} />
+            <InfoPair label="Sektor" value={regulation.sector} />
           </div>
-          {data.sourceUrl && (
-            <Button asChild className="w-full">
-              <a href={data.sourceUrl} target="_blank" rel="noreferrer">
-                Buka Sumber Resmi
-              </a>
-            </Button>
-          )}
-        </div>
+        </DetailSection>
+
+        <DetailSection title="Informasi Penerbitan">
+           <div className="space-y-2">
+            <InfoPair label="Penerbit" value={regulation.issuer} />
+            <InfoPair label="Yurisdiksi" value={regulation.jurisdiction} />
+            <InfoPair label="Tanggal Terbit" value={regulation.publishedAt} />
+            <InfoPair label="Tanggal Berlaku" value={regulation.effectiveAt} />
+          </div>
+        </DetailSection>
+
+        {regulation.attachments && regulation.attachments.length > 0 && (
+          <DetailSection title="Lampiran">
+            <ul className="list-disc list-inside">
+              {regulation.attachments.map((file, index) => (
+                <li key={index}>
+                  <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                    {file.filename}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </DetailSection>
+        )}
+
+         {regulation.keywords && regulation.keywords.length > 0 && (
+          <DetailSection title="Kata Kunci">
+            <div className="flex flex-wrap gap-2">
+               {regulation.keywords.map((keyword, index) => (
+                <span key={index} className="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-700">
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </DetailSection>
+        )}
+
+        {regulation.sourceUrl && (
+          <div className="pt-6 text-center">
+            <a
+              href={regulation.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-slate-800 rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+            >
+              Kunjungi Sumber Resmi
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

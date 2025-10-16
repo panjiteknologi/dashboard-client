@@ -1,113 +1,107 @@
 import { RegulationType } from "@/types/projects";
-import Image from "next/image";
+import { cn } from "@/lib/utils";
+import {
+  Landmark,
+  HeartPulse,
+  Flame,
+  Zap,
+  HardHat,
+  Award,
+  AlertTriangle,
+  Icon as LucideIcon,
+  Book,
+} from "lucide-react";
+
+const categoryIcons: { [key: string]: { icon: LucideIcon; color: string } } = {
+  "dasar-kelembagaan": { icon: Landmark, color: "bg-blue-100 text-blue-600" },
+  "kesehatan-lingkungan-kerja": { icon: HeartPulse, color: "bg-green-100 text-green-600" },
+  "penanggulangan-kebakaran": { icon: Flame, color: "bg-red-100 text-red-600" },
+  "listrik-mekanik": { icon: Zap, color: "bg-yellow-100 text-yellow-600" },
+  "apd": { icon: HardHat, color: "bg-orange-100 text-orange-600" },
+  "standar-iso-mutu": { icon: Award, color: "bg-indigo-100 text-indigo-600" },
+  "standar-iso-risiko": { icon: AlertTriangle, color: "bg-purple-100 text-purple-600" },
+  "default": { icon: Book, color: "bg-slate-100 text-slate-600" },
+};
+
+const RegulationIcon = ({ subCategoryId }: { subCategoryId: string }) => {
+  const details = categoryIcons[subCategoryId] || categoryIcons.default;
+  const Icon = details.icon;
+  
+  return (
+    <div className={cn("flex items-center justify-center h-full w-full", details.color)}>
+      <Icon className="w-1/2 h-1/2" />
+    </div>
+  );
+};
 
 export const RegulationCardView = ({
   data,
   handleClick,
   view,
+  subCategoryId,
 }: {
   data: RegulationType;
   handleClick: () => void;
   view: "grid" | "list";
+  subCategoryId: string;
 }) => {
-  const statusStyle =
-    data.status === "Berlaku"
-      ? "bg-emerald-100 text-emerald-700"
-      : data.status === "Dicabut"
-      ? "bg-rose-100 text-rose-700"
-      : "bg-amber-100 text-amber-800";
+  const statusStyle = {
+    Berlaku: "bg-emerald-100 text-emerald-800",
+    Dicabut: "bg-rose-100 text-rose-800",
+    Draft: "bg-amber-100 text-amber-800",
+  };
 
   return (
     <div
       onClick={handleClick}
-      className={`cursor-pointer group border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all bg-white ${
-        view === "list" ? "flex flex-row h-40" : "flex flex-col h-full"
-      }`}
+      className={cn(
+        "cursor-pointer group border border-slate-200 rounded-lg overflow-hidden transition-all duration-200 bg-white",
+        "hover:shadow-lg hover:border-slate-300",
+        view === "list"
+          ? "flex flex-row h-32 shadow-sm"
+          : "flex flex-col h-full shadow-sm"
+      )}
     >
+      {/* Icon Container */}
       <div
-        className={`${
-          view === "list" ? "w-40 h-full" : "h-40"
-        } relative flex-shrink-0`}
+        className={cn(
+          "relative flex-shrink-0",
+          view === "list" ? "w-32 h-full" : "h-36"
+        )}
       >
-        <Image
-          src={data.image}
-          alt={data.title}
-          fill
-          className="object-cover transition-all duration-300 ease-in-out group-hover:scale-105"
-        />
+        <RegulationIcon subCategoryId={subCategoryId} />
       </div>
 
-      <div className="flex flex-col justify-between p-4 gap-3 flex-1">
+      {/* Content Container */}
+      <div className="flex flex-col justify-between p-3 flex-1">
+        {/* Title and Subtitle */}
         <div className="space-y-1">
-          <h3 className="font-semibold text-base line-clamp-2">{data.title}</h3>
+          <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-slate-800">
+            {data.title}
+          </h3>
           {data.subtitle && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-xs text-slate-500 line-clamp-2">
               {data.subtitle}
             </p>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+        {/* Footer with minimal info */}
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs mt-2">
           {data.number && (
-            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700 font-medium">
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
               {data.number}
-            </span>
-          )}
-          {data.type && (
-            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
-              {data.type}
-            </span>
-          )}
-          {data.jurisdiction && (
-            <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
-              {data.jurisdiction}
             </span>
           )}
           {data.status && (
             <span
-              className={`px-2 py-1 rounded-full font-medium ${statusStyle}`}
+              className={cn(
+                "px-2 py-0.5 rounded-full font-semibold",
+                statusStyle[data.status]
+              )}
             >
               {data.status}
             </span>
-          )}
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-          {data.issuer && (
-            <div className="truncate">
-              <span className="font-medium text-gray-700">Penerbit:</span>{" "}
-              {data.issuer}
-            </div>
-          )}
-          {data.sector && (
-            <div className="truncate">
-              <span className="font-medium text-gray-700">Sektor:</span>{" "}
-              {data.sector}
-            </div>
-          )}
-          {data.effectiveAt && (
-            <div className="truncate">
-              <span className="font-medium text-gray-700">Berlaku:</span>{" "}
-              {data.effectiveAt}
-            </div>
-          )}
-          {data.publishedAt && (
-            <div className="truncate">
-              <span className="font-medium text-gray-700">Terbit:</span>{" "}
-              {data.publishedAt}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-          {Array.isArray(data.keywords) && data.keywords.length > 0 && (
-            <span>🔖 {data.keywords.length} kata kunci</span>
-          )}
-          {Array.isArray(data.attachments) && data.attachments.length > 0 && (
-            <span>📎 {data.attachments.length} lampiran</span>
-          )}
-          {Array.isArray(data.sections) && data.sections.length > 0 && (
-            <span>📚 {data.sections.length} seksi</span>
           )}
         </div>
       </div>
