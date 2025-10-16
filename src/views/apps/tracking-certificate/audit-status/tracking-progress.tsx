@@ -45,8 +45,8 @@ export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
   };
 
   return (
-    <div className="overflow-y-auto px-4">
-      <div className="relative ml-4">
+    <div className="overflow-y-auto">
+      <div className="relative">
         <div className="absolute top-0 left-2 w-0.5 h-full bg-gray-300" />
 
         <div className="flex flex-col space-y-6">

@@ -12,8 +12,7 @@ import { AllProject, StandardTypes } from "@/types/projects";
 import { cx } from "@/utils";
 import { THEME } from "@/constant";
 import { TrackingProgressView } from "./tracking-progress";
-import { Button } from "@/components/ui/button";
-import { Download, Eye, Loader2 } from "lucide-react";
+import { AuditCertificateCard } from "./audit-status-certificate";
 
 const DEFAULT_FILE_NAME = "certificate.pdf";
 
@@ -125,6 +124,7 @@ export const AuditStatusView = ({
 }) => {
   const [viewingIdx, setViewingIdx] = useState<number | null>(null);
   const [downloadingIdx, setDownloadingIdx] = useState<number | null>(null);
+
   const { getFromSource } = useFileTools();
 
   const dataTransform = useMemo(() => {
@@ -365,9 +365,7 @@ export const AuditStatusView = ({
           loading={false}
           customGlobalFilter={customGlobalFilter}
           children={(rowData, maybeIdx?: number) => {
-            const certificateUrl: string | undefined =
-              rowData?.upload_sertifikat;
-
+            const certificate = rowData?.sertifikat;
             const derivedIdx =
               typeof maybeIdx === "number" && !Number.isNaN(maybeIdx)
                 ? maybeIdx
@@ -389,64 +387,50 @@ export const AuditStatusView = ({
                 </div>
 
                 <div className="p-4">
-                  <div className="rounded-xl border bg-muted/30 py-6">
-                    <TrackingProgressView data={rowData} />
-                  </div>
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="rounded-xl border bg-muted/30 p-4">
+                      <div className="mb-3">
+                        <h3 className="text-sm font-medium">Tracking Status</h3>
+                      </div>
+                      <div className="p-3">
+                        <TrackingProgressView data={rowData} />
+                      </div>
+                    </div>
 
-                  <div className="mt-3 flex flex-wrap items-center justify-start gap-2">
-                    <Button
-                      size="sm"
-                      className="cursor-pointer"
-                      onClick={() =>
-                        viewCertificate(derivedIdx, certificateUrl)
-                      }
-                      disabled={
-                        derivedIdx < 0 ||
-                        !certificateUrl ||
-                        viewingIdx === derivedIdx
-                      }
-                      title={
-                        !certificateUrl
-                          ? "Sertifikat belum tersedia"
-                          : "Lihat Sertifikat (tab baru)"
-                      }
-                    >
-                      {viewingIdx === derivedIdx ? (
-                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Eye className="mr-1 h-4 w-4" />
-                      )}
-                      {viewingIdx === derivedIdx
-                        ? "Membuka..."
-                        : "Lihat Sertifikat"}
-                    </Button>
+                    <div className="rounded-xl border bg-muted/30 p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <h3 className="text-sm font-medium">Sertifikat</h3>
+                      </div>
 
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        downloadCertificate(derivedIdx, certificateUrl)
-                      }
-                      disabled={
-                        derivedIdx < 0 ||
-                        !certificateUrl ||
-                        downloadingIdx === derivedIdx
-                      }
-                      title={
-                        !certificateUrl
-                          ? "Sertifikat belum tersedia"
-                          : "Download (tab baru)"
-                      }
-                    >
-                      {downloadingIdx === derivedIdx ? (
-                        <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      {((certificate as unknown as { file: string }[]).length ??
+                        0) === 0 ? (
+                        <div className="rounded-lg border bg-background/50 p-6 text-center text-sm text-muted-foreground">
+                          Belum ada sertifikat.
+                        </div>
                       ) : (
-                        <Download className="mr-1 h-4 w-4" />
+                        <div className="max-h-[560px] overflow-auto pr-1">
+                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            {(
+                              certificate as unknown as {
+                                name?: string;
+                                standard?: string;
+                                file: string;
+                              }[]
+                            ).map((item, index) => (
+                              <AuditCertificateCard
+                                key={index}
+                                item={item}
+                                derivedIdx={derivedIdx}
+                                viewingIdx={viewingIdx}
+                                downloadingIdx={downloadingIdx}
+                                viewCertificate={viewCertificate}
+                                downloadCertificate={downloadCertificate}
+                              />
+                            ))}
+                          </div>
+                        </div>
                       )}
-                      {downloadingIdx === derivedIdx
-                        ? "Menyiapkan..."
-                        : "Download"}
-                    </Button>
+                    </div>
                   </div>
                 </div>
               </div>
