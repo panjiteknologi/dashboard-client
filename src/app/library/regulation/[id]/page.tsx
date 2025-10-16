@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { RegulationType } from "@/types/projects";
-import { dataRegulations } from "@/constant/regulation";
+import { dummyRegulationData as dataRegulations } from "@/constant/regulation-dummy";
 import { ArrowLeft } from "lucide-react";
 import { SidebarAppsMenu } from "@/utils";
 import { RegulationDetailView as RegulationDetail } from "@/views/apps/library/regulation/regulation-detail";
@@ -22,8 +22,22 @@ export default function RegulationDetailPage() {
   useEffect(() => {
     if (!id) return;
     const numericId = Number(id);
-    const reg = dataRegulations.find((r) => r.id === numericId) || null;
-    setData(reg);
+    let foundRegulation: RegulationType | null = null;
+
+    for (const category of dataRegulations) {
+      for (const subCategory of category.subCategories) {
+        const reg = subCategory.regulations.find((r) => r.id === numericId);
+        if (reg) {
+          foundRegulation = reg;
+          break;
+        }
+      }
+      if (foundRegulation) {
+        break;
+      }
+    }
+
+    setData(foundRegulation);
   }, [id]);
 
   if (!id) {
@@ -51,7 +65,7 @@ export default function RegulationDetailPage() {
         </button>
       </div>
 
-      <RegulationDetail data={data} />
+      <RegulationDetail regulation={data} />
     </DashboardLayout>
   );
 }
