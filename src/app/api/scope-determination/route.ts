@@ -487,8 +487,8 @@ Instructions:
                 : `All results are displayed from highest to lowest relevance. (Using Quick Search)`;
 
             const saran = isIndonesian
-                ? `Periksa setiap kategori untuk menemukan scope yang paling sesuai dengan kegiatan perusahaan Anda. Anda dapat mengklik kode NACE Child di bagian ringkasan untuk langsung melihat detail scope tersebut. Anda dapat memilih lebih dari satu scope jika perusahaan memiliki berbagai jenis kegiatan.`
-                : `Check each category to find the scope that best suits your company's activities. You can click on NACE Child codes in the summary section to directly view the details of that scope. You can select more than one scope if the company has various types of activities.`;
+                ? `Hasil yang diperoleh diatas, bukan merupakan hasil akhir dari penetapan ruang lingkup,tetapi perlu diuji oleh auditor dengan bukti lainnya seperti legalitas dan aktivitas organisasi. Anda dapat mengklik kode NACE Child di bagian ringkasan untuk langsung melihat detail scope tersebut. Anda dapat memilih lebih dari satu scope jika perusahaan memiliki berbagai jenis kegiatan.`
+                : `The results obtained above are not the final outcome of the scope determination, but need to be tested by the auditor with other evidence such as the legality and activities of the organization. You can click on the NACE Child code in the summary section to directly view the scope details. You can select more than one scope if the company has various types of activities.`;
 
             return NextResponse.json({
                 hasil_pencarian: detailedResults,

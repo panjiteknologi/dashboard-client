@@ -597,7 +597,7 @@ ${resultsText}
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               <span className="text-base font-semibold text-purple-900 dark:text-purple-100">
-                Saran
+                Disclaimer
               </span>
             </div>
             <div className="space-y-1">

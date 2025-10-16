@@ -86,11 +86,11 @@ export const SidebarAppsMenu: {
           //   url: "/price-simulation",
           //   icon: LineChart,
           // },
-        {
-          title: "Quotation",
-          url: "/quotation",
-          icon: LineChart,
-        },
+        // {
+        //   title: "Quotation",
+        //   url: "/quotation",
+        //   icon: LineChart,
+        // },
       ],
     },
     {

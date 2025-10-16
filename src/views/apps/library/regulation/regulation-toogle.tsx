@@ -11,7 +11,7 @@ export const RegulationToggleView = ({
 }) => {
   return (
     <div className="flex justify-between items-center mb-4">
-      <h1 className="text-md font-bold">Daftar Regulasi</h1>
+      {/* <h1 className="text-md font-bold">Daftar Regulasi</h1> */}
 
       <ToggleGroup
         type="single"
