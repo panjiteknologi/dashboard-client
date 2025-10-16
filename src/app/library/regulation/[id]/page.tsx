@@ -8,7 +8,7 @@ import { RegulationType } from "@/types/projects";
 import { dataRegulations } from "@/constant/regulation";
 import { ArrowLeft } from "lucide-react";
 import { SidebarAppsMenu } from "@/utils";
-import { RegulationDetail } from "@/views/apps";
+import { RegulationDetailView as RegulationDetail } from "@/views/apps/library/regulation/regulation-detail";
 
 export default function RegulationDetailPage() {
   const router = useRouter();
