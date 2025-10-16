@@ -1,6 +1,6 @@
 import { RegulationType } from "@/types/projects";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 const DetailSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="py-4 border-b border-slate-200">

@@ -16,7 +16,6 @@ import {
   History,
   LayoutDashboard,
   LibraryIcon,
-  LineChart,
   ListChecks,
   Newspaper,
   NotebookTextIcon,
