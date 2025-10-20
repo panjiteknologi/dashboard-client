@@ -1,6 +1,9 @@
+
 import { RegulationType } from "@/types/projects";
 import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { RegulationModal } from "./regulation-modal";
 
 const DetailSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="py-4 border-b border-slate-200">
@@ -17,6 +20,11 @@ const InfoPair = ({ label, value }: { label: string; value: React.ReactNode }) =
 );
 
 export const RegulationDetailView = ({ regulation }: { regulation: RegulationType }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const statusStyle = {
     Berlaku: "bg-emerald-100 text-emerald-800 border-emerald-200",
     Dicabut: "bg-rose-100 text-rose-800 border-rose-200",
@@ -87,18 +95,17 @@ export const RegulationDetailView = ({ regulation }: { regulation: RegulationTyp
 
         {regulation.sourceUrl && (
           <div className="pt-6 text-center">
-            <a
-              href={regulation.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={openModal}
               className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-slate-800 rounded-md shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
             >
               Kunjungi Sumber Resmi
               <ExternalLink className="h-4 w-4" />
-            </a>
+            </button>
           </div>
         )}
       </div>
+      {isModalOpen && <RegulationModal url={regulation.sourceUrl} onClose={closeModal} />}
     </div>
   );
 };
