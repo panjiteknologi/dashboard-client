@@ -1,3 +1,4 @@
+import type { ElementType } from "react";
 import { RegulationType } from "@/types/projects";
 import { cn } from "@/lib/utils";
 import {
@@ -8,11 +9,10 @@ import {
   HardHat,
   Award,
   AlertTriangle,
-  Icon as LucideIcon,
   Book,
 } from "lucide-react";
 
-const categoryIcons: { [key: string]: { icon: LucideIcon; color: string } } = {
+const categoryIcons: { [key: string]: { icon: ElementType; color: string } } = {
   "dasar-kelembagaan": { icon: Landmark, color: "bg-blue-100 text-blue-600" },
   "kesehatan-lingkungan-kerja": { icon: HeartPulse, color: "bg-green-100 text-green-600" },
   "penanggulangan-kebakaran": { icon: Flame, color: "bg-red-100 text-red-600" },
@@ -20,6 +20,29 @@ const categoryIcons: { [key: string]: { icon: LucideIcon; color: string } } = {
   "apd": { icon: HardHat, color: "bg-orange-100 text-orange-600" },
   "standar-iso-mutu": { icon: Award, color: "bg-indigo-100 text-indigo-600" },
   "standar-iso-risiko": { icon: AlertTriangle, color: "bg-purple-100 text-purple-600" },
+  "undang-undang/perpuu-terkait-k3": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-smk3": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-keahlian-dan-kelembagaan-k3": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-uap": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-bejana-tekanan-dan-tangki-timbun": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-pesawat-angkat-dan-pesawat-angkut": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-pesawat-tenaga-dan-produksi": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-konstruksi-dan-bangunan": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-listrik-dan-penyalur-petir": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-elevator-dan-eskalator": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-kesehatan-kerja": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-ergonomi-dan-lingkungan-kerja": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-bahan-berbahaya": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "user-guide": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "surat-edaran": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "infografis": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-penanggulangan-kebakaran": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-apd": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-pengelasan": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "skkni-/-sni": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-penyelaman": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "pedoman-keselamatan-dan-keselamatan-k3-(apd)terkait-bidang-konstruksi-dan-bangunan": { icon: Book, color: "bg-slate-100 text-slate-600" },
+  "norma,-standar,-pedoman,-kriteria-(nspk)-k3-terkait-bidang-perusahaan-jasa-k3": { icon: Book, color: "bg-slate-100 text-slate-600" },
   "default": { icon: Book, color: "bg-slate-100 text-slate-600" },
 };
 
