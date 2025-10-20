@@ -1,3 +1,4 @@
+"use client";
 
 import { RegulationType } from "@/types/projects";
 import { cn } from "@/lib/utils";
