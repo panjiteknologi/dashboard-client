@@ -165,9 +165,16 @@ export const RegulationListView = ({ view, setView }: { view: "grid" | "list"; s
 
         {/* --- Header for Desktop --- */}
         <header className="hidden md:flex justify-between items-center mb-4 pb-4 border-b border-slate-200">
-          <RegulationBreadcrumbV2 activeSubCategoryId={activeSubCategoryId} selectedRegulation={selectedRegulation} onBackToList={() => setSelectedRegulation(null)} />
+          <div className="max-w-[500px] truncate">
+            <RegulationBreadcrumbV2
+              activeSubCategoryId={activeSubCategoryId}
+              selectedRegulation={selectedRegulation}
+              onBackToList={() => setSelectedRegulation(null)}
+            />
+          </div>
           {!selectedRegulation && <RegulationToggleView view={view} setView={setView} />}
         </header>
+
 
         <div className="hidden md:flex justify-between items-center mb-4">
           <div className="relative">
