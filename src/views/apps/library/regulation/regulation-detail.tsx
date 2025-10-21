@@ -106,7 +106,7 @@ export const RegulationDetailView = ({ regulation }: { regulation: RegulationTyp
           </div>
         )}
       </div>
-      {isModalOpen && <RegulationModal url={regulation.sourceUrl} onClose={closeModal} />}
+      {isModalOpen && regulation.sourceUrl && <RegulationModal url={regulation.sourceUrl} onClose={closeModal} />}
     </div>
   );
 };
