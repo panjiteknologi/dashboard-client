@@ -33,7 +33,7 @@ export const RegulationDetailView = ({ regulation }: { regulation: RegulationTyp
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg p-6 animate-fade-in">
+    <div className="bg-white border border-slate-200 rounded-lg p-6 animate-fade-in" style={{ marginBottom:'66px' }}>
       {/* Header */}
       <div className="pb-4 border-b border-slate-200 mb-4">
         <h2 className="text-xl font-bold text-slate-900">{regulation.title}</h2>
