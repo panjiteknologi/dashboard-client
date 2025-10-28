@@ -25,7 +25,7 @@ export default function Page() {
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
       <div className="space-y-4">
-        <h1 className="text-md font-bold">List Video</h1>
+        <h1 className="text-md font-bold">Library Video</h1>
         <VideoListView />
       </div>
     </DashboardLayout>
