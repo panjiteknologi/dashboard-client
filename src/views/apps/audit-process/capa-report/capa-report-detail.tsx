@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable @next/next/no-img-element */
 import {
   Collapsible,
@@ -59,7 +61,7 @@ const useFileTools = () => {
   }, []);
 
   const getFromSource = useCallback(
-    async (src: string, label: string) => {
+    async (src: string) => {
       try {
         const fullSrc = src.trim();
         const { mime, ext, b64 } = detectMimeAndExtFromBase64(fullSrc);
@@ -108,7 +110,7 @@ export const CapaReportDetail = ({ data }: { data: CapaTypes }) => {
     setViewingKey(docKey);
 
     try {
-      const { objectUrl, mime, b64 } = await getFromSource(src, label);
+      const { objectUrl, mime, b64 } = await getFromSource(src);
 
       if (
         mime.includes("spreadsheet") ||
@@ -141,7 +143,7 @@ export const CapaReportDetail = ({ data }: { data: CapaTypes }) => {
       setDownloadingKey(docKey);
 
       try {
-        const { objectUrl, ext } = await getFromSource(src, label);
+        const { objectUrl, ext } = await getFromSource(src);
         const a = document.createElement("a");
         a.href = objectUrl;
         a.download = `${label}.${ext || "file"}`;

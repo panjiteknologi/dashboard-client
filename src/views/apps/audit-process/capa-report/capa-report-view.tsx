@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable react/no-children-prop */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useMemo } from "react";
