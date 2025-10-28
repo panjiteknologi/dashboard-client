@@ -70,11 +70,7 @@ export const SidebarAppsMenu: {
           url: "/application-form",
           icon: NotebookTextIcon,
         },
-        {
-          title: "Our Auditor",
-          url: "/our-auditor",
-          icon: User2,
-        },
+
           // {
           //   title: "Mandays Calculator",
           //   url: "/mandays",
@@ -90,23 +86,6 @@ export const SidebarAppsMenu: {
         //   url: "/quotation",
         //   icon: LineChart,
         // },
-      ],
-    },
-    {
-      title: "TSI Scope",
-      url: "/scope-determination",
-      icon: Search,
-      children: [
-        {
-          title: "Our Scope",
-          url: "/scope",
-          icon: LibraryIcon,
-        },
-        {
-          title: "Scope Determination",
-          url: "/scope-determination",
-          icon: Search,
-        },
       ],
     },
     {
@@ -158,6 +137,11 @@ export const SidebarAppsMenu: {
               icon: FileCheck2,
             },
             {
+              title: "Audit Document Check",
+              url: "/audit-process/audit-document-check",
+              icon: FileCheck2,
+            },
+            {
               title: "Audit Report & Capa",
               url: "/audit-process/capa-and-report",
               icon: FileEdit,
@@ -165,10 +149,15 @@ export const SidebarAppsMenu: {
           ],
         },
         {
-          title: "Audit History",
-          url: "/audit-history",
-          icon: History,
+          title: "History Audit",
+          url: "/our-auditor",
+          icon: User2,
         },
+        // {
+        //   title: "Audit History",
+        //   url: "/audit-history",
+        //   icon: History,
+        // },
       ],
     },
     {
@@ -181,6 +170,36 @@ export const SidebarAppsMenu: {
           url: "/payments",
           icon: CreditCard,
         },
+      ],
+    },
+    {
+      title: "TSI Scope",
+      url: "/scope-determination",
+      icon: Search,
+      children: [
+        {
+          title: "Our Scope",
+          url: "/scope",
+          icon: LibraryIcon,
+        },
+        {
+          title: "Our Scope Determination",
+          url: "/scope-determination",
+          icon: Search,
+        }
+      ],
+    },
+    {
+      title: "Auditors",
+      url: "/tools",
+      icon: Settings,
+      children: [
+        {
+          title: "Our Auditor Schedule",
+          url: "/auditor-schedule",
+          icon: CalendarCheck,
+        },
+        
       ],
     },
     {
@@ -198,57 +217,50 @@ export const SidebarAppsMenu: {
           url: "/library/regulation",
           icon: Folder,
         },
-        {
-          title: "Webinars",
-          url: "/library/webinars",
-          icon: Users,
-        },
-        {
-          title: "Standard ISO",
-          url: "/library/standard-iso",
-          icon: GraduationCap,
-        },
+        // {
+        //   title: "Webinars",
+        //   url: "/library/webinars",
+        //   icon: Users,
+        // },
+        // {
+        //   title: "Standard ISO",
+        //   url: "/library/standard-iso",
+        //   icon: GraduationCap,
+        // },
       ],
     },
     {
-      title: "Perks & Updates",
+      title: "Utilities & Updates",
       url: "/perks-and-updates",
       icon: Gift,
       children: [
-        {
-          title: "Benefit",
-          url: "/perks-and-updates/benefit",
-          icon: Gift,
-        },
-        {
-          title: "Rewards Program",
-          url: "/perks-and-updates/rewards",
-          icon: BadgeCheck,
-        },
+        // {
+        //   title: "Benefit",
+        //   url: "/perks-and-updates/benefit",
+        //   icon: Gift,
+        // },
+        // {
+        //   title: "Rewards Program",
+        //   url: "/perks-and-updates/rewards",
+        //   icon: BadgeCheck,
+        // },
         {
           title: "Membership",
           url: "/perks-and-updates/membership",
           icon: Users,
         },
         {
-          title: "News",
+          title: "TSI News",
           url: "/perks-and-updates/news",
           icon: Newspaper,
         },
-      ],
-    },
-    {
-      title: "Tools & Utilities",
-      url: "/tools",
-      icon: Settings,
-      children: [
         {
           title: "Reminder Surveillance",
           url: "/reminder-surveillance",
           icon: Settings,
         },
       ],
-    },
+    }
   ],
 
   navSecondary: [],

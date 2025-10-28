@@ -49,6 +49,7 @@ type DataTableProps<TData extends object> = {
   customGlobalFilter?: FilterFnOption<TData>;
   filteredStandard?: boolean;
   isSearch?: boolean;
+  expandOnRowClick?: boolean;
 };
 
 function DataTable<TData extends object>({
@@ -62,6 +63,7 @@ function DataTable<TData extends object>({
   customGlobalFilter,
   filteredStandard,
   isSearch,
+  expandOnRowClick = false,
 }: DataTableProps<TData>) {
   const scrollPosition = React.useRef<number>(0);
   const [selected, setSelected] = useState("");
@@ -215,7 +217,25 @@ function DataTable<TData extends object>({
                     <React.Fragment key={row.id}>
                       <TableRow
                         data-state={row.getIsSelected() && "selected"}
-                        className="hover:bg-gray-50 transition"
+                        className={`hover:bg-gray-50 transition ${
+                          expandable && expandOnRowClick ? "cursor-pointer" : ""
+                        }`}
+                        onClick={() => {
+                          if (expandable && expandOnRowClick) {
+                            if (preserveScrollOnExpand) {
+                              scrollPosition.current = window.scrollY;
+                            }
+                            row.toggleExpanded();
+                            if (preserveScrollOnExpand) {
+                              setTimeout(() => {
+                                window.scrollTo({
+                                  top: scrollPosition.current,
+                                  behavior: "auto",
+                                });
+                              }, 0);
+                            }
+                          }
+                        }}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell

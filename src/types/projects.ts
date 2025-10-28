@@ -123,6 +123,7 @@ export interface LogNote {
 }
 
 export interface CapaTypes {
+  id?: number;
   document_no: string;
   customer: string;
   reference: string;
@@ -201,6 +202,39 @@ export interface RegulationType {
     id: number;
     title: string;
   }[];
+}
+
+export interface ReportList {
+  id: number;
+  name: string;
+  customer: {
+    id: number;
+    name: string;
+  } | null;
+  iso_reference: {
+    id: number;
+    name: string;
+  } | null;
+  iso_standards_ids: {
+    id: number;
+    name: string;
+  }[];
+  audit_stage: string;
+  state: string;
+
+  // From log, but not in old type
+  closing_finding_date?: string;
+  finding_major?: number;
+  finding_minor?: number;
+  finding_ofi?: number;
+  finding_status?: string;
+
+  // From old type, but not in log. Keep as optional.
+  audit_plan_file_name?: string;
+  attendance_sheet_file_name?: string;
+  audit_report_file_name?: string;
+  capa_file_name?: string;
+  log_notes?: any;
 }
 
 export interface WebinarsType {

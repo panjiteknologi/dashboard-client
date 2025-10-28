@@ -9,15 +9,14 @@ import { CapaReportDetail } from "./capa-report-detail";
 export const CapaReportView = ({
   data,
   uniqueStandards,
+  loading,
 }: {
   data: CapaTypes[];
   uniqueStandards: StandardTypes[] | any;
+  loading: boolean;
 }) => {
-  const filteredData = useMemo(
-    () => data.filter((item) => item?.category === "report"),
-    [data]
-  );
 
+  console.log('data',data)
   const columns = useMemo<ColumnDef<CapaTypes>[]>(
     () => [
       {
@@ -97,10 +96,11 @@ export const CapaReportView = ({
     <div className="space-y-6 max-w-screen">
       <DataTable
         columns={columns}
-        data={filteredData}
+        data={data}
         uniqueStandards={uniqueStandards}
-        loading={false}
-        filteredStandard
+        loading={loading}
+        // filteredStandard
+        expandOnRowClick
         customGlobalFilter={customGlobalFilter}
         children={(rowData) => {
           return (
