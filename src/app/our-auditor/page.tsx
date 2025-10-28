@@ -26,7 +26,7 @@ export default function Page() {
   return (
     <DashboardLayout
       href="/our-auditor"
-      titleHeader="Our Auditor"
+      titleHeader="History Audit"
       subTitleHeader="Table"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >

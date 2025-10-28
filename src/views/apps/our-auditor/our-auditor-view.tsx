@@ -137,7 +137,7 @@ export const OurAuditorView = ({
             THEME.headerText
           )}
         >
-          Our Auditor
+          History Audit
         </h1>
         <p className={cx("text-sm", THEME.subText)}>
           Order &amp; invoice overview synced to your data

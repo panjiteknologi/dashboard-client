@@ -67,7 +67,7 @@ const appCategories: AppCategory[] = [
       },
       {
         id: "our-auditor",
-        title: "Our Auditor",
+        title: "History Audit",
         description:
           "Designed for auditors — monitor workflows, assess compliance, and ensure every audit runs smoothly and transparently.",
         icon: User2,
