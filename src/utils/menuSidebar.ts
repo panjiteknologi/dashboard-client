@@ -2,7 +2,7 @@
 // src/utils/sidebar-apps-menu.ts
 import {
   Award,
-  BadgeCheck,
+  // BadgeCheck,
   BookOpen,
   // Bot,
   // Calendar,
@@ -12,8 +12,8 @@ import {
   FileEdit,
   Folder,
   Gift,
-  GraduationCap,
-  History,
+  // GraduationCap,
+  // History,
   LayoutDashboard,
   LibraryIcon,
   ListChecks,
