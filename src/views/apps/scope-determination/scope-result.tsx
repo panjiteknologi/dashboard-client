@@ -58,6 +58,21 @@ export const ScopeResult = () => {
     const [activeChildCode, setActiveChildCode] = useState<string | null>(null);
     const [activeChildLinkId, setActiveChildLinkId] = useState<string | null>(null);
     const [pendingScrollTo, setPendingScrollTo] = useState<string | null>(null);
+
+    useEffect(() => {
+      if (pendingScrollTo && showSummary) {
+        const element = document.getElementById(pendingScrollTo);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.classList.add('ring-2', 'ring-yellow-400', 'ring-offset-2');
+          setTimeout(() => {
+            element.classList.remove('ring-2', 'ring-yellow-400', 'ring-offset-2');
+          }, 1000);
+        }
+        setPendingScrollTo(null); // Clear after scroll
+      }
+    }, [pendingScrollTo, showSummary]);
+
     if (!aiResponse) return null;
 
     // Use corrected query for highlighting if available, otherwise use debounced
@@ -390,20 +405,6 @@ ${resultsText}
       }
       return null;
     };
-
-    useEffect(() => {
-      if (pendingScrollTo && showSummary) {
-        const element = document.getElementById(pendingScrollTo);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          element.classList.add('ring-2', 'ring-yellow-400', 'ring-offset-2');
-          setTimeout(() => {
-            element.classList.remove('ring-2', 'ring-yellow-400', 'ring-offset-2');
-          }, 1000);
-        }
-        setPendingScrollTo(null); // Clear after scroll
-      }
-    }, [pendingScrollTo, showSummary]);
 
     return (
       <div className="mb-6 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
