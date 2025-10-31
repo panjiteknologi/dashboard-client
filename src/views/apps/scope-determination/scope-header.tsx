@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +53,12 @@ export const ScopeHeader = () => {
     setSelectedLang,
   } = useScopeDeterminationContext();
 
+  const [inputValue, setInputValue] = useState(query);
+
+  useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
   // const { data: listResp } = useScopeListQuery();
   // const scopeList = Array.isArray(listResp?.data) ? listResp!.data : [];
 
@@ -66,13 +72,16 @@ export const ScopeHeader = () => {
 
   // Handle AI scope determination
   const handleAIDetermination = async () => {
-    if (!query.trim()) return;
-    await determinateScope(query);
+    if (!inputValue.trim()) return;
+    if (query !== inputValue) {
+      setQuery(inputValue);
+    }
+    await determinateScope(inputValue);
   };
 
   // Handle Enter key press in search input
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && query.trim()) {
+    if (e.key === "Enter" && inputValue.trim()) {
       handleAIDetermination();
     }
   };
@@ -87,7 +96,7 @@ export const ScopeHeader = () => {
   };
 
   // Handle language selection
-  const handleLanguageSelect = (lang: 'IDN' | 'EN') => {
+  const handleLanguageSelect = (lang: "IDN" | "EN") => {
     setSelectedLang(lang);
     setIsLangPopoverOpen(false);
   };
@@ -116,12 +125,14 @@ export const ScopeHeader = () => {
             </div>
           </div>
 
-
           {/* Search Input with Language Filter */}
           <div className="flex gap-2 items-center">
             {/* Language Filter - Left Side */}
             <div className="flex-shrink-0">
-              <Popover open={isLangPopoverOpen} onOpenChange={setIsLangPopoverOpen}>
+              <Popover
+                open={isLangPopoverOpen}
+                onOpenChange={setIsLangPopoverOpen}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -129,7 +140,7 @@ export const ScopeHeader = () => {
                     className="h-12 px-3 rounded-xl bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300"
                   >
                     <span className="text-sm font-medium">
-                      {selectedLang === 'IDN' ? 'IDN' : 'EN'}
+                      {selectedLang === "IDN" ? "IDN" : "EN"}
                     </span>
                     <ChevronDown className="ml-1 h-4 w-4 opacity-50" />
                   </Button>
@@ -137,17 +148,17 @@ export const ScopeHeader = () => {
                 <PopoverContent className="w-32 p-1" align="start">
                   <div className="flex flex-col gap-1">
                     <Button
-                      variant={selectedLang === 'IDN' ? 'default' : 'ghost'}
+                      variant={selectedLang === "IDN" ? "default" : "ghost"}
                       size="sm"
-                      onClick={() => handleLanguageSelect('IDN')}
+                      onClick={() => handleLanguageSelect("IDN")}
                       className="justify-start text-xs font-medium"
                     >
                       IDN - Indonesia
                     </Button>
                     <Button
-                      variant={selectedLang === 'EN' ? 'default' : 'ghost'}
+                      variant={selectedLang === "EN" ? "default" : "ghost"}
                       size="sm"
-                      onClick={() => handleLanguageSelect('EN')}
+                      onClick={() => handleLanguageSelect("EN")}
                       className="justify-start text-xs font-medium"
                     >
                       EN - English
@@ -161,11 +172,11 @@ export const ScopeHeader = () => {
             <div className="relative flex-1">
               <Input
                 ref={searchRef}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={
-                  selectedLang === 'IDN'
+                  selectedLang === "IDN"
                     ? "Tanyakan scope apa yang Anda butuhkan... (tekan Enter)"
                     : "Ask for the scope you need... (press Enter)"
                 }
@@ -173,7 +184,7 @@ export const ScopeHeader = () => {
                 aria-label="Search scopes"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                {query.trim() && (
+                {inputValue.trim() && (
                   <Button
                     variant="default"
                     size="icon"
@@ -190,12 +201,15 @@ export const ScopeHeader = () => {
                     )}
                   </Button>
                 )}
-                {!!query && (
+                {!!inputValue && (
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 rounded-lg"
-                    onClick={() => setQuery("")}
+                    onClick={() => {
+                      setInputValue("");
+                      setQuery("");
+                    }}
                     aria-label="Clear"
                   >
                     <X className="h-4 w-4" />
@@ -208,15 +222,29 @@ export const ScopeHeader = () => {
           {/* Keyboard shortcut hint */}
           <div className="mt-2 text-center">
             <span className="text-xs text-muted-foreground">
-              {selectedLang === 'IDN' ? (
+              {selectedLang === "IDN" ? (
                 <>
-                  Tekan <kbd className="px-1.5 py-0.5 border rounded text-xs">Enter</kbd> untuk mencari atau{" "}
-                  <kbd className="px-1.5 py-0.5 border rounded text-xs">/</kbd> untuk fokus
+                  Tekan{" "}
+                  <kbd className="px-1.5 py-0.5 border rounded text-xs">
+                    Enter
+                  </kbd>{" "}
+                  untuk mencari atau{" "}
+                  <kbd className="px-1.5 py-0.5 border rounded text-xs">
+                    /
+                  </kbd>{" "}
+                  untuk fokus
                 </>
               ) : (
                 <>
-                  Press <kbd className="px-1.5 py-0.5 border rounded text-xs">Enter</kbd> to search or{" "}
-                  <kbd className="px-1.5 py-0.5 border rounded text-xs">/</kbd> to focus
+                  Press{" "}
+                  <kbd className="px-1.5 py-0.5 border rounded text-xs">
+                    Enter
+                  </kbd>{" "}
+                  to search or{" "}
+                  <kbd className="px-1.5 py-0.5 border rounded text-xs">
+                    /
+                  </kbd>{" "}
+                  to focus
                 </>
               )}
             </span>
