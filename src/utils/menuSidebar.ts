@@ -7,7 +7,7 @@ import {
   // Bot,
   // Calendar,
   CalendarCheck,
-  CreditCard,
+  // CreditCard,
   FileCheck2,
   FileEdit,
   Folder,
