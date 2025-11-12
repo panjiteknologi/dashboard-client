@@ -3,30 +3,67 @@ import { Button } from "@/components/ui/button";
 import { cx } from "@/utils";
 import { X } from "lucide-react";
 
+export type ExpiryLevel = "overdue" | "critical" | "warning" | "attention" | "safe";
+
+export const getExpiryLevel = (days?: number | null): ExpiryLevel => {
+  if (days == null) return "safe";
+  if (days < 0) return "overdue"; // Sudah lewat
+  if (days <= 7) return "critical"; // 1 minggu atau kurang
+  if (days <= 30) return "warning"; // 1 bulan atau kurang
+  if (days <= 90) return "attention"; // 2-3 bulan
+  return "safe"; // Lebih dari 3 bulan
+};
+
 export const daysStatusText = (days?: number | null) => {
   if (days == null) return "-";
-  if (days < 0) return `Overdue ${Math.abs(days)} hari`;
-  if (days === 0) return "Jatuh tempo hari ini";
-  return `Due dalam ${days} hari`;
+  if (days < 0) return `OVERDUE ${Math.abs(days)} HARI!`;
+  if (days === 0) return "JATUH TEMPO HARI INI!";
+  if (days <= 7) return `KRITIS! ${days} hari lagi`;
+  if (days <= 30) return `PERHATIAN! ${days} hari lagi`;
+  return `${days} hari lagi`;
 };
 
 export const statusBadge = (days?: number | null) => {
+  const level = getExpiryLevel(days);
+
   if (days == null)
     return (
       <Badge variant="secondary" className="rounded-full">
         -
       </Badge>
     );
-  if (days < 0) return <Badge className="rounded-full">Overdue</Badge>;
-  if (days === 0)
+
+  if (level === "overdue")
     return (
-      <Badge variant="destructive" className="rounded-full">
-        Due Today
+      <Badge className="rounded-full bg-red-600 text-white font-bold animate-pulse">
+        OVERDUE!
       </Badge>
     );
+
+  if (level === "critical")
+    return (
+      <Badge className="rounded-full bg-red-500 text-white font-bold">
+        KRITIS!
+      </Badge>
+    );
+
+  if (level === "warning")
+    return (
+      <Badge className="rounded-full bg-orange-500 text-white font-semibold">
+        PERHATIAN
+      </Badge>
+    );
+
+  if (level === "attention")
+    return (
+      <Badge className="rounded-full bg-yellow-500 text-black font-medium">
+        Segera
+      </Badge>
+    );
+
   return (
     <Badge variant="outline" className="rounded-full">
-      Due in {days}d
+      Aman
     </Badge>
   );
 };

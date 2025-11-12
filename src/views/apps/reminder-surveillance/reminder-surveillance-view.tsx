@@ -18,6 +18,8 @@ import {
   StageBadge,
   statusBadge,
   UrgencyBadge,
+  getExpiryLevel,
+  daysStatusText,
 } from "./reminder-surveillance-helpers";
 import { ReminderSurveillanceCard } from "./reminder-surveillance-card";
 import { ReminderSurveillanceEmpty } from "./reminder-surveillance-empty";
@@ -86,7 +88,7 @@ const InnerView = ({
   isFetching?: boolean;
 }) => {
   const { filtered } = useReminderSurveillance();
-  const [tab, setTab] = useState<"cards" | "table">("cards");
+  const [tab, setTab] = useState<"cards" | "table">("table");
 
   const totalPages =
     Math.max(
@@ -141,8 +143,8 @@ const InnerView = ({
             className="w-full"
           >
             <TabsList className="grid w-full grid-cols-2 md:w-auto">
-              <TabsTrigger value="cards">List Card</TabsTrigger>
               <TabsTrigger value="table">List Table</TabsTrigger>
+              <TabsTrigger value="cards">List Card</TabsTrigger>
             </TabsList>
 
             <TabsContent value="cards" className="mt-3">
@@ -168,45 +170,132 @@ const InnerView = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>No. Sertifikat</TableHead>
-                        <TableHead>ISO</TableHead>
+                        <TableHead className="w-[180px]">No. Sertifikat</TableHead>
+                        <TableHead className="w-[200px]">ISO Standards</TableHead>
+                        <TableHead>Scope</TableHead>
                         <TableHead>Stage</TableHead>
-                        <TableHead>Expiry</TableHead>
+                        <TableHead className="w-[130px]">Tanggal Expired</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Urgency</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filtered.map((c) => (
-                        <TableRow
-                          key={`row-${c.id}-${c.surveillance_stage}`}
-                          className={cx(
-                            (c.urgency_level ?? "").toLowerCase() ===
-                              "critical" && "bg-destructive/5"
-                          )}
-                        >
-                          <TableCell className="font-medium">
-                            {c.nomor_sertifikat}
-                          </TableCell>
-                          <TableCell>
-                            {(c.iso_standards ?? [])
-                              .map((i) => i.name)
-                              .join(", ")}
-                          </TableCell>
-                          <TableCell>
-                            <StageBadge stage={c.surveillance_stage} />
-                          </TableCell>
-                          <TableCell className="whitespace-nowrap">
-                            {formatDateShortID(c.expiry_date)}
-                          </TableCell>
-                          <TableCell>
-                            {statusBadge(c.days_until_expiry)}
-                          </TableCell>
-                          <TableCell>
-                            <UrgencyBadge level={c.urgency_level} />
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {filtered.map((c) => {
+                        const level = getExpiryLevel(c.days_until_expiry);
+
+                        // Styling berdasarkan level waktu expired
+                        const rowStyles = {
+                          overdue: {
+                            bg: "bg-red-100",
+                            border: "border-l-8 border-l-red-600",
+                            textColor: "text-red-700",
+                            dateSize: "text-xl",
+                            animation: "animate-pulse",
+                          },
+                          critical: {
+                            bg: "bg-red-50",
+                            border: "border-l-6 border-l-red-500",
+                            textColor: "text-red-600",
+                            dateSize: "text-lg",
+                            animation: "",
+                          },
+                          warning: {
+                            bg: "bg-orange-50",
+                            border: "border-l-4 border-l-orange-500",
+                            textColor: "text-orange-600",
+                            dateSize: "text-base",
+                            animation: "",
+                          },
+                          attention: {
+                            bg: "bg-yellow-50",
+                            border: "border-l-4 border-l-yellow-500",
+                            textColor: "text-yellow-700",
+                            dateSize: "text-base",
+                            animation: "",
+                          },
+                          safe: {
+                            bg: "hover:bg-muted/50",
+                            border: "",
+                            textColor: "",
+                            dateSize: "text-base",
+                            animation: "",
+                          },
+                        };
+
+                        const style = rowStyles[level];
+
+                        return (
+                          <TableRow
+                            key={`row-${c.id}-${c.surveillance_stage}`}
+                            className={cx(
+                              "transition-colors",
+                              style.bg,
+                              style.border,
+                              style.animation
+                            )}
+                          >
+                            <TableCell className="font-semibold">
+                              {c.nomor_sertifikat}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <p className={cx(
+                                  "font-black leading-tight",
+                                  level === "overdue" ? "text-xl text-red-600" :
+                                  level === "critical" ? "text-lg text-red-500" :
+                                  level === "warning" ? "text-lg text-orange-600" :
+                                  level === "attention" ? "text-base text-yellow-700" :
+                                  "text-base text-primary"
+                                )}>
+                                  {(c.iso_standards ?? [])
+                                    .map((i) => i.name)
+                                    .join(", ") || "-"}
+                                </p>
+                                {c.accreditation && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {c.accreditation}
+                                  </p>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="max-w-[250px]">
+                              <p className="text-sm truncate" title={c.iso_reference?.scope ?? "-"}>
+                                {c.iso_reference?.scope ?? "-"}
+                              </p>
+                            </TableCell>
+                            <TableCell>
+                              <StageBadge stage={c.surveillance_stage} />
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap">
+                              <div className="space-y-1">
+                                <p
+                                  className={cx(
+                                    "font-black",
+                                    style.dateSize,
+                                    style.textColor
+                                  )}
+                                >
+                                  {formatDateShortID(c.expiry_date)}
+                                </p>
+                                <p
+                                  className={cx(
+                                    "text-xs font-bold",
+                                    style.textColor || "text-muted-foreground"
+                                  )}
+                                >
+                                  {daysStatusText(c.days_until_expiry)}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {statusBadge(c.days_until_expiry)}
+                            </TableCell>
+                            <TableCell>
+                              <UrgencyBadge level={c.urgency_level} />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </CardContent>
