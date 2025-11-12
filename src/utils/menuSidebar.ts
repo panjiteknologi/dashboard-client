@@ -126,11 +126,11 @@ export const SidebarAppsMenu: {
           url: "/audit-process",
           icon: ListChecks,
           menu: [
-            {
-              title: "Audit Plan",
-              url: "/audit-process/audit-plan",
-              icon: CalendarCheck,
-            },
+            // {
+            //   title: "Audit Plan",
+            //   url: "/audit-process/audit-plan",
+            //   icon: CalendarCheck,
+            // },
             {
               title: "Sharing Document",
               url: "https://tsi-document.manajemensistem.com/",
@@ -160,18 +160,18 @@ export const SidebarAppsMenu: {
         // },
       ],
     },
-    {
-      title: "Finance & Administration",
-      url: "/finance",
-      icon: CreditCard,
-      children: [
-        {
-          title: "Payments",
-          url: "/payments",
-          icon: CreditCard,
-        },
-      ],
-    },
+    // {
+    //   title: "Finance & Administration",
+    //   url: "/finance",
+    //   icon: CreditCard,
+    //   children: [
+    //     {
+    //       title: "Payments",
+    //       url: "/payments",
+    //       icon: CreditCard,
+    //     },
+    //   ],
+    // },
     {
       title: "TSI Scope",
       url: "/scope-determination",
