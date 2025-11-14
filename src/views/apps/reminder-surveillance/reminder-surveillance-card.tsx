@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cx, formatDateShortID } from "@/utils";
-import { AlertTriangle, Calendar, CalendarCheck, FileText, ShieldCheck, Timer, XCircle, AlertCircle, Clock } from "lucide-react";
+import { AlertTriangle, CalendarCheck, FileText, ShieldCheck, Timer, XCircle, AlertCircle, Clock } from "lucide-react";
 import {
   daysStatusText,
   humanize,
