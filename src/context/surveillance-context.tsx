@@ -7,22 +7,10 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
+import { Certificate } from "@/types/surveillance";
 
 export type StageValue = "all" | "s1" | "s2";
 export type UrgencyValue = "all" | "low" | "medium" | "high" | "critical";
-
-export type Certificate = {
-  id: number;
-  name: string;
-  nomor_sertifikat: string;
-  iso_reference?: { id: number; name: string; scope?: string | null };
-  iso_standards?: { id: number; name: string }[];
-  expiry_date?: string | null;
-  days_until_expiry?: number | null;
-  reminder_type?: string | null;
-  urgency_level?: string | null;
-  surveillance_stage?: string | null;
-};
 
 type Ctx = {
   qInput: string;
