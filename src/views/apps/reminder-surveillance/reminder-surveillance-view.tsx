@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BadgeInfo, RefreshCw } from "lucide-react";
+import { BadgeInfo, Check, RefreshCw, X } from "lucide-react";
 import { cx, formatDateShortID } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { SurveillanceType } from "@/types/surveillance";
+import { SurveillanceType, Certificate } from "@/types/surveillance";
 import {
   StageBadge,
   statusBadge,
@@ -32,6 +32,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { THEME } from "@/constant";
 import { ReminderSurveillancePagination } from "./reminder-surveillance-pagination";
+import { ReminderSurveillanceActionDialog } from "./reminder-surveillance-action-dialog";
 
 export const ReminderSurveillanceView = ({
   data,
@@ -66,6 +67,8 @@ export const ReminderSurveillanceView = ({
   );
 };
 
+type ActionType = "lanjut" | "tidak" | null;
+
 const InnerView = ({
   pagination,
   page,
@@ -90,6 +93,10 @@ const InnerView = ({
   const { filtered } = useReminderSurveillance();
   const [tab, setTab] = useState<"cards" | "table">("table");
 
+  // 🔹 state untuk aksi (Lanjut / Tidak)
+  const [actionCert, setActionCert] = useState<Certificate | null>(null);
+  const [actionType, setActionType] = useState<ActionType>(null);
+
   const totalPages =
     Math.max(
       1,
@@ -97,8 +104,57 @@ const InnerView = ({
         Math.ceil((pagination?.total_count ?? 0) / Math.max(1, limit))
     ) || 1;
 
+  const handleOpenAction = (
+    cert: Certificate,
+    type: Exclude<ActionType, null>
+  ) => {
+    setActionCert(cert);
+    setActionType(type);
+  };
+
+  const handleCloseAction = () => {
+    setActionCert(null);
+    setActionType(null);
+  };
+
+  const handleSubmitContinues = async (payload: {
+    certificate: Certificate;
+    requestDate: string;
+    notes: string;
+  }) => {
+    // 🔹 TODO: sambungkan ke API backend
+    // contoh:
+    // await api.surveillance.requestAudit({
+    //   certificate_id: payload.certificate.id,
+    //   request_date: payload.requestDate,
+    //   notes: payload.notes,
+    // });
+
+    console.log("Submit LANJUT", payload);
+
+    handleCloseAction();
+    refetch?.();
+  };
+
+  const handleSubmitDiscontinues = async (payload: {
+    certificate: Certificate;
+  }) => {
+    // 🔹 TODO: sambungkan ke API backend
+    // contoh:
+    // await api.surveillance.updateStatus({
+    //   certificate_id: payload.certificate.id,
+    //   status: "lost",
+    // });
+
+    console.log("Set LOST", payload);
+
+    handleCloseAction();
+    refetch?.();
+  };
+
   return (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1
@@ -129,8 +185,10 @@ const InnerView = ({
         </Button>
       </div>
 
+      {/* Filter */}
       <ReminderSurveillanceFilters onPageChange={onPageChange} />
 
+      {/* Content */}
       {isLoading || isFetching ? (
         <ReminderSurveillanceSkeleton />
       ) : filtered.length === 0 ? (
@@ -147,6 +205,7 @@ const InnerView = ({
               <TabsTrigger value="cards">List Card</TabsTrigger>
             </TabsList>
 
+            {/* CARDS VIEW */}
             <TabsContent value="cards" className="mt-3">
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {filtered.map((c) => (
@@ -158,6 +217,7 @@ const InnerView = ({
               </div>
             </TabsContent>
 
+            {/* TABLE VIEW */}
             <TabsContent value="table" className="mt-3">
               <Card>
                 <CardHeader className="pb-2">
@@ -170,20 +230,26 @@ const InnerView = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[180px]">No. Sertifikat</TableHead>
-                        <TableHead className="w-[200px]">ISO Standards</TableHead>
+                        <TableHead className="w-[180px]">
+                          No. Sertifikat
+                        </TableHead>
+                        <TableHead className="w-[200px]">
+                          ISO Standards
+                        </TableHead>
                         <TableHead>Scope</TableHead>
                         <TableHead>Stage</TableHead>
-                        <TableHead className="w-[130px]">Tanggal Expired</TableHead>
+                        <TableHead className="w-[130px]">
+                          Tanggal Expired
+                        </TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Urgency</TableHead>
+                        <TableHead className="text-center">Aksi</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filtered.map((c) => {
                         const level = getExpiryLevel(c.days_until_expiry);
 
-                        // Styling berdasarkan level waktu expired
                         const rowStyles = {
                           overdue: {
                             bg: "bg-red-100",
@@ -220,7 +286,7 @@ const InnerView = ({
                             dateSize: "text-base",
                             animation: "",
                           },
-                        };
+                        } as const;
 
                         const style = rowStyles[level];
 
@@ -239,14 +305,20 @@ const InnerView = ({
                             </TableCell>
                             <TableCell>
                               <div className="space-y-1">
-                                <p className={cx(
-                                  "font-black leading-tight",
-                                  level === "overdue" ? "text-xl text-red-600" :
-                                  level === "critical" ? "text-lg text-red-500" :
-                                  level === "warning" ? "text-lg text-orange-600" :
-                                  level === "attention" ? "text-base text-yellow-700" :
-                                  "text-base text-primary"
-                                )}>
+                                <p
+                                  className={cx(
+                                    "font-black leading-tight",
+                                    level === "overdue"
+                                      ? "text-xl text-red-600"
+                                      : level === "critical"
+                                      ? "text-lg text-red-500"
+                                      : level === "warning"
+                                      ? "text-lg text-orange-600"
+                                      : level === "attention"
+                                      ? "text-base text-yellow-700"
+                                      : "text-base text-primary"
+                                  )}
+                                >
                                   {(c.iso_standards ?? [])
                                     .map((i) => i.name)
                                     .join(", ") || "-"}
@@ -259,7 +331,10 @@ const InnerView = ({
                               </div>
                             </TableCell>
                             <TableCell className="max-w-[250px]">
-                              <p className="text-sm truncate" title={c.iso_reference?.scope ?? "-"}>
+                              <p
+                                className="text-sm truncate"
+                                title={c.iso_reference?.scope ?? "-"}
+                              >
                                 {c.iso_reference?.scope ?? "-"}
                               </p>
                             </TableCell>
@@ -293,11 +368,46 @@ const InnerView = ({
                             <TableCell>
                               <UrgencyBadge level={c.urgency_level} />
                             </TableCell>
+                            <TableCell>
+                              <div className="flex justify-center align-centergap-1">
+                                <Button
+                                  size="sm"
+                                  className="w-25 rounded-full shadow-sm hover:shadow-md transition-all
+                                      focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer bg-green-500 hover:bg-green-200 hover:text-black"
+                                  onClick={() => handleOpenAction(c, "lanjut")}
+                                >
+                                  <Check className="mr-1.5 h-4 w-4" />
+                                  <p className="text-xs">Lanjut</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="w-25 rounded-full border-muted-foreground/30
+                                      hover:bg-destructive/10 hover:text-destructive
+                                      focus-visible:ring-2 focus-visible:ring-destructive/40 cursor-pointer"
+                                  onClick={() => handleOpenAction(c, "tidak")}
+                                >
+                                  <X className="mr-1.5 h-4 w-4" />
+                                  <p className="text-xs">Tidak</p>
+                                </Button>
+                              </div>
+                            </TableCell>
                           </TableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
+
+                  <ReminderSurveillanceActionDialog
+                    open={!!actionType}
+                    type={actionType}
+                    certificate={actionCert}
+                    onOpenChange={(open) => {
+                      if (!open) handleCloseAction();
+                    }}
+                    onSubmitLanjut={handleSubmitContinues}
+                    onSubmitTidak={handleSubmitDiscontinues}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>
