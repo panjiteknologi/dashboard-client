@@ -68,6 +68,55 @@ export const statusBadge = (days?: number | null) => {
   );
 };
 
+export const StatusExpiryBadge = ({
+  status_expiry,
+}: {
+  status_expiry?: {
+    label: string;
+    status: "expired" | "expiring_soon" | "still_valid";
+  } | null;
+}) => {
+  if (!status_expiry) {
+    return (
+      <Badge variant="secondary" className="rounded-full">
+        -
+      </Badge>
+    );
+  }
+
+  const { label, status } = status_expiry;
+
+  if (status === "expired") {
+    return (
+      <Badge className="rounded-full bg-red-600 text-white font-medium">
+        {label}
+      </Badge>
+    );
+  }
+
+  if (status === "expiring_soon") {
+    return (
+      <Badge className="rounded-full bg-yellow-500 text-black font-medium">
+        {label}
+      </Badge>
+    );
+  }
+
+  if (status === "still_valid") {
+    return (
+      <Badge className="rounded-full bg-green-500 text-white font-medium">
+        {label}
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge variant="secondary" className="rounded-full">
+      {label}
+    </Badge>
+  );
+};
+
 export const StageBadge = ({ stage }: { stage?: string | null }) => {
   const txt = stage ?? "-";
   const isS1 = (stage ?? "").toLowerCase().includes("surveillance 1");

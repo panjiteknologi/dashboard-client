@@ -13,8 +13,12 @@ export type Certificate = {
   surveillance_2_date?: string | null;
   accreditation?: string | null;
   reminder_type?: string | null;
-  urgency_level?: "low" | "medium" | "high" | "critical" | string | null;
-  surveillance_stage?: "Surveillance 1" | "Surveillance 2" | string | null;
+  urgency_level?: 'low' | 'medium' | 'high' | 'critical' | string | null;
+  surveillance_stage?: 'Surveillance 1' | 'Surveillance 2' | string | null;
+  status_expiry: {
+    label: string;
+    status: 'expired' | 'expiring_soon' | 'still_valid';
+  };
 
   isFetching?: boolean;
   refetch?: (v: boolean) => void;

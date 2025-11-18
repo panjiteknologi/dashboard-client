@@ -1,37 +1,37 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { BadgeInfo, RefreshCw } from "lucide-react";
-import { cx, formatDateShortID } from "@/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from 'react';
+import { BadgeInfo, RefreshCw } from 'lucide-react';
+import { cx, formatDateShortID } from '@/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { SurveillanceType } from "@/types/surveillance";
+  TableRow
+} from '@/components/ui/table';
+import { SurveillanceType } from '@/types/surveillance';
 import {
   StageBadge,
-  statusBadge,
   UrgencyBadge,
   getExpiryLevel,
   daysStatusText,
-} from "./reminder-surveillance-helpers";
-import { ReminderSurveillanceCard } from "./reminder-surveillance-card";
-import { ReminderSurveillanceEmpty } from "./reminder-surveillance-empty";
-import { ReminderSurveillanceSkeleton } from "./reminder-surveillance-skeleton";
-import { ReminderSurveillanceFilters } from "./reminder-surveillance-filters";
+  StatusExpiryBadge
+} from './reminder-surveillance-helpers';
+import { ReminderSurveillanceCard } from './reminder-surveillance-card';
+import { ReminderSurveillanceEmpty } from './reminder-surveillance-empty';
+import { ReminderSurveillanceSkeleton } from './reminder-surveillance-skeleton';
+import { ReminderSurveillanceFilters } from './reminder-surveillance-filters';
 import {
   ReminderSurveillanceProvider,
-  useReminderSurveillance,
-} from "@/context/surveillance-context";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { THEME } from "@/constant";
-import { ReminderSurveillancePagination } from "./reminder-surveillance-pagination";
+  useReminderSurveillance
+} from '@/context/surveillance-context';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { THEME } from '@/constant';
+import { ReminderSurveillancePagination } from './reminder-surveillance-pagination';
 
 export const ReminderSurveillanceView = ({
   data,
@@ -42,7 +42,7 @@ export const ReminderSurveillanceView = ({
   onLimitChange,
   isLoading,
   refetch,
-  isFetching,
+  isFetching
 }: SurveillanceType & {
   refetch?: () => void;
   isFetching?: boolean;
@@ -74,21 +74,21 @@ const InnerView = ({
   onLimitChange,
   isLoading,
   refetch,
-  isFetching,
+  isFetching
 }: Pick<
   SurveillanceType,
-  | "pagination"
-  | "page"
-  | "limit"
-  | "onPageChange"
-  | "onLimitChange"
-  | "isLoading"
+  | 'pagination'
+  | 'page'
+  | 'limit'
+  | 'onPageChange'
+  | 'onLimitChange'
+  | 'isLoading'
 > & {
   refetch?: () => void;
   isFetching?: boolean;
 }) => {
   const { filtered } = useReminderSurveillance();
-  const [tab, setTab] = useState<"cards" | "table">("table");
+  const [tab, setTab] = useState<'cards' | 'table'>('table');
 
   const totalPages =
     Math.max(
@@ -103,13 +103,13 @@ const InnerView = ({
         <div>
           <h1
             className={cx(
-              "text-xl font-bold leading-tight tracking-tight",
+              'text-xl font-bold leading-tight tracking-tight',
               THEME.headerText
             )}
           >
             Reminder Surveillance
           </h1>
-          <p className={cx("text-sm", THEME.subText)}>
+          <p className={cx('text-sm', THEME.subText)}>
             Pantau jadwal dan pengingat surveillance audit secara terorganisir
           </p>
         </div>
@@ -123,7 +123,7 @@ const InnerView = ({
           title="Refresh data"
         >
           <RefreshCw
-            className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
+            className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`}
           />
           Refresh
         </Button>
@@ -170,11 +170,17 @@ const InnerView = ({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[180px]">No. Sertifikat</TableHead>
-                        <TableHead className="w-[200px]">ISO Standards</TableHead>
+                        <TableHead className="w-[180px]">
+                          No. Sertifikat
+                        </TableHead>
+                        <TableHead className="w-[200px]">
+                          ISO Standards
+                        </TableHead>
                         <TableHead>Scope</TableHead>
                         <TableHead>Stage</TableHead>
-                        <TableHead className="w-[130px]">Tanggal Expired</TableHead>
+                        <TableHead className="w-[130px]">
+                          Tanggal Expired
+                        </TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Urgency</TableHead>
                       </TableRow>
@@ -186,40 +192,40 @@ const InnerView = ({
                         // Styling berdasarkan level waktu expired
                         const rowStyles = {
                           overdue: {
-                            bg: "bg-red-100",
-                            border: "border-l-8 border-l-red-600",
-                            textColor: "text-red-700",
-                            dateSize: "text-xl",
-                            animation: "animate-pulse",
+                            bg: 'bg-red-100',
+                            border: 'border-l-8 border-l-red-600',
+                            textColor: 'text-red-700',
+                            dateSize: 'text-xl',
+                            animation: 'animate-pulse'
                           },
                           critical: {
-                            bg: "bg-red-50",
-                            border: "border-l-6 border-l-red-500",
-                            textColor: "text-red-600",
-                            dateSize: "text-lg",
-                            animation: "",
+                            bg: 'bg-red-50',
+                            border: 'border-l-6 border-l-red-500',
+                            textColor: 'text-red-600',
+                            dateSize: 'text-lg',
+                            animation: ''
                           },
                           warning: {
-                            bg: "bg-orange-50",
-                            border: "border-l-4 border-l-orange-500",
-                            textColor: "text-orange-600",
-                            dateSize: "text-base",
-                            animation: "",
+                            bg: 'bg-orange-50',
+                            border: 'border-l-4 border-l-orange-500',
+                            textColor: 'text-orange-600',
+                            dateSize: 'text-base',
+                            animation: ''
                           },
                           attention: {
-                            bg: "bg-yellow-50",
-                            border: "border-l-4 border-l-yellow-500",
-                            textColor: "text-yellow-700",
-                            dateSize: "text-base",
-                            animation: "",
+                            bg: 'bg-yellow-50',
+                            border: 'border-l-4 border-l-yellow-500',
+                            textColor: 'text-yellow-700',
+                            dateSize: 'text-base',
+                            animation: ''
                           },
                           safe: {
-                            bg: "hover:bg-muted/50",
-                            border: "",
-                            textColor: "",
-                            dateSize: "text-base",
-                            animation: "",
-                          },
+                            bg: 'hover:bg-muted/50',
+                            border: '',
+                            textColor: '',
+                            dateSize: 'text-base',
+                            animation: ''
+                          }
                         };
 
                         const style = rowStyles[level];
@@ -228,7 +234,7 @@ const InnerView = ({
                           <TableRow
                             key={`row-${c.id}-${c.surveillance_stage}`}
                             className={cx(
-                              "transition-colors",
+                              'transition-colors',
                               style.bg,
                               style.border,
                               style.animation
@@ -239,17 +245,23 @@ const InnerView = ({
                             </TableCell>
                             <TableCell>
                               <div className="space-y-1">
-                                <p className={cx(
-                                  "font-black leading-tight",
-                                  level === "overdue" ? "text-xl text-red-600" :
-                                  level === "critical" ? "text-lg text-red-500" :
-                                  level === "warning" ? "text-lg text-orange-600" :
-                                  level === "attention" ? "text-base text-yellow-700" :
-                                  "text-base text-primary"
-                                )}>
+                                <p
+                                  className={cx(
+                                    'font-black leading-tight',
+                                    level === 'overdue'
+                                      ? 'text-xl text-red-600'
+                                      : level === 'critical'
+                                      ? 'text-lg text-red-500'
+                                      : level === 'warning'
+                                      ? 'text-lg text-orange-600'
+                                      : level === 'attention'
+                                      ? 'text-base text-yellow-700'
+                                      : 'text-base text-primary'
+                                  )}
+                                >
                                   {(c.iso_standards ?? [])
                                     .map((i) => i.name)
-                                    .join(", ") || "-"}
+                                    .join(', ') || '-'}
                                 </p>
                                 {c.accreditation && (
                                   <p className="text-xs text-muted-foreground">
@@ -259,8 +271,11 @@ const InnerView = ({
                               </div>
                             </TableCell>
                             <TableCell className="max-w-[250px]">
-                              <p className="text-sm truncate" title={c.iso_reference?.scope ?? "-"}>
-                                {c.iso_reference?.scope ?? "-"}
+                              <p
+                                className="text-sm truncate"
+                                title={c.iso_reference?.scope ?? '-'}
+                              >
+                                {c.iso_reference?.scope ?? '-'}
                               </p>
                             </TableCell>
                             <TableCell>
@@ -270,7 +285,7 @@ const InnerView = ({
                               <div className="space-y-1">
                                 <p
                                   className={cx(
-                                    "font-black",
+                                    'font-black',
                                     style.dateSize,
                                     style.textColor
                                   )}
@@ -279,8 +294,8 @@ const InnerView = ({
                                 </p>
                                 <p
                                   className={cx(
-                                    "text-xs font-bold",
-                                    style.textColor || "text-muted-foreground"
+                                    'text-xs font-bold',
+                                    style.textColor || 'text-muted-foreground'
                                   )}
                                 >
                                   {daysStatusText(c.days_until_expiry)}
@@ -288,7 +303,9 @@ const InnerView = ({
                               </div>
                             </TableCell>
                             <TableCell>
-                              {statusBadge(c.days_until_expiry)}
+                              <StatusExpiryBadge
+                                status_expiry={c.status_expiry}
+                              />
                             </TableCell>
                             <TableCell>
                               <UrgencyBadge level={c.urgency_level} />
@@ -313,7 +330,7 @@ const InnerView = ({
             totalCount={pagination?.total_count ?? filtered.length}
             hasPrev={page > 1}
             hasNext={
-              (typeof pagination?.has_next === "boolean"
+              (typeof pagination?.has_next === 'boolean'
                 ? pagination.has_next
                 : page < totalPages) && totalPages > 1
             }
