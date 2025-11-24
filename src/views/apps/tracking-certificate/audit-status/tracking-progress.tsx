@@ -5,31 +5,31 @@ import { cn } from "@/lib/utils";
 import { AllProject } from "@/types/projects";
 
 const auditSteps = [
-  "Tanggal Aplication Form or Request",
-  "Tanggal Review Penugasan ST Satu",
-  "Tanggal Kontrak",
-  "Tanggal Pengiriman Notifikasi ST Satu",
-  "Tanggal Pengiriman Audit Plan ST Satu",
-  "Tanggal Pelaksanaan Audit ST Satu",
-  "Tanggal Penyelesaian CAPA ST Satu",
-  "Tanggal Pengiriman Draft Sertifikat",
-  "Tanggal Pengajuan ke KAN",
-  "Tanggal Persetujuan ke KAN",
-  "Tanggal Kirim Sertifikat",
+  "Aplication Form or Request",
+  "Review Penugasan ST Satu",
+  "Kontrak",
+  "Pengiriman Notifikasi ST Satu",
+  "Pengiriman Audit Plan ST Satu",
+  "Pelaksanaan Audit ST Satu",
+  "Penyelesaian CAPA ST Satu",
+  "Pengiriman Draft Sertifikat",
+  "Pengajuan ke KAN",
+  "Persetujuan ke KAN",
+  "Kirim Sertifikat",
 ];
 
 const leadTimeStepMap: Record<string, keyof AllProject> = {
-  "Tanggal Aplication Form or Request": "tgl_aplication_form",
-  "Tanggal Review Penugasan ST Satu": "tgl_review_penugasan_st_satu",
-  "Tanggal Kontrak": "tgl_kontrak",
-  "Tanggal Pengiriman Notifikasi ST Satu": "tgl_pengiriman_notif_st_satu",
-  "Tanggal Pengiriman Audit Plan ST Satu": "tgl_pengiriman_audit_plan_st_satu",
-  "Tanggal Pelaksanaan Audit ST Satu": "tgl_pelaksanaan_audit_st_satu",
-  "Tanggal Penyelesaian CAPA ST Satu": "tgl_penyelesaian_capa_st_satu",
-  "Tanggal Pengiriman Draft Sertifikat": "tgl_pengiriman_draft_sertifikat",
-  "Tanggal Pengajuan ke KAN": "tgl_pengajuan",
-  "Tanggal Persetujuan ke KAN": "tgl_persetujuan",
-  "Tanggal Kirim Sertifikat": "tgl_kirim_sertifikat",
+  "Aplication Form or Request": "tgl_aplication_form",
+  "Review Penugasan ST Satu": "tgl_review_penugasan_st_satu",
+  "Kontrak": "tgl_kontrak",
+  "Pengiriman Notifikasi ST Satu": "tgl_pengiriman_notif_st_satu",
+  "Pengiriman Audit Plan ST Satu": "tgl_pengiriman_audit_plan_st_satu",
+  "Pelaksanaan Audit ST Satu": "tgl_pelaksanaan_audit_st_satu",
+  "Penyelesaian CAPA ST Satu": "tgl_penyelesaian_capa_st_satu",
+  "Pengiriman Draft Sertifikat": "tgl_pengiriman_draft_sertifikat",
+  "Pengajuan ke KAN": "tgl_pengajuan",
+  "Persetujuan ke KAN": "tgl_persetujuan",
+  "Kirim Sertifikat": "tgl_kirim_sertifikat",
 };
 
 interface TrackingProgressProps {

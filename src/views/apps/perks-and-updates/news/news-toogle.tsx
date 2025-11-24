@@ -10,33 +10,30 @@ export default function NewsToggleView({
   setView: Dispatch<SetStateAction<"grid" | "list">>;
 }) {
   return (
-    <div className="flex justify-between items-center mb-4">
-      <h1 className="text-md font-bold">List Data Webinars</h1>
-
-      <div>
-        <ToggleGroup
-          type="single"
-          value={view}
-          onValueChange={(val: "grid" | "list") => setView(val)}
+    <div className="flex items-center">
+      <ToggleGroup
+        type="single"
+        value={view}
+        onValueChange={(val: "grid" | "list") => setView(val)}
+        className="bg-gray-100 rounded-lg p-1"
+      >
+        <ToggleGroupItem
+          value="grid"
+          aria-label="Grid View"
+          className="cursor-pointer data-[state=on]:bg-white data-[state=on]:shadow-sm px-3 sm:px-4"
         >
-          <ToggleGroupItem
-            value="grid"
-            aria-label="Grid View"
-            className="cursor-pointer"
-          >
-            <LayoutGrid className="h-4 w-4 mr-1" />
-            Grid
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="list"
-            aria-label="List View"
-            className="cursor-pointer"
-          >
-            <List className="h-4 w-4 mr-1" />
-            List
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
+          <LayoutGrid className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1" />
+          <span className="hidden sm:inline">Grid</span>
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="list"
+          aria-label="List View"
+          className="cursor-pointer data-[state=on]:bg-white data-[state=on]:shadow-sm px-3 sm:px-4"
+        >
+          <List className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1" />
+          <span className="hidden sm:inline">List</span>
+        </ToggleGroupItem>
+      </ToggleGroup>
     </div>
   );
 }
