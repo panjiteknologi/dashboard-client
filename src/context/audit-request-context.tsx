@@ -14,17 +14,21 @@ import {
   normalizeSurveillanceStage,
   StageValue,
 } from "@/types/audit-request";
+import { dataAuditRequestServices } from "@/services/data-audit-request";
+import { toast } from "sonner";
 
 export function AuditRequestProvider({
   data,
   onResetPage,
   debounceMs = 300,
   children,
+  refetch,
 }: {
   data: DataAuditRequestType[];
   onResetPage?: () => void;
   debounceMs?: number;
   children: React.ReactNode;
+  refetch?: () => void;
 }) {
   const [qInput, setQInput] = useState("");
   const q = useDebouncedValue(qInput, debounceMs);
@@ -123,6 +127,81 @@ export function AuditRequestProvider({
     setIsoTmp("all");
   };
 
+  const [selectedRequest, setSelectedRequest] =
+    useState<DataAuditRequestType | null>(null);
+  const [noteDraft, setNoteDraft] = useState("");
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleOpenEdit = (req: DataAuditRequestType) => {
+    setSelectedRequest(req);
+    setNoteDraft(req.note ?? "");
+    setIsEditOpen(true);
+  };
+
+  const handleOpenDelete = (req: DataAuditRequestType) => {
+    setSelectedRequest(req);
+    setIsDeleteOpen(true);
+  };
+
+  const handleSubmitNote = async ({
+    certificate,
+  }: {
+    certificate: DataAuditRequestType;
+  }) => {
+    if (!selectedRequest) return;
+    try {
+      setIsSubmitting(true);
+
+      const res = await dataAuditRequestServices.updateDataAuditRequest({
+        id: selectedRequest.id,
+        note: noteDraft,
+      });
+
+      console.log("✅ Berhasil update catatan audit request:", res);
+
+      toast.success("Berhasil menambahkan catatan", {
+        description: `Catatan pada sertifikat ${
+          certificate.name ?? certificate.name
+        } ini berhasil disimpan.`,
+      });
+
+      setIsEditOpen(false);
+      refetch?.();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmDelete = async ({
+    certificate,
+  }: {
+    certificate: DataAuditRequestType;
+  }) => {
+    if (!selectedRequest) return;
+    try {
+      setIsSubmitting(true);
+
+      const res = await dataAuditRequestServices.deleteDataAuditRequest(
+        selectedRequest.id
+      );
+
+      console.log("✅ Berhasil menghapus data ini", res);
+
+      toast.success("Berhasil menghapus data", {
+        description: `Data pada sertifikat ${
+          certificate.name ?? certificate.name
+        } ini berhasil dihapus.`,
+      });
+
+      setIsDeleteOpen(false);
+      refetch?.();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const value: AuditRequestCtx = {
     qInput,
     setQInput,
@@ -141,6 +220,18 @@ export function AuditRequestProvider({
     isoOptions,
     filtered,
     clearAll,
+    selectedRequest,
+    noteDraft,
+    setNoteDraft,
+    isEditOpen,
+    setIsEditOpen,
+    isDeleteOpen,
+    setIsDeleteOpen,
+    isSubmitting,
+    handleOpenEdit,
+    handleOpenDelete,
+    handleSubmitNote,
+    handleConfirmDelete,
   };
 
   return (

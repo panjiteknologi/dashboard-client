@@ -9,10 +9,9 @@ import {
 } from "@tanstack/react-query";
 
 export const keys = {
-  list: (page: number, limit: number) =>
-    ["audit-request", "list", page, limit] as const,
-  create: ["audit-request", "create"] as const,
-  delete: ["audit-request", "delete"] as const,
+  list: (page: number, limit: number) => ["crm", "list", page, limit] as const,
+  create: ["crm", "create"] as const,
+  delete: ["crm", "delete"] as const,
 };
 
 export function useCRMQuery({
@@ -44,7 +43,7 @@ export function useACRMCreateMutation() {
       dataCRMServices.postDataCRM(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["audit-request", "list"],
+        queryKey: ["crm", "list"],
       });
     },
   });
@@ -58,7 +57,7 @@ export function useCRMDeleteMutation() {
     mutationFn: (id: number) => dataCRMServices.deleteDataCRM(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["audit-request", "list"],
+        queryKey: ["crm", "list"],
       });
     },
   });

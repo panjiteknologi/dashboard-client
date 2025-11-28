@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Fragment, useState } from "react";
@@ -39,6 +40,25 @@ import {
   getStageLabelAuditRequest,
 } from "@/types/audit-request";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+
 export const AuditRequestView = ({
   data,
   pagination,
@@ -54,7 +74,11 @@ export const AuditRequestView = ({
   isFetching?: boolean;
 }) => {
   return (
-    <AuditRequestProvider data={data} onResetPage={() => onPageChange(1)}>
+    <AuditRequestProvider
+      data={data}
+      onResetPage={() => onPageChange(1)}
+      refetch={refetch}
+    >
       <InnerView
         pagination={pagination}
         page={page}
@@ -90,7 +114,21 @@ const InnerView = ({
   refetch?: () => void;
   isFetching?: boolean;
 }) => {
-  const { filtered } = useAuditRequest();
+  const {
+    filtered,
+    selectedRequest,
+    noteDraft,
+    setNoteDraft,
+    isEditOpen,
+    setIsEditOpen,
+    isDeleteOpen,
+    setIsDeleteOpen,
+    isSubmitting,
+    handleOpenEdit,
+    handleOpenDelete,
+    handleSubmitNote,
+    handleConfirmDelete,
+  } = useAuditRequest();
 
   const [tab, setTab] = useState<AuditStageApi>(AUDIT_STAGE_ORDER[0]);
 
@@ -338,7 +376,7 @@ const InnerView = ({
                                     className={cx(
                                       "font-black",
                                       style.dateSize,
-                                      style.textColor // merah/kuning sesuai level
+                                      style.textColor
                                     )}
                                   >
                                     {formatDateShortID(
@@ -347,25 +385,27 @@ const InnerView = ({
                                   </p>
                                 </TableCell>
 
-                                <TableCell>
-                                  <div className="flex justify-center items-center gap-1">
-                                    <div className="rounded-full shadow-sm hover:shadow-md transition-all flex items-centerfocus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer bg-green-500 hover:bg-green-200 hover:text-black">
-                                      <Button
-                                        size="sm"
-                                        className="items-center justify-center flex"
-                                      >
-                                        <Edit className="mr-1.5 h-4 w-4" />
-                                      </Button>
-                                    </div>
+                                <TableCell className="w-[120px]">
+                                  <div className="flex justify-center items-center gap-2">
+                                    <Button
+                                      size="icon"
+                                      variant="outline"
+                                      className="h-8 w-8 rounded-full"
+                                      onClick={() => handleOpenEdit(c)}
+                                      aria-label="Edit catatan"
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
 
                                     <Button
-                                      size="sm"
-                                      variant="outline"
-                                      className="align-center items-center flex rounded-full border-muted-foreground/30
-                hover:bg-destructive/10 hover:text-destructive
-                focus-visible:ring-2 focus-visible:ring-destructive/40 cursor-pointer"
+                                      size="icon"
+                                      variant="ghost"
+                                      className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive
+        focus-visible:ring-2 focus-visible:ring-destructive/40"
+                                      onClick={() => handleOpenDelete(c)}
+                                      aria-label="Hapus audit request"
                                     >
-                                      <Trash className="mr-1.5 h-4 w-4" />
+                                      <Trash className="h-4 w-4" />
                                     </Button>
                                   </div>
                                 </TableCell>
@@ -382,6 +422,81 @@ const InnerView = ({
           );
         })}
       </Tabs>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Catatan Audit</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              No. Sertifikat:{" "}
+              <span className="font-semibold">
+                {selectedRequest?.name ?? "-"}
+              </span>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              ISO: {(selectedRequest?.standards ?? []).join(", ") || "-"}
+            </p>
+
+            <div className="space-y-1 pt-2">
+              <label className="text-sm font-medium">Notes</label>
+              <Textarea
+                value={noteDraft}
+                onChange={(e) => setNoteDraft(e.target.value)}
+                placeholder="Tambahkan catatan untuk audit request ini…"
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsEditOpen(false)}
+              disabled={isSubmitting}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSubmitNote as any}
+              disabled={isSubmitting || !selectedRequest}
+            >
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Yakin mau menghapus?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Data audit request berikut akan dihapus dan tindakan ini tidak
+              bisa dibatalkan.
+              <br />
+              <span className="font-semibold">
+                {selectedRequest?.name ?? "-"}
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitting}>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
+              onClick={handleConfirmDelete as any}
+              disabled={isSubmitting || !selectedRequest}
+            >
+              {isSubmitting ? "Menghapus..." : "Ya, hapus"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <AuditRequestPagination
         page={page}

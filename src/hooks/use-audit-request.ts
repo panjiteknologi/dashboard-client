@@ -2,6 +2,7 @@
 
 import {
   CreateAuditRequestPayloadTypes,
+  UpdateAuditRequestPayloadTypes,
   dataAuditRequestServices,
 } from "@/services/data-audit-request";
 import {
@@ -15,6 +16,8 @@ export const keys = {
   list: (page: number, limit: number) =>
     ["audit-request", "list", page, limit] as const,
   create: ["audit-request", "create"] as const,
+  update: ["audit-request", "update"] as const,
+  delete: ["audit-request", "delete"] as const,
 };
 
 export function useAuditRequestQuery({
@@ -45,6 +48,36 @@ export function useAuditRequestCreateMutation() {
     mutationKey: keys.create,
     mutationFn: (payload: CreateAuditRequestPayloadTypes) =>
       dataAuditRequestServices.postDataAuditRequest(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["audit-request", "list"],
+      });
+    },
+  });
+}
+
+export function useAuditRequestUpdateMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: keys.update,
+    mutationFn: (payload: UpdateAuditRequestPayloadTypes) =>
+      dataAuditRequestServices.updateDataAuditRequest(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["audit-request", "list"],
+      });
+    },
+  });
+}
+
+export function useAuditRequestDeleteMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: keys.delete,
+    mutationFn: (id: string | number) =>
+      dataAuditRequestServices.deleteDataAuditRequest(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["audit-request", "list"],

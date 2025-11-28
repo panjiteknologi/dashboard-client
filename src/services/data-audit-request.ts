@@ -7,7 +7,11 @@ export type CreateAuditRequestPayloadTypes = {
   iso_standard_ids: string[];
   tgl_perkiraan_audit_selesai: string;
   audit_stage: string;
-  notes?: string;
+};
+
+export type UpdateAuditRequestPayloadTypes = {
+  id: string | number;
+  note: string;
 };
 
 export const dataAuditRequestServices = {
@@ -22,6 +26,23 @@ export const dataAuditRequestServices = {
     const response = await apiClient.post(
       `${baseUrl}/api/client/audit-request`,
       payload
+    );
+    return response.data;
+  },
+
+  async updateDataAuditRequest(payload: UpdateAuditRequestPayloadTypes) {
+    const { id, ...body } = payload;
+
+    const response = await apiClient.patch(
+      `${baseUrl}/api/client/audit-request/${id}`,
+      body
+    );
+    return response.data;
+  },
+
+  async deleteDataAuditRequest(id: string | number) {
+    const response = await apiClient.delete(
+      `${baseUrl}/api/client/audit-request/${id}`
     );
     return response.data;
   },

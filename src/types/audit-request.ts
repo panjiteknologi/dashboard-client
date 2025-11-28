@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 export const AUDIT_STAGE_ORDER = [
   "surveilance1",
   "surveilance2",
@@ -105,10 +103,9 @@ export type AuditRequestType = {
   onLimitChange: (l: number) => void;
   isLoading?: boolean;
 };
-
-export type AuditRequestCtx = {
+export interface AuditRequestCtx {
   qInput: string;
-  setQInput: Dispatch<SetStateAction<string>>;
+  setQInput: (v: string) => void;
   q: string;
   stage: StageValue;
   setStageSafe: (v: StageValue) => void;
@@ -116,17 +113,35 @@ export type AuditRequestCtx = {
   setIsoSafe: (v: string) => void;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
-  stageTmp?: StageValue;
-  setStageTmp?: Dispatch<SetStateAction<StageValue>>;
   isoTmp: string;
-  setIsoTmp: Dispatch<SetStateAction<string>>;
+  setIsoTmp: (v: string) => void;
   applyDrawer: () => void;
   resetDrawer: () => void;
   hasActiveFilters: boolean;
   isoOptions: string[];
   filtered: DataAuditRequestType[];
   clearAll: () => void;
-};
+  selectedRequest: DataAuditRequestType | null;
+  noteDraft: string;
+  setNoteDraft: (v: string) => void;
+  isEditOpen: boolean;
+  setIsEditOpen: (open: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (open: boolean) => void;
+  isSubmitting: boolean;
+  handleOpenEdit: (req: DataAuditRequestType) => void;
+  handleOpenDelete: (req: DataAuditRequestType) => void;
+  handleSubmitNote: ({
+    certificate,
+  }: {
+    certificate: DataAuditRequestType;
+  }) => Promise<void> | void;
+  handleConfirmDelete: ({
+    certificate,
+  }: {
+    certificate: DataAuditRequestType;
+  }) => Promise<void> | void;
+}
 
 export const getStageLabelAuditRequest = (stage: AuditStageApi) => {
   switch (stage) {
