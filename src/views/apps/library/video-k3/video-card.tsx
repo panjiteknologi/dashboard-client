@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { VideoTypes } from "@/types/options";
 import { PlayCircle } from "lucide-react";
@@ -9,7 +10,11 @@ interface VideoCardViewProps {
   subCategoryId: string;
 }
 
-export const VideoCardView = ({ data, view, handleClick }: VideoCardViewProps) => {
+export const VideoCardView = ({
+  data,
+  view,
+  handleClick,
+}: VideoCardViewProps) => {
   const getYouTubeThumbnail = (url: string) => {
     let videoId = url.split("embed/")[1];
     if (videoId.includes("?")) {
@@ -36,8 +41,12 @@ export const VideoCardView = ({ data, view, handleClick }: VideoCardViewProps) =
           </div>
         </div>
         <div className="flex-grow">
-          <h3 className="font-semibold text-base text-slate-800 line-clamp-2">{data.title}</h3>
-          <p className="text-sm text-slate-600 line-clamp-1">{data.description}</p>
+          <h3 className="font-semibold text-base text-slate-800 line-clamp-2">
+            {data.title}
+          </h3>
+          <p className="text-sm text-slate-600 line-clamp-1">
+            {data.description}
+          </p>
         </div>
       </div>
     );
@@ -59,14 +68,15 @@ export const VideoCardView = ({ data, view, handleClick }: VideoCardViewProps) =
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/30 transition-all duration-300">
           <PlayCircle className="w-12 h-12 text-white drop-shadow-md" />
         </div>
-
       </div>
 
       <div className="mt-2 px-1">
         <h3 className="font-medium text-[15px] text-slate-800 leading-snug line-clamp-2">
           {data.title}
         </h3>
-        <p className="text-sm text-slate-600 mt-1 line-clamp-1">{data.description}</p>
+        <p className="text-sm text-slate-600 mt-1 line-clamp-1">
+          {data.description}
+        </p>
       </div>
     </div>
   );

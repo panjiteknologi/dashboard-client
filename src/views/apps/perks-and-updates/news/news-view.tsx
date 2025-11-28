@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
@@ -11,9 +10,9 @@ import { Calendar, Clock, TrendingUp, Newspaper } from "lucide-react";
 
 const getTypeBadgeColor = (type: string) => {
   const colors: Record<string, string> = {
-    "Berita": "bg-blue-500 text-white",
-    "Event": "bg-purple-500 text-white",
-    "Update": "bg-orange-500 text-white",
+    Berita: "bg-blue-500 text-white",
+    Event: "bg-purple-500 text-white",
+    Update: "bg-orange-500 text-white",
     "Studi Kasus": "bg-green-500 text-white",
   };
   return colors[type] || "bg-gray-500 text-white";
@@ -22,11 +21,11 @@ const getTypeBadgeColor = (type: string) => {
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
-  return date.toLocaleDateString('id-ID', options);
+  return date.toLocaleDateString("id-ID", options);
 };
 
 export default function NewsView({
@@ -50,7 +49,9 @@ export default function NewsView({
             <Newspaper className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-bold">Portal Berita PT TSI</h2>
+            <h2 className="text-lg sm:text-xl font-bold">
+              Portal Berita PT TSI
+            </h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Update terkini seputar sertifikasi dan ISO
             </p>
@@ -62,7 +63,9 @@ export default function NewsView({
       {/* Featured News Section */}
       {featuredNews && view === "grid" && (
         <div
-          onClick={() => router.push(`/perks-and-updates/news/${featuredNews.id}`)}
+          onClick={() =>
+            router.push(`/perks-and-updates/news/${featuredNews.id}`)
+          }
           className="mb-6 sm:mb-8 group cursor-pointer rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white border-2 border-primary/20"
         >
           <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden">
@@ -77,7 +80,11 @@ export default function NewsView({
             {/* Content Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 text-white">
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <Badge className={`${getTypeBadgeColor(featuredNews.type)} px-2 sm:px-3 py-1 text-xs sm:text-sm font-bold shadow-lg`}>
+                <Badge
+                  className={`${getTypeBadgeColor(
+                    featuredNews.type
+                  )} px-2 sm:px-3 py-1 text-xs sm:text-sm font-bold shadow-lg`}
+                >
                   ⭐ FEATURED
                 </Badge>
                 <Badge className="bg-white/20 backdrop-blur-sm text-white px-2 sm:px-3 py-1 text-xs sm:text-sm">
@@ -96,8 +103,15 @@ export default function NewsView({
               <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">{formatDate(featuredNews.publishedAt)}</span>
-                  <span className="sm:hidden">{new Date(featuredNews.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
+                  <span className="hidden sm:inline">
+                    {formatDate(featuredNews.publishedAt)}
+                  </span>
+                  <span className="sm:hidden">
+                    {new Date(featuredNews.publishedAt).toLocaleDateString(
+                      "id-ID",
+                      { day: "numeric", month: "short" }
+                    )}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-2">
                   <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
