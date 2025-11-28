@@ -49,8 +49,8 @@ export const { handlers, signIn, auth } = NextAuth({
       const { pathname } = request.nextUrl;
       const isLoggedIn = !!auth?.user;
       const publicPaths = ["/login", "/signup", "/", "/public-scope"]; // add other public routes as needed
-      const isPublicPath = publicPaths.some((path) =>
-        pathname === path || pathname.startsWith(`${path}/`)
+      const isPublicPath = publicPaths.some(
+        (path) => pathname === path || pathname.startsWith(`${path}/`)
       );
 
       if (isPublicPath) {
@@ -73,7 +73,6 @@ export const { handlers, signIn, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         const tsiUser = user as unknown as TSIUser;
-
         return {
           ...token,
           uid: tsiUser.uid,

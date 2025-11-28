@@ -4,49 +4,54 @@ import React, {
   useMemo,
   useState,
   useEffect,
-  Dispatch,
-  SetStateAction,
 } from "react";
-import { Certificate } from "@/types/surveillance";
+import {
+  ActionTypeCtx,
+  Certificate,
+  StageValue,
+  SurveillanceCtx,
+  UrgencyValue,
+} from "@/types/surveillance";
+import { dataAuditRequestServices } from "@/services/data-audit-request";
+import {
+  AUDIT_STAGE_CAPITALIZE,
+  AUDIT_STAGE_LABELS,
+  normalizeSurveillanceStage,
+} from "@/types/audit-request";
+import { dataCRMServices } from "@/services/data-crm";
+import { toast } from "sonner";
 
-export type StageValue = "all" | "s1" | "s2";
-export type UrgencyValue = "all" | "low" | "medium" | "high" | "critical";
+export const AUDIT_STAGE_ORDER = [
+  "surveilance1",
+  "surveilance2",
+  "recertification",
+  "surveilance3",
+  "surveilance4",
+  "recertification2",
+  "surveilance5",
+  "surveilance6",
+  "recertification3",
+] as const;
 
-type Ctx = {
-  qInput: string;
-  setQInput: Dispatch<SetStateAction<string>>;
-  q: string;
-  stage: StageValue;
-  setStageSafe: (v: StageValue) => void;
-  urgency: UrgencyValue;
-  setUrgencySafe: (v: UrgencyValue) => void;
-  iso: string;
-  setIsoSafe: (v: string) => void;
-  drawerOpen: boolean;
-  setDrawerOpen: (open: boolean) => void;
-  stageTmp: StageValue;
-  setStageTmp: Dispatch<SetStateAction<StageValue>>;
-  urgencyTmp: UrgencyValue;
-  setUrgencyTmp: Dispatch<SetStateAction<UrgencyValue>>;
-  isoTmp: string;
-  setIsoTmp: Dispatch<SetStateAction<string>>;
-  applyDrawer: () => void;
-  resetDrawer: () => void;
-  hasActiveFilters: boolean;
-  isoOptions: string[];
-  filtered: Certificate[];
-  clearAll: () => void;
-};
+export type AuditStageApi = (typeof AUDIT_STAGE_ORDER)[number];
 
-const ReminderSurveillanceContext = createContext<Ctx | null>(null);
+export function getNextAuditStageForCertificate(
+  certificate: Certificate | null
+): AuditStageApi {
+  const current = normalizeSurveillanceStage(
+    certificate?.surveillance_stage ?? ""
+  );
 
-export function useReminderSurveillance() {
-  const ctx = useContext(ReminderSurveillanceContext);
-  if (!ctx)
-    throw new Error(
-      "useReminderSurveillance must be used within ReminderSurveillanceProvider"
-    );
-  return ctx;
+  if (!current) return AUDIT_STAGE_ORDER[0];
+
+  const idx = AUDIT_STAGE_ORDER.indexOf(current);
+  if (idx === -1) return AUDIT_STAGE_ORDER[0];
+
+  if (idx < AUDIT_STAGE_ORDER.length - 1) {
+    return AUDIT_STAGE_ORDER[idx + 1];
+  }
+
+  return AUDIT_STAGE_ORDER[idx];
 }
 
 export function ReminderSurveillanceProvider({
@@ -54,11 +59,13 @@ export function ReminderSurveillanceProvider({
   onResetPage,
   debounceMs = 300,
   children,
+  refetch,
 }: {
   data: Certificate[];
   onResetPage?: () => void;
   debounceMs?: number;
   children: React.ReactNode;
+  refetch?: () => void;
 }) {
   const [qInput, setQInput] = useState("");
   const q = useDebouncedValue(qInput, debounceMs);
@@ -153,7 +160,125 @@ export function ReminderSurveillanceProvider({
     setIsoTmp("all");
   };
 
-  const value: Ctx = {
+  const [actionType, setActionType] = useState<ActionTypeCtx>(null);
+  const [actionCert, setActionCert] = useState<Certificate | null>(null);
+
+  const openAction = (
+    cert: Certificate,
+    type: Exclude<ActionTypeCtx, null>
+  ) => {
+    setActionCert(cert);
+    setActionType(type);
+  };
+
+  const closeAction = () => {
+    setActionCert(null);
+    setActionType(null);
+  };
+
+  const submitContinue = async ({
+    certificate,
+    requestDate,
+    auditStage,
+  }: {
+    certificate: Certificate;
+    requestDate: string;
+    auditStage: AuditStageApi;
+  }) => {
+    try {
+      const res = await dataAuditRequestServices.postDataAuditRequest({
+        iso_standard_ids:
+          certificate.iso_standards?.map((i) => i.name ?? i.name) ?? [],
+        tgl_perkiraan_audit_selesai: requestDate,
+        audit_stage: auditStage,
+      });
+
+      console.log("✅ Berhasil submit audit request:", res);
+
+      toast.success("Berhasil mengirim data", {
+        description: `Data *Lanjut* untuk sertifikat ${
+          certificate.nomor_sertifikat ?? certificate.name
+        } berhasil dikirim.`,
+      });
+
+      closeAction();
+      refetch?.();
+    } catch (error) {
+      console.error("❌ Gagal submit audit request:", error);
+
+      toast.error("Gagal mengirim data", {
+        description:
+          "Terjadi kesalahan saat mengirim data continue. Silakan coba lagi.",
+      });
+    }
+  };
+
+  const resolveAuditStageSlug = (
+    certificate: Certificate | null,
+    auditStage?: AuditStageApi
+  ): AuditStageApi => {
+    if (auditStage) return auditStage;
+
+    const label = certificate?.surveillance_stage;
+    if (label && AUDIT_STAGE_CAPITALIZE[label]) {
+      return AUDIT_STAGE_CAPITALIZE[label];
+    }
+
+    return "surveilance1";
+  };
+
+  const resolveTahapanAuditLabel = (
+    certificate: Certificate | null,
+    slug: AuditStageApi
+  ): string => {
+    if (certificate?.surveillance_stage) return certificate.surveillance_stage;
+
+    return AUDIT_STAGE_LABELS[slug] ?? "";
+  };
+
+  const submitDiscontinue = async ({
+    certificate,
+    auditStage,
+  }: {
+    certificate: Certificate;
+    auditStage?: AuditStageApi;
+  }) => {
+    try {
+      const auditStageSlug = resolveAuditStageSlug(certificate, auditStage);
+      const tahapanAuditLabel = resolveTahapanAuditLabel(
+        certificate,
+        auditStageSlug
+      );
+
+      const res = await dataCRMServices.postDataCRM({
+        iso_standard_ids:
+          certificate.iso_standards?.map((i) => i.name ?? i.name) ?? [],
+        accreditation: certificate?.accreditation,
+        audit_stage: auditStageSlug,
+        tahapan_audit: tahapanAuditLabel,
+      });
+
+      console.log("✅ Payload CRM yang akan dikirim:", res);
+
+      toast.success("Berhasil mengirim data", {
+        description: `Data *Tidak Lanjut* untuk sertifikat ${
+          certificate.nomor_sertifikat ?? certificate.name
+        } berhasil dikirim.`,
+      });
+
+      closeAction();
+      refetch?.();
+    } catch (error) {
+      console.error("❌ Gagal submit audit CRM:", error);
+
+      toast.error("Gagal mengirim data", {
+        description:
+          "Terjadi kesalahan saat mengirim data discontinue. Silakan coba lagi.",
+      });
+    }
+  };
+
+  const value: SurveillanceCtx = {
     qInput,
     setQInput,
     q,
@@ -177,6 +302,12 @@ export function ReminderSurveillanceProvider({
     isoOptions,
     filtered,
     clearAll,
+    actionType,
+    actionCert,
+    openAction,
+    closeAction,
+    submitContinue,
+    submitDiscontinue,
   };
 
   return (
@@ -193,4 +324,15 @@ function useDebouncedValue<T>(value: T, delay = 300) {
     return () => clearTimeout(t);
   }, [value, delay]);
   return debounced;
+}
+
+const ReminderSurveillanceContext = createContext<SurveillanceCtx | null>(null);
+
+export function useReminderSurveillance() {
+  const ctx = useContext(ReminderSurveillanceContext);
+  if (!ctx)
+    throw new Error(
+      "useReminderSurveillance must be used within ReminderSurveillanceProvider"
+    );
+  return ctx;
 }

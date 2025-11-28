@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 
-export const ReminderSurveillanceEmpty = () => {
+export const AuditRequestEmpty = () => {
   return (
     <Card className="border-dashed m-6">
       <CardContent className="p-10 text-center space-y-2">

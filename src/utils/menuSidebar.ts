@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   LibraryIcon,
   ListChecks,
+  LucideGitPullRequestCreate,
   Newspaper,
   NotebookTextIcon,
   Search,
@@ -71,16 +72,16 @@ export const SidebarAppsMenu: {
           icon: NotebookTextIcon,
         },
 
-          // {
-          //   title: "Mandays Calculator",
-          //   url: "/mandays",
-          //   icon: Calendar,
-          // },
-          // {
-          //   title: "Price Simulation",
-          //   url: "/price-simulation",
-          //   icon: LineChart,
-          // },
+        // {
+        //   title: "Mandays Calculator",
+        //   url: "/mandays",
+        //   icon: Calendar,
+        // },
+        // {
+        //   title: "Price Simulation",
+        //   url: "/price-simulation",
+        //   icon: LineChart,
+        // },
         // {
         //   title: "Quotation",
         //   url: "/quotation",
@@ -186,7 +187,7 @@ export const SidebarAppsMenu: {
           title: "Our Scope Determination",
           url: "/scope-determination",
           icon: Search,
-        }
+        },
       ],
     },
     {
@@ -199,7 +200,6 @@ export const SidebarAppsMenu: {
           url: "/auditor-schedule",
           icon: CalendarCheck,
         },
-        
       ],
     },
     {
@@ -259,8 +259,13 @@ export const SidebarAppsMenu: {
           url: "/reminder-surveillance",
           icon: Settings,
         },
+        {
+          title: "Audit Request",
+          url: "/audit-request",
+          icon: LucideGitPullRequestCreate,
+        },
       ],
-    }
+    },
   ],
 
   navSecondary: [],

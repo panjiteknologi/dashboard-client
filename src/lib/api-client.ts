@@ -14,7 +14,6 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     const session = await getSession();
-
     if (session?.user?.access_token) {
       config.headers.Authorization = `Bearer ${session.user.access_token}`;
       config.headers["Content-Type"] = "application/json";
