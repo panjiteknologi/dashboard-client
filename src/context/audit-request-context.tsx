@@ -169,7 +169,13 @@ export function AuditRequestProvider({
 
       setIsEditOpen(false);
       refetch?.();
-    } finally {
+    } catch (error) {
+      console.error("❌ Gagal menambahkan catatan:", error);
+
+      toast.error("Gagal menambahkan catatan", {
+        description:
+          "Terjadi kesalahan saat menambahkan catatan. Silakan coba lagi.",
+      });
       setIsSubmitting(false);
     }
   };
@@ -197,7 +203,13 @@ export function AuditRequestProvider({
 
       setIsDeleteOpen(false);
       refetch?.();
-    } finally {
+    } catch (error) {
+      console.error("❌ Gagal menghapus data:", error);
+
+      toast.error("Gagal menghapus data", {
+        description:
+          "Terjadi kesalahan saat menghapus data. Silakan coba lagi.",
+      });
       setIsSubmitting(false);
     }
   };
