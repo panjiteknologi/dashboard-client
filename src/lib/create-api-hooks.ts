@@ -48,15 +48,15 @@ export function createMutationHook<TParams, TResponse>(
 ) {
   return (
     mutationOptions?: Omit<
-      UseMutationOptions<TResponse, AxiosError, TParams>,
+      UseMutationOptions<TResponse, AxiosError, TParams, unknown>,
       "mutationFn"
     >
   ) => {
     const queryClient = useQueryClient();
 
-    return useMutation({
+    return useMutation<TResponse, AxiosError, TParams, unknown>({
       mutationFn: apiFn,
-      onSuccess: (data, variables) => {
+      onSuccess: (data, variables, onMutateResult, context) => {
         if (options.invalidateQueries) {
           options.invalidateQueries(queryClient, variables);
         }
@@ -65,20 +65,18 @@ export function createMutationHook<TParams, TResponse>(
           toast.success(options.onSuccessMessage);
         }
 
-        mutationOptions?.onSuccess?.(data, variables, {
-          context: undefined,
-        });
+        // teruskan ke onSuccess custom dari pemanggil (kalau ada)
+        mutationOptions?.onSuccess?.(data, variables, onMutateResult, context);
       },
-      onError: (error, variables) => {
+      onError: (error, variables, onMutateResult, context) => {
         toast.error(
           options.onErrorMessage ||
             (error.response?.data as { message?: string })?.message ||
             "An error occurred"
         );
 
-        mutationOptions?.onError?.(error, variables, {
-          context: undefined,
-        });
+        // teruskan ke onError custom dari pemanggil (kalau ada)
+        mutationOptions?.onError?.(error, variables, onMutateResult, context);
       },
       ...mutationOptions,
     });
