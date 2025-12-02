@@ -195,7 +195,7 @@ const InnerView = ({
             "
           >
             {visibleStages.map((stg) => (
-              <TabsTrigger key={stg} value={stg} className="flex-shrink-0">
+              <TabsTrigger key={stg} value={stg} className="shrink-0">
                 {getStageLabelAuditRequest(stg)}
               </TabsTrigger>
             ))}
@@ -255,7 +255,7 @@ const InnerView = ({
                             </TableHead>
                             <TableHead className="w-[180px]">Stage</TableHead>
                             <TableHead className="w-[180px]">
-                              Tanggal Expired
+                              Tanggal Request Audit
                             </TableHead>
                             <TableHead className="text-center w-[180px]">
                               Aksi
