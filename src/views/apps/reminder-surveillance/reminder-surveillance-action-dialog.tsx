@@ -393,6 +393,25 @@ export const ReminderSurveillanceActionDialog = ({
                   </p>
                 </div>
 
+                {/* <div className="space-y-2">
+                  <Label htmlFor="nextStage">Auditor</Label>
+                  <Select
+                    value={auditStage}
+                    onValueChange={(val) => setAuditStage(val as AuditStageApi)}
+                  >
+                    <SelectTrigger id="nextStage" className="w-full">
+                      <SelectValue placeholder="Pilih stage berikutnya" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AUDIT_STAGE_ORDER.map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {AUDIT_STAGE_LABELS[s]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div> */}
+
                 <div className="space-y-2">
                   <Label htmlFor="nextStage">Stage Berikutnya</Label>
                   <Select

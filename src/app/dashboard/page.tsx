@@ -1,17 +1,36 @@
 "use client";
 
+import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import DashboardLayout from "@/layout/dashboard-layout";
+import { useDateCustomerQuery } from "@/hooks/use-date-customer";
+import { useDataStandardQuery } from "@/hooks/use-standard";
 import { AppSidebarTypes } from "@/types/sidebar-types";
 import { SidebarAppsMenu } from "@/utils";
-import { DashboardView } from "@/views/apps";
-import { DashboardProvider } from "@/context/dashboard-context";
+import DashboardLayout from "@/layout/dashboard-layout";
+import { AuditStatusView } from "@/views/apps";
 
 export default function Page() {
   const router = useRouter();
   const { status } = useSession();
+  const { data: dateCustomer = [] } = useDateCustomerQuery({
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const { data: standards = [] } = useDataStandardQuery({
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const uniqueStandards = useMemo(() => {
+    const allStandards = standards.flatMap(
+      (item: { standard_name: string }) => item?.standard_name || []
+    );
+    return Array.from(new Set(allStandards));
+  }, [standards]);
+
+  const dataStandar = uniqueStandards ?? [];
+  const data = dateCustomer?.data ?? [];
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -21,14 +40,14 @@ export default function Page() {
 
   return (
     <DashboardLayout
-      href="/dashboard"
+      href="/apps/dashboard"
       titleHeader="Dashboard"
-      subTitleHeader="Dashboard"
-      menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
+      subTitleHeader="Table"
+      menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
-      <DashboardProvider>
-        <DashboardView />
-      </DashboardProvider>
+      <div className="space-y-4">
+        <AuditStatusView data={data} uniqueStandards={dataStandar} />
+      </div>
     </DashboardLayout>
   );
 }

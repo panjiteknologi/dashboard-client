@@ -2,6 +2,54 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
+export type RequestStatus = "request" | "approve" | "reject";
+
+export const RequestStatusBadge = ({
+  status,
+}: {
+  status?: RequestStatus | null;
+}) => {
+  if (!status) {
+    return (
+      <Badge variant="secondary" className="rounded-full">
+        -
+      </Badge>
+    );
+  }
+
+  const normalized = status.toLowerCase() as RequestStatus;
+
+  if (normalized === "request") {
+    return (
+      <Badge className="rounded-full bg-blue-500 text-white font-medium">
+        Request
+      </Badge>
+    );
+  }
+
+  if (normalized === "approve") {
+    return (
+      <Badge className="rounded-full bg-emerald-500 text-white font-semibold">
+        Approved
+      </Badge>
+    );
+  }
+
+  if (normalized === "reject") {
+    return (
+      <Badge className="rounded-full bg-red-500 text-white font-medium">
+        Rejected
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge variant="secondary" className="rounded-full">
+      {capitalize(status)}
+    </Badge>
+  );
+};
+
 export type ExpiryLevel =
   | "overdue"
   | "critical"

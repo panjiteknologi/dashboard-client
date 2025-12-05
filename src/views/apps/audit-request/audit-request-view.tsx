@@ -29,7 +29,12 @@ import {
   AuditRequestProvider,
   useAuditRequest,
 } from "@/context/audit-request-context";
-import { getExpiryLevel, StageBadge } from "./audit-request-helpers";
+import {
+  getExpiryLevel,
+  RequestStatus,
+  RequestStatusBadge,
+  StageBadge,
+} from "./audit-request-helpers";
 import { AuditRequestFilters } from "./audit-request-filters";
 import { AuditRequestSkeleton } from "./audit-request-skeleton";
 import { AuditRequestEmpty } from "./audit-request-empty";
@@ -228,6 +233,8 @@ const InnerView = ({
             (c) => c.audit_stage === stage
           );
 
+          console.log(filteredByStage);
+
           return (
             <Fragment key={stage}>
               <TabsContent value={stage} className="mt-2">
@@ -257,6 +264,7 @@ const InnerView = ({
                             <TableHead className="w-[180px]">
                               Tanggal Request Audit
                             </TableHead>
+                            <TableHead className="w-[180px]">Status</TableHead>
                             <TableHead className="text-center w-[180px]">
                               Aksi
                             </TableHead>
@@ -383,6 +391,12 @@ const InnerView = ({
                                       c.tgl_perkiraan_audit_selesai
                                     )}
                                   </p>
+                                </TableCell>
+
+                                <TableCell>
+                                  <RequestStatusBadge
+                                    status={c.state as RequestStatus}
+                                  />
                                 </TableCell>
 
                                 <TableCell className="w-[120px]">

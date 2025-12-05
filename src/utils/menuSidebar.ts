@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Award,
-  BookOpen,
-  CalendarCheck,
+  // BookOpen,
+  // CalendarCheck,
   FileCheck2,
   FileEdit,
   Folder,
@@ -15,7 +15,7 @@ import {
   NotebookTextIcon,
   Search,
   Settings,
-  SquareTerminal,
+  // SquareTerminal,
   User2,
   Users,
   Video,
@@ -84,37 +84,38 @@ export const SidebarAppsMenu: {
     },
     {
       title: "Certification Services",
-      url: "/tracking-certificate", // parent
+      // url: "/tracking-certificate", // parent
+      url: "/audit-process",
       icon: Award,
       children: [
-        {
-          title: "Tracking Certificate",
-          url: "/tracking-certificate",
-          icon: Award,
-          menu: [
-            // {
-            //   title: "Label Maps",
-            //   url: "/tracking-certificate/label-maps",
-            //   icon: SquareTerminal,
-            //   isActive: true,
-            // },
-            // {
-            //   title: "TSI",
-            //   url: "/tracking-certificate/tsi",
-            //   icon: Bot,
-            // },
-            {
-              title: "Project Status",
-              url: "/tracking-certificate/audit-status",
-              icon: BookOpen,
-            },
-            // {
-            //   title: "Certificate",
-            //   url: "/tracking-certificate/certificate",
-            //   icon: GraduationCap,
-            // },
-          ],
-        },
+        // {
+        //   title: "Tracking Certificate",
+        //   url: "/tracking-certificate",
+        //   icon: Award,
+        //   menu: [
+        //     // {
+        //     //   title: "Label Maps",
+        //     //   url: "/tracking-certificate/label-maps",
+        //     //   icon: SquareTerminal,
+        //     //   isActive: true,
+        //     // },
+        //     // {
+        //     //   title: "TSI",
+        //     //   url: "/tracking-certificate/tsi",
+        //     //   icon: Bot,
+        //     // },
+        //     {
+        //       title: "Project Status",
+        //       url: "/tracking-certificate/audit-status",
+        //       icon: BookOpen,
+        //     },
+        //     // {
+        //     //   title: "Certificate",
+        //     //   url: "/tracking-certificate/certificate",
+        //     //   icon: GraduationCap,
+        //     // },
+        //   ],
+        // },
         {
           title: "Audit Process",
           url: "/audit-process",
@@ -183,18 +184,18 @@ export const SidebarAppsMenu: {
         },
       ],
     },
-    {
-      title: "Auditors",
-      url: "/tools",
-      icon: Settings,
-      children: [
-        {
-          title: "Our Auditor Schedule",
-          url: "/auditor-schedule",
-          icon: CalendarCheck,
-        },
-      ],
-    },
+    // {
+    //   title: "Auditors",
+    //   url: "/tools",
+    //   icon: Settings,
+    //   children: [
+    //     {
+    //       title: "Our Auditor Schedule",
+    //       url: "/auditor-schedule",
+    //       icon: CalendarCheck,
+    //     },
+    //   ],
+    // },
     {
       title: "Library",
       url: "/library",
@@ -257,11 +258,11 @@ export const SidebarAppsMenu: {
           url: "/audit-request",
           icon: LucideGitPullRequestCreate,
         },
-        {
-          title: "CRM Lanjut",
-          url: "/crm",
-          icon: SquareTerminal,
-        },
+        // {
+        //   title: "CRM Lanjut",
+        //   url: "/crm",
+        //   icon: SquareTerminal,
+        // },
       ],
     },
   ],
