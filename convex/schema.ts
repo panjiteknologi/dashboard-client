@@ -8,7 +8,8 @@ export default defineSchema({
     id: v.number(),
     title: v.string(),
     subtitle: v.string(),
-    image: v.string(),
+    image: v.string(), // URL string for backward compatibility
+    imageStorageId: v.optional(v.id("_storage")), // Convex storage ID for uploaded images
     number: v.string(),
     type: v.string(),
     issuer: v.string(),

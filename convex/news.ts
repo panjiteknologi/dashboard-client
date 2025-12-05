@@ -51,6 +51,24 @@ export const get = query({
   },
 });
 
+// Get image URL from storage
+export const getImageUrl = query({
+  args: {
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.storageId);
+  },
+});
+
+// Generate upload URL for image
+export const generateImageUploadUrl = mutation({
+  handler: async (ctx) => {
+    // Note: Auth checking should be done in Next.js API route before calling this
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
 // Get news by number
 export const getByNumber = query({
   args: {
@@ -76,7 +94,8 @@ export const create = mutation({
       id: v.number(),
       title: v.string(),
       subtitle: v.string(),
-      image: v.string(),
+      image: v.string(), // URL string for backward compatibility
+      imageStorageId: v.optional(v.id("_storage")), // Convex storage ID
       number: v.string(),
       type: v.string(),
       issuer: v.string(),
@@ -147,7 +166,8 @@ export const update = mutation({
     data: v.object({
       title: v.optional(v.string()),
       subtitle: v.optional(v.string()),
-      image: v.optional(v.string()),
+      image: v.optional(v.string()), // URL string for backward compatibility
+      imageStorageId: v.optional(v.id("_storage")), // Convex storage ID
       number: v.optional(v.string()),
       type: v.optional(v.string()),
       issuer: v.optional(v.string()),
@@ -226,7 +246,36 @@ export const remove = mutation({
       throw new Error("News not found");
     }
 
+    // Delete image from storage if exists
+    if (existing.imageStorageId) {
+      await ctx.storage.delete(existing.imageStorageId);
+    }
+
     await ctx.db.delete(args.id);
+    return { success: true };
+  },
+});
+
+// Delete image from storage (helper function)
+export const deleteImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    newsId: v.id("news"),
+  },
+  handler: async (ctx, args) => {
+    // Note: Auth checking should be done in Next.js API route before calling this
+    const news = await ctx.db.get(args.newsId);
+    if (!news) {
+      throw new Error("News not found");
+    }
+
+    // Only delete if the storageId matches
+    if (news.imageStorageId === args.storageId) {
+      await ctx.storage.delete(args.storageId);
+      // Remove storageId from news record
+      await ctx.db.patch(args.newsId, { imageStorageId: undefined });
+    }
+
     return { success: true };
   },
 });
