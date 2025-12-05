@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +18,7 @@ import { Eye, EyeOff } from "lucide-react";
 // Create a schema for form validation
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(5, "Password must be at least 5 characters"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -27,6 +27,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const pathname = usePathname();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export function LoginForm({
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
+        pathname: pathname,
         redirect: false,
       });
 
@@ -75,9 +77,15 @@ export function LoginForm({
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">
+                  {pathname.startsWith("/admin")
+                    ? "Hallo Admin"
+                    : "Welcome back"}
+                </h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your TSI account
+                  {pathname.startsWith("/admin")
+                    ? "Login to Admin"
+                    : "Login to your TSI Certification account"}
                 </p>
               </div>
 
@@ -144,7 +152,7 @@ export function LoginForm({
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Login"}
               </Button>
-              
+
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or continue with
@@ -180,7 +188,7 @@ export function LoginForm({
                   <span className="sr-only">Login with Meta</span>
                 </Button>
               </div>
-              <Button style={{ background:'black' }}>
+              <Button style={{ background: "black" }}>
                 <Link
                   href="/"
                   className="w-full hover:cursor-pointer relative md:flex justify-center items-center"
