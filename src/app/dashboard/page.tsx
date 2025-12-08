@@ -270,7 +270,7 @@ export default function Page() {
                 <FileText className="h-7 w-7 " />
               </div>
               <div>
-                <CardTitle className="text-2xl font-bold">Detailed Project Tracking</CardTitle>
+                <CardTitle className="text-2xl font-bold">Track your certificate</CardTitle>
                 <CardDescription className="text-sm mt-2">
                   Complete overview of all projects and certification status
                 </CardDescription>
