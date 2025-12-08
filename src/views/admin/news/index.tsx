@@ -43,7 +43,7 @@ export function NewsManagement() {
     : null;
 
   return (
-    <div className="flex flex-col mx-auto max-w-7xl container gap-4">
+    <div className="flex flex-col mx-auto max-w-7xl container gap-4 mt-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">News Management</h1>
         <Button onClick={() => router.push("/admin/news/create")}>
