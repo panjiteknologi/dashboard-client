@@ -3,6 +3,11 @@
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache";
+import { env } from "@/env";
+
+const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -20,7 +25,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider>{children}</SessionProvider>
+      <ConvexProvider client={convex}>
+        <ConvexQueryCacheProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </ConvexQueryCacheProvider>
+      </ConvexProvider>
     </QueryClientProvider>
   );
 }
