@@ -8,7 +8,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,11 +19,15 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DeleteVideoDialog } from "./delete-video-dialog";
+import { VideoPreviewDialog } from "./video-preview-dialog";
 
 export function LibraryVideoManagement() {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedVideoId, setSelectedVideoId] =
+    useState<Id<"libraryVideos"> | null>(null);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewVideoId, setPreviewVideoId] =
     useState<Id<"libraryVideos"> | null>(null);
 
   const videos = useQuery(api.libraryVideos.list, { limit: 100 });
@@ -32,6 +36,11 @@ export function LibraryVideoManagement() {
   const handleDelete = (id: Id<"libraryVideos">) => {
     setSelectedVideoId(id);
     setDeleteDialogOpen(true);
+  };
+
+  const handlePreview = (id: Id<"libraryVideos">) => {
+    setPreviewVideoId(id);
+    setPreviewDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -137,9 +146,18 @@ export function LibraryVideoManagement() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => handlePreview(video._id)}
+                        title="Preview"
+                      >
+                        <EyeIcon className="size-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() =>
                           router.push(`/admin/library-video/${video._id}`)
                         }
+                        title="Edit"
                       >
                         <PencilIcon className="size-4" />
                       </Button>
@@ -147,6 +165,7 @@ export function LibraryVideoManagement() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(video._id)}
+                        title="Delete"
                       >
                         <TrashIcon className="size-4" />
                       </Button>
@@ -167,6 +186,12 @@ export function LibraryVideoManagement() {
           onConfirm={handleConfirmDelete}
         />
       )}
+
+      <VideoPreviewDialog
+        open={previewDialogOpen}
+        onOpenChange={setPreviewDialogOpen}
+        videoId={previewVideoId}
+      />
     </div>
   );
 }

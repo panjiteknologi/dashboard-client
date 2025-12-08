@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, TrashIcon, EyeIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Component to handle thumbnail with storage ID support
@@ -64,9 +64,10 @@ type NewsTableProps = {
   news: NewsItem[];
   isLoading: boolean;
   onDelete: (id: Id<"news">) => void;
+  onPreview: (id: Id<"news">) => void;
 };
 
-export function NewsTable({ news, isLoading, onDelete }: NewsTableProps) {
+export function NewsTable({ news, isLoading, onDelete, onPreview }: NewsTableProps) {
   const router = useRouter();
   if (isLoading) {
     return (
@@ -163,7 +164,16 @@ export function NewsTable({ news, isLoading, onDelete }: NewsTableProps) {
                   <Button
                     variant="ghost"
                     size="icon"
+                    onClick={() => onPreview(item._id)}
+                    title="Preview"
+                  >
+                    <EyeIcon className="size-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => router.push(`/admin/news/${item._id}`)}
+                    title="Edit"
                   >
                     <PencilIcon className="size-4" />
                   </Button>
@@ -171,6 +181,7 @@ export function NewsTable({ news, isLoading, onDelete }: NewsTableProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => onDelete(item._id)}
+                    title="Delete"
                   >
                     <TrashIcon className="size-4" />
                   </Button>

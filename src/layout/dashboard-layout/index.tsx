@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -61,7 +61,7 @@ const DashboardLayout = ({
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex-1 flex flex-col mx-auto px-4 w-full">
+        <div className="flex-1 flex flex-col mx-auto p-4 w-full">
           {children}
         </div>
       </SidebarInset>

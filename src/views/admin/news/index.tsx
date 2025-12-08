@@ -11,11 +11,14 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { NewsTable } from "./news-table";
 import { DeleteNewsDialog } from "./delete-news-dialog";
+import { NewsPreviewDialog } from "./news-preview-dialog";
 
 export function NewsManagement() {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState<Id<"news"> | null>(null);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewNewsId, setPreviewNewsId] = useState<Id<"news"> | null>(null);
 
   const newsList = useQuery(api.news.list, { limit: 100 });
   const deleteMutation = useMutation(api.news.remove);
@@ -23,6 +26,11 @@ export function NewsManagement() {
   const handleDelete = (id: Id<"news">) => {
     setSelectedNewsId(id);
     setDeleteDialogOpen(true);
+  };
+
+  const handlePreview = (id: Id<"news">) => {
+    setPreviewNewsId(id);
+    setPreviewDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -56,6 +64,7 @@ export function NewsManagement() {
         news={newsList ?? []}
         isLoading={newsList === undefined}
         onDelete={handleDelete}
+        onPreview={handlePreview}
       />
 
       {selectedNews && (
@@ -66,6 +75,12 @@ export function NewsManagement() {
           onConfirm={handleConfirmDelete}
         />
       )}
+
+      <NewsPreviewDialog
+        open={previewDialogOpen}
+        onOpenChange={setPreviewDialogOpen}
+        newsId={previewNewsId}
+      />
     </div>
   );
 }
