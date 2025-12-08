@@ -246,8 +246,15 @@ export const ScopeSearchProvider = ({
       'create', 'make', 'do', 'have', 'has', 'company', 'business'
     ];
 
-    // Split query into words and filter
-    const keywords = q
+    // Extract exact phrases (in quotes) and individual keywords
+    const exactPhrases: string[] = [];
+    const remainingQuery = q.replace(/"([^"]+)"/g, (match, phrase) => {
+      exactPhrases.push(phrase.trim());
+      return '';
+    });
+
+    // Split remaining query into words and filter
+    const keywords = remainingQuery
       .toLowerCase()
       .split(/\s+/)
       .filter(word =>
@@ -255,11 +262,14 @@ export const ScopeSearchProvider = ({
         !stopwords.includes(word) // Not a stopword
       );
 
-    // If no valid keywords, fallback to original query
-    if (keywords.length === 0) {
-      const parts = text.split(new RegExp(`(${escapeRegex(q)})`, "ig"));
+    // If no valid keywords or phrases, fallback to original query with word boundary
+    if (keywords.length === 0 && exactPhrases.length === 0) {
+      const pattern = `\\b${escapeRegex(q)}\\b`;
+      const regex = new RegExp(`(${pattern})`, "gi");
+      const parts = text.split(regex);
+
       return parts.map((p, i) =>
-        p.toLowerCase() === q.toLowerCase() ? (
+        regex.test(p) ? (
           <mark
             key={i}
             className="rounded px-0.5 bg-yellow-200/60 dark:bg-yellow-600/40"
@@ -272,16 +282,42 @@ export const ScopeSearchProvider = ({
       );
     }
 
-    // Create regex pattern for all keywords (e.g., "produksi|rambut|palsu|plastik")
-    const pattern = keywords.map(escapeRegex).join('|');
-    const parts = text.split(new RegExp(`(${pattern})`, "ig"));
+    // Create regex patterns: exact phrases first, then keywords with word boundaries
+    const patterns: string[] = [];
 
-    return parts.map((p, i) => {
-      const isMatch = keywords.some(kw => p.toLowerCase() === kw.toLowerCase());
+    // Add exact phrase patterns (more precise)
+    exactPhrases.forEach(phrase => {
+      patterns.push(escapeRegex(phrase));
+    });
+
+    // Add keyword patterns with word boundaries
+    keywords.forEach(keyword => {
+      patterns.push(`\\b${escapeRegex(keyword)}\\b`);
+    });
+
+    const pattern = patterns.join('|');
+    const regex = new RegExp(`(${pattern})`, "gi");
+
+    const parts = text.split(regex).map((p, i) => {
+      // Check if it matches any exact phrase
+      const phraseMatch = exactPhrases.some(phrase =>
+        p.toLowerCase() === phrase.toLowerCase()
+      );
+
+      // Check if it matches any keyword with word boundary
+      const keywordMatch = keywords.some(kw =>
+        new RegExp(`\\b${escapeRegex(kw)}\\b`, 'i').test(p)
+      );
+
+      const isMatch = phraseMatch || keywordMatch;
+
       return isMatch ? (
         <mark
           key={i}
-          className="rounded px-0.5 bg-yellow-200/60 dark:bg-yellow-600/40"
+          className={`rounded px-0.5 ${phraseMatch
+            ? 'bg-yellow-300/80 dark:bg-yellow-500/60 font-semibold'
+            : 'bg-yellow-200/60 dark:bg-yellow-600/40'
+          }`}
         >
           {p}
         </mark>
@@ -289,6 +325,8 @@ export const ScopeSearchProvider = ({
         <span key={i}>{p}</span>
       );
     });
+
+    return parts;
   };
 
   const value: ScopeCTX = {
