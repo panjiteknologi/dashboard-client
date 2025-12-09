@@ -67,6 +67,7 @@ export const ScopeResult = () => {
       null
     );
     const [pendingScrollTo, setPendingScrollTo] = useState<string | null>(null);
+    const [showAllResults, setShowAllResults] = useState(false);
 
     useEffect(() => {
       if (pendingScrollTo && showSummary) {
@@ -90,6 +91,64 @@ export const ScopeResult = () => {
 
     // Use corrected query for highlighting if available, otherwise use debounced
     const highlightQuery = aiResponse.corrected_query || debounced;
+
+    // Filter and prioritize results based on relevance and language match
+    const getFilteredResults = () => {
+      if (!aiResponse.hasil_pencarian || aiResponse.hasil_pencarian.length === 0) {
+        return [];
+      }
+
+      // Calculate combined relevance score
+      const scoredResults = aiResponse.hasil_pencarian.map((result: HasilPencarian) => {
+        let score = 0;
+
+        // Base relevance score (0-100)
+        if (result.relevance_score) {
+          score += result.relevance_score;
+        }
+
+        // Boost for exact keyword matches in title/description
+        const keywords = highlightQuery.toLowerCase().split(' ');
+        const searchText = [
+          result.standar || '',
+          result.scope_key || '',
+          result.nace?.description || '',
+          result.nace_child?.title || ''
+        ].join(' ').toLowerCase();
+
+        keywords.forEach(keyword => {
+          if (keyword.length > 2) { // Only check meaningful keywords
+            if (searchText.includes(keyword)) {
+              score += 5; // Boost for keyword matches
+            }
+          }
+        });
+
+        // Boost for shipping/maritime related terms (for this specific query)
+        const shippingKeywords = ['ship', 'maritime', 'shipping', 'vessel', 'port', 'crew', 'agency', 'logistics'];
+        const hasShippingKeywords = shippingKeywords.some(keyword =>
+          searchText.includes(keyword)
+        );
+        if (hasShippingKeywords) {
+          score += 20; // Significant boost for shipping relevance
+        }
+
+        return {
+          ...result,
+          calculatedScore: score
+        };
+      });
+
+      // Sort by calculated score (highest first)
+      scoredResults.sort((a, b) => b.calculatedScore - a.calculatedScore);
+
+      // Return top results if showAllResults is false
+      const maxResults = showAllResults ? scoredResults.length : Math.min(5, scoredResults.length);
+
+      return scoredResults.slice(0, maxResults);
+    };
+
+    const filteredResults = getFilteredResults();
 
     // Fungsi handleCopyAIResult telah dihapus karena semua tombol Copy dihilangkan
 
@@ -133,7 +192,10 @@ export const ScopeResult = () => {
     const createSummary = (): Summary => {
       const summary: Summary = {};
 
-      aiResponse.hasil_pencarian.forEach((result: HasilPencarian) => {
+      // Use filtered results instead of all results
+      const resultsToSummarize = showAllResults ? aiResponse.hasil_pencarian : filteredResults;
+
+      resultsToSummarize.forEach((result: HasilPencarian) => {
         const standar = result.standar || result.scope_key;
         const iaf = result.iaf_code;
         const naceCode = result.nace?.code ?? "N/A";
@@ -168,7 +230,8 @@ export const ScopeResult = () => {
 
     // START: Logic Export All dengan format rapi
     const handleExportAll = () => {
-      const resultsText = aiResponse.hasil_pencarian
+      const resultsToExport = showAllResults ? aiResponse.hasil_pencarian : filteredResults;
+      const resultsText = resultsToExport
         .map((res: HasilPencarian, index: number) => {
           // Build details list for each result
           const details = res.nace_child_details
@@ -230,8 +293,10 @@ ${resultsText}
       URL.revokeObjectURL(url);
 
       toast.success(
-        `Berhasil mengekspor ${aiResponse.hasil_pencarian.length} hasil ke file TXT!`
-      );
+      selectedLang === "IDN"
+        ? `Berhasil mengekspor ${resultsToExport.length} hasil ke file TXT!`
+        : `Successfully exported ${resultsToExport.length} results to TXT file!`
+    );
     };
     // END: Logic Export All
 
@@ -458,9 +523,11 @@ ${resultsText}
       naceChildCode: string,
       standardContext: string = ""
     ): HasilPencarian | null => {
+      const searchResults = showAllResults ? aiResponse.hasil_pencarian : filteredResults;
+
       // If we have standard context, try to find result matching both standard and NACE Child
       if (standardContext) {
-        for (const result of aiResponse.hasil_pencarian) {
+        for (const result of searchResults) {
           const resultStandard = result.standar || result.scope_key;
           // Check if this result matches the standard context and has the NACE Child code
           if (
@@ -473,7 +540,7 @@ ${resultsText}
       }
 
       // Fallback: find first result with matching NACE Child code (original behavior)
-      for (const result of aiResponse.hasil_pencarian) {
+      for (const result of searchResults) {
         if (result.nace_child?.code === naceChildCode) {
           return result;
         }
@@ -509,9 +576,34 @@ ${resultsText}
               <strong className="text-blue-600 dark:text-blue-400">
                 PT TSI Sertifikasi Internasional
               </strong>{" "}
-              memiliki scope yang tersedia untuk perusahaan Anda, berikut ini
-              scope yang disarankan :
+              {selectedLang === "IDN"
+                ? `menemukan <strong>${filteredResults.length}</strong> scope yang paling relevan dari total ${aiResponse.hasil_pencarian.length} hasil pencarian:`
+                : `found <strong>${filteredResults.length}</strong> most relevant scopes out of ${aiResponse.hasil_pencarian.length} total results:`
+              }
             </p>
+
+            {/* Toggle Button for Results */}
+            {aiResponse.hasil_pencarian.length > 5 && (
+              <div className="mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAllResults(!showAllResults)}
+                  className="text-xs"
+                >
+                  {selectedLang === "IDN"
+                    ? (showAllResults
+                        ? `Tampilkan Top 5 Hasil Terbaik (${filteredResults.length} ditampilkan)`
+                        : `Tampilkan Semua Hasil (${aiResponse.hasil_pencarian.length} total)`
+                      )
+                    : (showAllResults
+                        ? `Show Top 5 Results (${filteredResults.length} shown)`
+                        : `Show All Results (${aiResponse.hasil_pencarian.length} total)`
+                      )
+                  }
+                </Button>
+              </div>
+            )}
 
             {/* Grid Layout: Summary (left) | Results (right) di desktop */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -526,9 +618,12 @@ ${resultsText}
                     onClick={() => setShowSummary(!showSummary)}
                   >
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                      📋 Ringkasan Hasil Pencarian
+                      📋 {selectedLang === "IDN" ? "Ringkasan Hasil Relevan" : "Relevant Results Summary"}
                       <Badge variant="outline" className="text-xs">
-                        {Object.keys(summary).length} Standar
+                        {Object.keys(summary).length} {selectedLang === "IDN" ? "Standar" : "Standards"}
+                      </Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        {filteredResults.length} {selectedLang === "IDN" ? "Hasil" : "Results"}
                       </Badge>
                     </h4>
                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
@@ -549,7 +644,7 @@ ${resultsText}
                         className="flex-1 gap-2 bg-green-600 hover:bg-green-700 text-white"
                       >
                         <Download className="h-4 w-4" />
-                        Export Hasil
+                        {selectedLang === "IDN" ? "Export Hasil" : "Export Results"}
                       </Button>
                       <Button
                         size="sm"
@@ -558,7 +653,7 @@ ${resultsText}
                         className="flex-1"
                         style={{ background: "#ffd943" }}
                       >
-                        Cek Penjelasan
+                        {selectedLang === "IDN" ? "Cek Penjelasan" : "Check Explanation"}
                       </Button>
                     </div>
                   )}
@@ -662,14 +757,18 @@ ${resultsText}
                       <div className="flex items-center gap-2">
                         <Target className="h-4 w-4 text-green-600" />
                         <span className="text-sm font-medium text-green-800 dark:text-green-200">
-                          Rekomendasi Scope Details (
-                          {aiResponse.hasil_pencarian.length})
+                          Top Recommendations ({filteredResults.length})
+                          {!showAllResults && aiResponse.hasil_pencarian.length > filteredResults.length && (
+                            <span className="text-xs text-gray-500">
+                              {' '}dari {aiResponse.hasil_pencarian.length} total
+                            </span>
+                          )}
                         </span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3 pt-4">
-                        {aiResponse.hasil_pencarian.map((result, index) => {
+                        {filteredResults.map((result, index) => {
                           // Create unique ID for this result card (same format as summary)
                           const resultId =
                             `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(
@@ -677,6 +776,9 @@ ${resultsText}
                               "-"
                             );
                           const isActive = activeResultId === resultId;
+
+                          // Use calculated score if available, otherwise use original relevance score
+                          const displayScore = (result as any).calculatedScore || result.relevance_score || 0;
 
                           return (
                             <div
@@ -718,16 +820,23 @@ ${resultsText}
                                       highlightQuery
                                     )}
                                   </Badge>
-                                  {result.relevance_score && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      {result.relevance_score}% match
+                                  <Badge
+                                    variant={displayScore >= 80 ? "default" : displayScore >= 60 ? "secondary" : "outline"}
+                                    className="text-xs"
+                                  >
+                                    {Math.round(displayScore)}% relevansi
+                                  </Badge>
+                                  {displayScore >= 80 && (
+                                    <Badge variant="default" className="text-xs bg-green-500">
+                                      ⭐ Top Match
                                     </Badge>
                                   )}
                                 </div>
-                                {/* Tombol Copy dihilangkan dari sini */}
+                                {!showAllResults && aiResponse.hasil_pencarian.length > 5 && index < 3 && (
+                                  <Badge variant="outline" className="text-xs text-yellow-600">
+                                    #{index + 1}
+                                  </Badge>
+                                )}
                               </div>
 
                               <h5 className="font-medium text-sm mb-1">
