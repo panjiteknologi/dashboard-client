@@ -160,10 +160,10 @@ export function AuditRequestProvider({
       });
 
       console.log("✅ Berhasil update catatan audit request:", res);
-
+      console.log(certificate);
       toast.success("Berhasil menambahkan catatan", {
         description: `Catatan pada sertifikat ${
-          certificate.name ?? certificate.name
+          res?.result?.data?.name ?? res?.result?.data?.name
         } ini berhasil disimpan.`,
       });
 
@@ -177,14 +177,12 @@ export function AuditRequestProvider({
           "Terjadi kesalahan saat menambahkan catatan. Silakan coba lagi.",
       });
       setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleConfirmDelete = async ({
-    certificate,
-  }: {
-    certificate: DataAuditRequestType;
-  }) => {
+  const handleConfirmDelete = async () => {
     if (!selectedRequest) return;
     try {
       setIsSubmitting(true);
@@ -197,7 +195,7 @@ export function AuditRequestProvider({
 
       toast.success("Berhasil menghapus data", {
         description: `Data pada sertifikat ${
-          certificate.name ?? certificate.name
+          res?.result?.data?.name ?? res?.result?.data?.name
         } ini berhasil dihapus.`,
       });
 
@@ -210,6 +208,8 @@ export function AuditRequestProvider({
         description:
           "Terjadi kesalahan saat menghapus data. Silakan coba lagi.",
       });
+      setIsSubmitting(false);
+    } finally {
       setIsSubmitting(false);
     }
   };
