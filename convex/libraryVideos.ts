@@ -38,6 +38,49 @@ export const get = query({
   },
 });
 
+// Get nested video data structure (categories with subcategories and videos)
+export const getNestedVideoData = query({
+  args: {},
+  handler: async (ctx) => {
+    // Fetch semua data
+    const categories = await ctx.db.query("videoCategories").collect();
+    const subCategories = await ctx.db.query("videoSubCategories").collect();
+    const videos = await ctx.db.query("libraryVideos").collect();
+
+    // Transform ke nested structure di server
+    return categories.map((category) => {
+      const categorySubCategories = subCategories.filter(
+        (sub) => sub.categoryId === category._id
+      );
+
+      const subCategoriesWithVideos = categorySubCategories.map(
+        (subCategory) => {
+          const subCategoryVideos = videos
+            .filter((video) => video.subCategoryId === subCategory._id)
+            .map((video) => ({
+              id: video.id,
+              title: video.title,
+              description: video.description,
+              url: video.url,
+            }));
+
+          return {
+            id: subCategory.id,
+            name: subCategory.name,
+            videos: subCategoryVideos,
+          };
+        }
+      );
+
+      return {
+        id: category.id,
+        name: category.name,
+        subCategories: subCategoriesWithVideos,
+      };
+    });
+  },
+});
+
 // Create library video
 // Note: Auth checking should be done in Next.js API route before calling this
 export const create = mutation({

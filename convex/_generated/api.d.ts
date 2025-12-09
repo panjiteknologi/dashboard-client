@@ -10,6 +10,9 @@
 
 import type * as libraryVideos from "../libraryVideos.js";
 import type * as news from "../news.js";
+import type * as regulationCategories from "../regulationCategories.js";
+import type * as regulationSubCategories from "../regulationSubCategories.js";
+import type * as regulations from "../regulations.js";
 import type * as videoCategories from "../videoCategories.js";
 import type * as videoSubCategories from "../videoSubCategories.js";
 
@@ -22,6 +25,9 @@ import type {
 declare const fullApi: ApiFromModules<{
   libraryVideos: typeof libraryVideos;
   news: typeof news;
+  regulationCategories: typeof regulationCategories;
+  regulationSubCategories: typeof regulationSubCategories;
+  regulations: typeof regulations;
   videoCategories: typeof videoCategories;
   videoSubCategories: typeof videoSubCategories;
 }>;

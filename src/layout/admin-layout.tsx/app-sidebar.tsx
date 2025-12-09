@@ -34,6 +34,10 @@ const data = {
           title: "News",
           url: "/admin/news",
         },
+        {
+          title: "Regulation",
+          url: "/admin/regulation",
+        },
       ],
     },
   ],
