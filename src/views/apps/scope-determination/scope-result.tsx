@@ -46,11 +46,6 @@ export const ScopeResult = () => {
     selectedLang,
   } = useScopeDeterminationContext();
 
-  // Type for result with calculated score
-  interface ResultWithScore extends HasilPencarian {
-    calculatedScore?: number;
-  }
-
   const SkeletonResult = (
     <div className="space-y-4">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -186,6 +181,11 @@ export const ScopeResult = () => {
       };
       relevance_score?: number;
       nace_child_details: NaceChildDetail[];
+    }
+
+    // Type for result with calculated score
+    interface ResultWithScore extends HasilPencarian {
+      calculatedScore?: number;
     }
 
     interface NaceChildDetail {
@@ -845,7 +845,7 @@ ${resultsText}
                               </div>
 
                               <h5 className="font-medium text-sm mb-1">
-                                {highlight(result.standar, highlightQuery)}
+                                {highlight(result.standar || result.scope_key, highlightQuery)}
                               </h5>
 
                               {result.iaf_code && (
@@ -859,7 +859,7 @@ ${resultsText}
                                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                                   <strong>NACE {result.nace.code}:</strong>{" "}
                                   {highlight(
-                                    result.nace.description,
+                                    result.nace.description || "No description available",
                                     highlightQuery
                                   )}
                                 </p>
@@ -871,7 +871,7 @@ ${resultsText}
                                     NACE Child {result.nace_child.code}:
                                   </strong>{" "}
                                   {highlight(
-                                    result.nace_child.title,
+                                    result.nace_child.title || "No title available",
                                     highlightQuery
                                   )}
                                 </p>
