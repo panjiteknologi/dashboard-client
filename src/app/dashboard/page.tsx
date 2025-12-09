@@ -19,7 +19,7 @@ import { AllProject } from "@/types/projects";
 // Extended type for dashboard data
 interface DashboardProject extends AllProject {
   tahapan?: string;
-  sertifikat?: string[] | any;
+  sertifikat?: string[] | Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
 }
