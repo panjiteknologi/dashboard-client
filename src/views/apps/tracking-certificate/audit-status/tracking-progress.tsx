@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Clock, Calendar, FileCheck, Award, AlertCircle } from "lucide-react";
+import { CheckCircle, Calendar, FileCheck, Award, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AllProject } from "@/types/projects";
 
