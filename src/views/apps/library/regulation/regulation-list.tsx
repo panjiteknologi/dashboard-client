@@ -1,17 +1,22 @@
 "use client";
-import React, { Dispatch, SetStateAction, useMemo, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
 
 import { RegulationType } from "@/types/projects";
 import { RegulationToggleView } from "./regulation-toogle";
 import { RegulationCardView } from "./regulation-card";
-import {
-  dummyRegulationData,
-  RegulationCategory,
-} from "@/constant/regulation-dummy";
+import { RegulationCategory } from "@/constant/regulation-dummy";
 import { cn } from "@/lib/utils";
 import { RegulationDetailView } from "./regulation-detail";
 import { ChevronRight, Search } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
 
 // --- Sidebar Component V2 ---
 const RegulationSidebarV2 = ({
@@ -64,13 +69,15 @@ const RegulationBreadcrumbV2 = ({
   activeSubCategoryId,
   selectedRegulation,
   onBackToList,
+  categories,
 }: {
   activeSubCategoryId: string;
   selectedRegulation: RegulationType | null;
   onBackToList: () => void;
+  categories: RegulationCategory[];
 }) => {
   const { categoryName, subCategoryName } = useMemo(() => {
-    for (const category of dummyRegulationData) {
+    for (const category of categories) {
       const subCategory = category.subCategories.find(
         (sub) => sub.id === activeSubCategoryId
       );
@@ -82,7 +89,7 @@ const RegulationBreadcrumbV2 = ({
       }
     }
     return { categoryName: "", subCategoryName: "" };
-  }, [activeSubCategoryId]);
+  }, [activeSubCategoryId, categories]);
 
   return (
     <div className="flex items-center gap-1.5 text-sm text-slate-500 overflow-hidden">
@@ -157,17 +164,38 @@ export const RegulationListView = ({
   view: "grid" | "list";
   setView: Dispatch<SetStateAction<"grid" | "list">>;
 }) => {
-  const [activeSubCategoryId, setActiveSubCategoryId] = useState(
-    dummyRegulationData[0]?.subCategories[0]?.id ?? ""
+  // Fetch hierarchical data from Convex
+  const hierarchicalData = useQuery(
+    api.regulationCategories.getHierarchical,
+    {}
   );
+
+  const categories: RegulationCategory[] = useMemo(() => {
+    if (!hierarchicalData) return [];
+    return hierarchicalData as RegulationCategory[];
+  }, [hierarchicalData]);
+
+  const [activeSubCategoryId, setActiveSubCategoryId] = useState("");
   const [selectedRegulation, setSelectedRegulation] =
     useState<RegulationType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
+  // Set default activeSubCategoryId when data loads
+  useEffect(() => {
+    if (categories.length > 0 && !activeSubCategoryId) {
+      const firstSubCategoryId = categories[0]?.subCategories[0]?.id;
+      if (firstSubCategoryId) {
+        setActiveSubCategoryId(firstSubCategoryId);
+      }
+    }
+  }, [categories, activeSubCategoryId]);
+
   const regulationsToShow = useMemo(() => {
+    if (!categories.length) return [];
+
     if (debouncedSearchQuery) {
-      const allRegulations = dummyRegulationData.flatMap((category) =>
+      const allRegulations = categories.flatMap((category) =>
         category.subCategories.flatMap((subCategory) => subCategory.regulations)
       );
 
@@ -178,7 +206,7 @@ export const RegulationListView = ({
       );
     }
 
-    for (const category of dummyRegulationData) {
+    for (const category of categories) {
       const subCategory = category.subCategories.find(
         (sub) => sub.id === activeSubCategoryId
       );
@@ -188,7 +216,7 @@ export const RegulationListView = ({
     }
 
     return [];
-  }, [activeSubCategoryId, debouncedSearchQuery]);
+  }, [activeSubCategoryId, debouncedSearchQuery, categories]);
 
   const handleSelectSubCategory = (subId: string) => {
     setActiveSubCategoryId(subId);
@@ -196,13 +224,21 @@ export const RegulationListView = ({
     setSearchQuery("");
   };
 
+  if (!hierarchicalData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-slate-500">Loading regulations...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col md:flex-row gap-6 md:gap-8">
       <div
         className={cn(debouncedSearchQuery && "opacity-50 pointer-events-none")}
       >
         <RegulationSidebarV2
-          categories={dummyRegulationData}
+          categories={categories}
           activeSubCategoryId={activeSubCategoryId}
           onSelectSubCategory={handleSelectSubCategory}
         />
@@ -216,6 +252,7 @@ export const RegulationListView = ({
               activeSubCategoryId={activeSubCategoryId}
               selectedRegulation={selectedRegulation}
               onBackToList={() => setSelectedRegulation(null)}
+              categories={categories}
             />
             {!selectedRegulation && (
               <RegulationToggleView view={view} setView={setView} />
@@ -232,7 +269,7 @@ export const RegulationListView = ({
               onChange={(e) => handleSelectSubCategory(e.target.value)}
               className="w-full p-2 border border-slate-300 rounded-lg bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              {dummyRegulationData.map((category) => (
+              {categories.map((category) => (
                 <optgroup key={category.id} label={category.name}>
                   {category.subCategories.map((sub) => (
                     <option key={sub.id} value={sub.id}>
@@ -252,6 +289,7 @@ export const RegulationListView = ({
               activeSubCategoryId={activeSubCategoryId}
               selectedRegulation={selectedRegulation}
               onBackToList={() => setSelectedRegulation(null)}
+              categories={categories}
             />
           </div>
           {!selectedRegulation && (

@@ -95,6 +95,23 @@ export const getByNumber = query({
   },
 });
 
+// Get regulation by numeric ID (for client-side compatibility)
+export const getById = query({
+  args: {
+    id: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const regulation = await ctx.db
+      .query("regulations")
+      .filter((q) => q.eq(q.field("id"), args.id))
+      .first();
+    if (!regulation) {
+      throw new Error("Regulation not found");
+    }
+    return regulation;
+  },
+});
+
 // Create regulation
 // Note: Auth checking should be done in Next.js API route before calling this
 export const create = mutation({

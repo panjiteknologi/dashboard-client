@@ -91,3 +91,56 @@ export const remove = mutation({
   },
 });
 
+// Get hierarchical data (categories with subcategories and regulations)
+// This matches the structure from constant/regulation-dummy.ts
+export const getHierarchical = query({
+  args: {},
+  handler: async (ctx) => {
+    const categories = await ctx.db.query("regulationCategories").collect();
+    const subCategories = await ctx.db.query("regulationSubCategories").collect();
+    const regulations = await ctx.db.query("regulations").collect();
+
+    // Build hierarchical structure
+    return categories.map((category) => {
+      const categorySubCategories = subCategories.filter(
+        (sub) => sub.categoryId === category._id
+      );
+
+      return {
+        id: category.id,
+        name: category.name,
+        subCategories: categorySubCategories.map((subCategory) => {
+          const subCategoryRegulations = regulations.filter(
+            (reg) => reg.subCategoryId === subCategory._id
+          );
+
+          return {
+            id: subCategory.id,
+            name: subCategory.name,
+            regulations: subCategoryRegulations.map((reg) => ({
+              id: reg.id,
+              title: reg.title,
+              subtitle: reg.subtitle,
+              image: reg.image,
+              number: reg.number,
+              type: reg.type,
+              issuer: reg.issuer,
+              sector: reg.sector,
+              jurisdiction: reg.jurisdiction,
+              status: reg.status,
+              publishedAt: reg.publishedAt,
+              effectiveAt: reg.effectiveAt,
+              summary: reg.summary,
+              keywords: reg.keywords,
+              sourceUrl: reg.sourceUrl,
+              attachments: reg.attachments,
+              sections: reg.sections,
+              relatedRegulations: reg.relatedRegulations,
+            })),
+          };
+        }),
+      };
+    });
+  },
+});
+
