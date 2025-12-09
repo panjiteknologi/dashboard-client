@@ -16,12 +16,21 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { AllProject } from "@/types/projects";
 
-// Extended type for dashboard data
-interface DashboardProject extends AllProject {
+// Dashboard project data type
+interface DashboardProject {
+  // Core properties from AllProject
+  aplication_form: string;
+  iso_standards: string;
+  accreditation: string;
+  customer_id: string;
+  customer: string;
+  // Additional dashboard-specific properties
   tahapan?: string;
   sertifikat?: string[] | Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
+  // Allow other properties as string
+  [key: string]: string | string[] | Record<string, unknown> | undefined;
 }
 
 import {
@@ -288,7 +297,7 @@ export default function Page() {
             </div>
           </CardHeader>
           <CardContent className="p-8" style={{ marginTop:'-70px' }}>
-            <AuditStatusView data={data} uniqueStandards={dataStandar} />
+            <AuditStatusView data={data as AllProject[]} uniqueStandards={dataStandar} />
           </CardContent>
         </Card>
       </div>
