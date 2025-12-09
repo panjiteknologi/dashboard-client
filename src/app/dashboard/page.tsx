@@ -14,6 +14,16 @@ import { DashboardCard } from "@/views/apps/dashboard/dashboard-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { AllProject } from "@/types/projects";
+
+// Extended type for dashboard data
+interface DashboardProject extends AllProject {
+  tahapan?: string;
+  sertifikat?: string[] | any;
+  created_at?: string;
+  updated_at?: string;
+}
+
 import {
   Building2,
   FileCheck,
@@ -46,30 +56,30 @@ export default function Page() {
   }, [standards]);
 
   const dataStandar = uniqueStandards ?? [];
-  const data = useMemo(() => dateCustomer?.data ?? [], [dateCustomer?.data]);
+  const data = useMemo(() => dateCustomer?.data ?? [], [dateCustomer?.data]) as DashboardProject[];
 
   // Calculate dashboard statistics
   const dashboardStats = useMemo(() => {
     const totalProjects = data.length;
-    const completedProjects = data.filter(item =>
+    const completedProjects = data.filter((item: DashboardProject) =>
       item.tahapan?.includes('sertifikat') || item.tahapan?.includes('selesai')
     ).length;
-    const surveillanceProjects = data.filter(item =>
+    const surveillanceProjects = data.filter((item: DashboardProject) =>
       item.tahapan?.includes('survilance') || item.tahapan?.includes('sv')
     ).length;
-    const totalCertificates = data.reduce((acc, item) =>
+    const totalCertificates = data.reduce((acc, item: DashboardProject) =>
       acc + (Array.isArray(item.sertifikat) ? item.sertifikat.length : 0), 0
     );
 
-    const tahapanCounts = data.reduce((acc, item) => {
+    const tahapanCounts = data.reduce((acc, item: DashboardProject) => {
       const tahapan = item.tahapan || 'unknown';
       acc[tahapan] = (acc[tahapan] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     const recentProjects = data
-      .filter(item => item.created_at || item.updated_at)
-      .sort((a, b) => {
+      .filter((item: DashboardProject) => item.created_at || item.updated_at)
+      .sort((a: DashboardProject, b: DashboardProject) => {
         const dateA = new Date(a.updated_at || a.created_at || 0);
         const dateB = new Date(b.updated_at || b.created_at || 0);
         return dateB.getTime() - dateA.getTime();
