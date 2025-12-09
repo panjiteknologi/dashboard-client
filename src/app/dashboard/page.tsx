@@ -19,10 +19,10 @@ import {
   FileCheck,
   Clock,
   TrendingUp,
-  Users,
-  Award,
+  // Users,
+  // Award,
   Calendar,
-  AlertCircle,
+  // AlertCircle,
   CheckCircle,
   FileText
 } from "lucide-react";
@@ -87,21 +87,21 @@ export default function Page() {
     };
   }, [data]);
 
-  const getProgressByTahapan = (tahapan: string) => {
-    const progressMap: Record<string, number> = {
-      'survilance1': 20,
-      'survilance2': 40,
-      'survilance3': 60,
-      'survilance4': 80,
-      'survilance5': 95,
-      'sertifikat': 100,
-      'selesai': 100,
-      'audit1': 15,
-      'audit2': 30,
-      'survei': 10
-    };
-    return progressMap[tahapan] || 0;
-  };
+  // const getProgressByTahapan = (tahapan: string) => {
+  //   const progressMap: Record<string, number> = {
+  //     'survilance1': 20,
+  //     'survilance2': 40,
+  //     'survilance3': 60,
+  //     'survilance4': 80,
+  //     'survilance5': 95,
+  //     'sertifikat': 100,
+  //     'selesai': 100,
+  //     'audit1': 15,
+  //     'audit2': 30,
+  //     'survei': 10
+  //   };
+  //   return progressMap[tahapan] || 0;
+  // };
 
   useEffect(() => {
     if (status === "unauthenticated") {

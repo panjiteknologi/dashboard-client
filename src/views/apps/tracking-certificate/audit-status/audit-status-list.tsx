@@ -9,10 +9,10 @@ import { getlatestProgress, getNextStep } from "@/utils/getProgressAndField";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AllProject, StandardTypes } from "@/types/projects";
-import { cx } from "@/utils";
-import { THEME } from "@/constant";
+// import { cx } from "@/utils";
+// import { THEME } from "@/constant";
 import { TrackingProgressView } from "./tracking-progress";
 import { AuditCertificateCard } from "./audit-status-certificate";
 import {
@@ -24,7 +24,7 @@ import {
   TrendingUp,
   Building,
   User,
-  Award
+  // Award
 } from "lucide-react";
 
 const DEFAULT_FILE_NAME = "certificate.pdf";
@@ -454,8 +454,8 @@ export const AuditStatusView = ({
                 : dataTransform.findIndex((d) => d === rowData);
 
             const progress = getProgressPercentage(rowData.tahapan);
-            const statusInfo = getProjectStatus(rowData.tahapan);
-            const StatusIcon = statusInfo.icon;
+            // const statusInfo = getProjectStatus(rowData.tahapan);
+            // const StatusIcon = statusInfo.icon;
 
             return (
               <div className="space-y-6 p-6 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
