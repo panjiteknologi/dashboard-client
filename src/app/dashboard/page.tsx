@@ -46,7 +46,7 @@ export default function Page() {
   }, [standards]);
 
   const dataStandar = uniqueStandards ?? [];
-  const data = dateCustomer?.data ?? [];
+  const data = useMemo(() => dateCustomer?.data ?? [], [dateCustomer?.data]);
 
   // Calculate dashboard statistics
   const dashboardStats = useMemo(() => {
@@ -189,7 +189,7 @@ export default function Page() {
             <CardContent className="pt-0">
               <div className="grid gap-4 sm:grid-cols-2">
                 {Object.entries(dashboardStats.tahapanCounts)
-                  .filter(([_, count]) => count > 0)
+                  .filter(([, count]) => count > 0)
                   .sort(([a], [b]) => a.localeCompare(b))
                   .map(([tahapan, count]) => (
                     <div key={tahapan} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">

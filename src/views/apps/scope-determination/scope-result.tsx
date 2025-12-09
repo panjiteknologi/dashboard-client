@@ -46,6 +46,11 @@ export const ScopeResult = () => {
     selectedLang,
   } = useScopeDeterminationContext();
 
+  // Type for result with calculated score
+  interface ResultWithScore extends HasilPencarian {
+    calculatedScore?: number;
+  }
+
   const SkeletonResult = (
     <div className="space-y-4">
       {Array.from({ length: 6 }).map((_, i) => (
@@ -778,7 +783,7 @@ ${resultsText}
                           const isActive = activeResultId === resultId;
 
                           // Use calculated score if available, otherwise use original relevance score
-                          const displayScore = (result as any).calculatedScore || result.relevance_score || 0;
+                          const displayScore = (result as ResultWithScore).calculatedScore || result.relevance_score || 0;
 
                           return (
                             <div
