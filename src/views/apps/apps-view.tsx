@@ -33,7 +33,6 @@ import { Separator } from "@/components/ui/separator";
 import { AppsSearchAndView } from "./app-search-view";
 import { AppListView } from "./app-list-view";
 import { AppsHero } from "./app-hero";
-import WhatsappButton from "@/components/ui/whatsapp-button";
 
 // Define the app interfaces
 interface AppCategory {
@@ -323,7 +322,6 @@ const AppsView = () => {
           </section>
         ))
       )}
-      <WhatsappButton />
     </div>
   );
 };

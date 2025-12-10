@@ -4,7 +4,6 @@ import { ScopeSearchProvider } from "@/context/scope-determination-context";
 import { ScopeDeterminationView } from "@/views/apps/scope-determination";
 import { Navbar } from "@/components/navbar";
 import MainLayout from "@/layout/main-layout";
-import WhatsappButton from "@/components/ui/whatsapp-button";
 
 export default function PublicScopePage() {
   return (
@@ -24,7 +23,6 @@ export default function PublicScopePage() {
           </div>
         </ScopeSearchProvider>
       </div>
-      <WhatsappButton />
     </MainLayout>
   );
 }
