@@ -17,7 +17,7 @@ export const VideoCardView = ({
 }: VideoCardViewProps) => {
   const getYouTubeThumbnail = (url: string) => {
     let videoId = url.split("embed/")[1];
-    if (videoId.includes("?")) {
+    if (videoId?.includes("?")) {
       videoId = videoId.split("?")[0];
     }
     return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -30,7 +30,7 @@ export const VideoCardView = ({
         onClick={handleClick}
         className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors duration-150 border border-slate-200 bg-white"
       >
-        <div className="relative flex-shrink-0 w-32 h-20 rounded-md overflow-hidden bg-slate-200 group">
+        <div className="relative shrink-0 w-32 h-20 rounded-md overflow-hidden bg-slate-200 group">
           <img
             src={getYouTubeThumbnail(data.url)}
             alt={data.title}
@@ -40,7 +40,7 @@ export const VideoCardView = ({
             <PlayCircle className="w-8 h-8 text-white" />
           </div>
         </div>
-        <div className="flex-grow">
+        <div className="grow">
           <h3 className="font-semibold text-base text-slate-800 line-clamp-2">
             {data.title}
           </h3>

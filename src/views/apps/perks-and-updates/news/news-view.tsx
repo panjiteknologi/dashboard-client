@@ -75,7 +75,7 @@ export default function NewsView({
               fill
               className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-75"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
 
             {/* Content Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 text-white">

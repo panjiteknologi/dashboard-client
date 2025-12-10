@@ -48,7 +48,13 @@ export const { handlers, signIn, auth } = NextAuth({
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl;
       const isLoggedIn = !!auth?.user;
-      const publicPaths = ["/login", "/signup", "/", "/public-scope"]; // add other public routes as needed
+      const publicPaths = [
+        "/login",
+        "/admin/login",
+        "/signup",
+        "/",
+        "/public-scope",
+      ]; // add other public routes as needed
       const isPublicPath = publicPaths.some(
         (path) => pathname === path || pathname.startsWith(`${path}/`)
       );

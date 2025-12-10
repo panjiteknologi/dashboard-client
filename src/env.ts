@@ -12,6 +12,7 @@ export const env = createEnv({
     // Client-side environment variables (if any) go here
     NEXT_PUBLIC_ENDPOINT_URL: z.string().url(),
     NEXT_PUBLIC_URL: z.string().url(),
+    NEXT_PUBLIC_CONVEX_URL: z.string().url(),
   },
 
   // Include all environment variables here
@@ -22,5 +23,6 @@ export const env = createEnv({
 
     NEXT_PUBLIC_ENDPOINT_URL: process.env.NEXT_PUBLIC_ENDPOINT_URL,
     NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
   },
 });

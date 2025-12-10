@@ -4,3 +4,4 @@ export * from "./formatNumber";
 export * from "./getNormalizeTahapan";
 export * from "./getProgressAndField";
 export * from "./cx";
+export * from "./generateRegulationNumber";
