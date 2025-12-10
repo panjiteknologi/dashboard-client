@@ -33,7 +33,6 @@ export default function EditNewsPage() {
     news?.imageStorageId ? { storageId: news.imageStorageId } : "skip"
   );
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(
     null
@@ -146,7 +145,6 @@ export default function EditNewsPage() {
       } catch (error) {
         toast.error("Failed to upload image");
         console.error(error);
-        setImageFile(null);
       } finally {
         setIsUploading(false);
       }
@@ -157,7 +155,6 @@ export default function EditNewsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
       handleImageUpload(file);
     } else {
       toast.error("Please select a valid image file");
@@ -169,7 +166,6 @@ export default function EditNewsPage() {
     e.stopPropagation();
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
       handleImageUpload(file);
     } else {
       toast.error("Please drop a valid image file");
@@ -182,7 +178,6 @@ export default function EditNewsPage() {
   };
 
   const removeImage = () => {
-    setImageFile(null);
     setImagePreview(null);
     setImageStorageId(null);
     setFormData((prev) => ({ ...prev, image: "" }));

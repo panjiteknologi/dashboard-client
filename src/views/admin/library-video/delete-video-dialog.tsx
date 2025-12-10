@@ -30,7 +30,7 @@ export function DeleteVideoDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the video "{videoTitle}". This action
+            This will permanently delete the video &quot;{videoTitle}&quot;. This action
             cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

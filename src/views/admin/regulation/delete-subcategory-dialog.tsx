@@ -30,7 +30,7 @@ export function DeleteSubCategoryDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will delete the subcategory "{subCategoryName}". This action
+            This will delete the subcategory &quot;{subCategoryName}&quot;. This action
             cannot be undone. If there are regulations linked to this
             subcategory, the deletion will fail.
           </AlertDialogDescription>

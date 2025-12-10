@@ -52,7 +52,30 @@ type EditNewsDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   news: NewsItem;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: {
+    title: string;
+    subtitle: string;
+    image: string;
+    number: string;
+    type: string;
+    issuer: string;
+    sector: string;
+    jurisdiction: string;
+    status: "Berlaku" | "Dicabut" | "Draft";
+    publishedAt: string;
+    effectiveAt: string;
+    summary: string;
+    keywords: string[];
+    sourceUrl: string;
+    modules: { duration: string; title: string; isFree: boolean }[];
+    relatedCourses: string[];
+    author: string;
+    time: string;
+    students: string;
+    chapters: string;
+    level: string;
+    price: string;
+  }) => void;
 };
 
 export function EditNewsDialog({

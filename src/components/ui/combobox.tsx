@@ -17,16 +17,14 @@ import { Badge } from "./badge";
 
 type ComboboxProps = {
   options: string[];
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   placeholderName: string;
   value?: string;
 };
 
 export function Combobox({
   options,
-  onChange,
   placeholderName,
-  value,
 }: ComboboxProps) {
   const id = React.useId();
   const [open, setOpen] = React.useState(false);

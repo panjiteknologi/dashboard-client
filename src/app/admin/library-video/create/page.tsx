@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -21,7 +21,9 @@ export default function CreateLibraryVideoPage() {
   const createSubCategoryMutation = useMutation(api.videoSubCategories.create);
 
   const categories = useQuery(api.videoCategories.list);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<Id<"videoCategories"> | undefined>();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    Id<"videoCategories"> | undefined
+  >();
   const subCategories = useQuery(
     api.videoSubCategories.list,
     selectedCategoryId ? { categoryId: selectedCategoryId } : "skip"
@@ -207,4 +209,3 @@ export default function CreateLibraryVideoPage() {
     </AdminLayout>
   );
 }
-

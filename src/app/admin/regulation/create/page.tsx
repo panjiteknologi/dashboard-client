@@ -47,7 +47,6 @@ export default function CreateRegulationPage() {
     selectedCategoryId ? { categoryId: selectedCategoryId } : "skip"
   );
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(
     null
@@ -113,7 +112,6 @@ export default function CreateRegulationPage() {
       } catch (error) {
         toast.error("Failed to upload image");
         console.error(error);
-        setImageFile(null);
       } finally {
         setIsUploading(false);
       }
@@ -124,7 +122,6 @@ export default function CreateRegulationPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
       handleImageUpload(file);
     } else {
       toast.error("Please select a valid image file");
@@ -136,7 +133,6 @@ export default function CreateRegulationPage() {
     e.stopPropagation();
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
       handleImageUpload(file);
     } else {
       toast.error("Please drop a valid image file");
@@ -149,7 +145,6 @@ export default function CreateRegulationPage() {
   };
 
   const removeImage = () => {
-    setImageFile(null);
     setImagePreview(null);
     setImageStorageId(null);
     setFormData((prev) => ({ ...prev, image: "" }));

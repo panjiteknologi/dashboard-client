@@ -1,7 +1,6 @@
 "use client";
 
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import {
   Table,

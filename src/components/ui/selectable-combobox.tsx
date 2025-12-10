@@ -127,7 +127,7 @@ export function SelectableCombobox({
                     className="text-primary"
                   >
                     <PlusIcon className="mr-2 h-4 w-4" />
-                    {createText} "{searchValue}"
+                    {createText} &quot;{searchValue}&quot;
                   </CommandItem>
                 )}
               </CommandGroup>

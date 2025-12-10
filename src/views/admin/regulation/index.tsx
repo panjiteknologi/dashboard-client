@@ -86,8 +86,9 @@ export function RegulationManagement() {
       toast.success("Category deleted successfully");
       setDeleteCategoryDialogOpen(false);
       setSelectedCategoryId(null);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to delete category");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to delete category";
+      toast.error(errorMessage);
       console.error(error);
     }
   };
@@ -105,8 +106,9 @@ export function RegulationManagement() {
       toast.success("Sub category deleted successfully");
       setDeleteSubCategoryDialogOpen(false);
       setSelectedSubCategoryId(null);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to delete sub category");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to delete sub category";
+      toast.error(errorMessage);
       console.error(error);
     }
   };

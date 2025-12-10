@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { SidebarAppsMenu } from "@/utils";
 import { RegulationDetailView as RegulationDetail } from "@/views/apps/library/regulation/regulation-detail";
 import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 
 export default function RegulationDetailPage() {
   const router = useRouter();
@@ -25,12 +25,14 @@ export default function RegulationDetailPage() {
   // Get image URL if storageId exists
   const imageUrl = useQuery(
     api.regulations.getImageUrl,
-    regulation?.imageStorageId ? { storageId: regulation.imageStorageId } : "skip"
+    regulation?.imageStorageId
+      ? { storageId: regulation.imageStorageId }
+      : "skip"
   );
 
   const data: RegulationType | null = useMemo(() => {
     if (!regulation) return null;
-    
+
     return {
       id: regulation.id,
       title: regulation.title,

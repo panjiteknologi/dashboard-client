@@ -30,7 +30,7 @@ export function DeleteCategoryDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will delete the category "{categoryName}". This action cannot be
+            This will delete the category &quot;{categoryName}&quot;. This action cannot be
             undone. If there are subcategories linked to this category, the
             deletion will fail.
           </AlertDialogDescription>
