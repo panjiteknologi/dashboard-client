@@ -70,7 +70,7 @@ export function VideoPreviewDialog({
               data={transformedVideo}
               handleClick={() => {}}
               view={view}
-              subCategoryId={video.subCategoryId}
+              subCategoryId={(video.subCategoryId ?? "") as string}
             />
           </div>
         </div>

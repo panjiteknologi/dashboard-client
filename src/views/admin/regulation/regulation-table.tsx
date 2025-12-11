@@ -54,11 +54,15 @@ function ThumbnailCell({
 function RegulationSubCategoryName({
   subCategoryId,
 }: {
-  subCategoryId: Id<"regulationSubCategories">;
+  subCategoryId?: Id<"regulationSubCategories">;
 }) {
-  const subCategory = useQuery(api.regulationSubCategories.get, {
-    id: subCategoryId,
-  });
+  const subCategory = useQuery(
+    api.regulationSubCategories.get,
+    subCategoryId ? { id: subCategoryId } : "skip"
+  );
+  if (!subCategoryId) {
+    return <span className="text-muted-foreground">-</span>;
+  }
   return <span>{subCategory?.name || "Loading..."}</span>;
 }
 
@@ -66,15 +70,19 @@ function RegulationSubCategoryName({
 function RegulationCategoryName({
   subCategoryId,
 }: {
-  subCategoryId: Id<"regulationSubCategories">;
+  subCategoryId?: Id<"regulationSubCategories">;
 }) {
-  const subCategory = useQuery(api.regulationSubCategories.get, {
-    id: subCategoryId,
-  });
+  const subCategory = useQuery(
+    api.regulationSubCategories.get,
+    subCategoryId ? { id: subCategoryId } : "skip"
+  );
   const category = useQuery(
     api.regulationCategories.get,
     subCategory?.categoryId ? { id: subCategory.categoryId } : "skip"
   );
+  if (!subCategoryId) {
+    return <span className="text-muted-foreground">-</span>;
+  }
   return <span>{category?.name || "Loading..."}</span>;
 }
 
@@ -86,7 +94,7 @@ type RegulationItem = {
   publishedAt: string;
   image?: string;
   imageStorageId?: Id<"_storage">;
-  subCategoryId: Id<"regulationSubCategories">;
+  subCategoryId?: Id<"regulationSubCategories">;
 };
 
 type RegulationTableProps = {

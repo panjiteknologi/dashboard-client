@@ -139,7 +139,13 @@ export function LibraryVideoManagement() {
                     </a>
                   </TableCell>
                   <TableCell>
-                    <VideoSubCategoryName subCategoryId={video.subCategoryId} />
+                    {video.subCategoryId ? (
+                      <VideoSubCategoryName
+                        subCategoryId={video.subCategoryId}
+                      />
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
