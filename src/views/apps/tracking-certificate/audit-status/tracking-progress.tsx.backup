@@ -1,19 +1,105 @@
 "use client";
 
-import { CheckCircle, FileCheck } from "lucide-react";
+import {
+  CheckCircle,
+  Calendar,
+  FileCheck,
+  Award,
+  AlertCircle,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AllProject } from "@/types/projects";
-import { getDataTable, StepRow } from "@/utils";
-interface TrackingProgressProps {
-  data: AllProject;
-}
 
-const formatStepDate = (value?: string): string => {
-  if (!value) return "";
+const auditSteps = [
+  {
+    name: "Aplication Form or Request",
+    icon: FileCheck,
+    category: "Application",
+    color: "bg-blue-500",
+  },
+  {
+    name: "Review Penugasan ST Satu",
+    icon: Award,
+    category: "Assignment",
+    color: "bg-indigo-500",
+  },
+  {
+    name: "Kontrak",
+    icon: FileCheck,
+    category: "Contract",
+    color: "bg-purple-500",
+  },
+  {
+    name: "Pengiriman Notifikasi ST Satu",
+    icon: Calendar,
+    category: "Notification",
+    color: "bg-pink-500",
+  },
+  {
+    name: "Pengiriman Audit Plan ST Satu",
+    icon: Calendar,
+    category: "Planning",
+    color: "bg-rose-500",
+  },
+  {
+    name: "Pelaksanaan Audit ST Satu",
+    icon: CheckCircle,
+    category: "Audit",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Penyelesaian CAPA ST Satu",
+    icon: AlertCircle,
+    category: "Resolution",
+    color: "bg-amber-500",
+  },
+  {
+    name: "Pengiriman Draft Sertifikat",
+    icon: FileCheck,
+    category: "Draft",
+    color: "bg-yellow-500",
+  },
+  {
+    name: "Pengajuan ke KAN",
+    icon: Award,
+    category: "Submission",
+    color: "bg-lime-500",
+  },
+  {
+    name: "Persetujuan ke KAN",
+    icon: CheckCircle,
+    category: "Approval",
+    color: "bg-green-500",
+  },
+  {
+    name: "Kirim Sertifikat",
+    icon: Award,
+    category: "Issuance",
+    color: "bg-emerald-500",
+  },
+];
+
+const leadTimeStepMap: Record<string, keyof AllProject> = {
+  "Aplication Form or Request": "tgl_aplication_form",
+  "Review Penugasan ST Satu": "tgl_review_penugasan_st_satu",
+  Kontrak: "tgl_kontrak",
+  "Pengiriman Notifikasi ST Satu": "tgl_pengiriman_notif_st_satu",
+  "Pengiriman Audit Plan ST Satu": "tgl_pengiriman_audit_plan_st_satu",
+  "Pelaksanaan Audit ST Satu": "tgl_pelaksanaan_audit_st_satu",
+  "Penyelesaian CAPA ST Satu": "tgl_penyelesaian_capa_st_satu",
+  "Pengiriman Draft Sertifikat": "tgl_pengiriman_draft_sertifikat",
+  "Pengajuan ke KAN": "tgl_pengajuan",
+  "Persetujuan ke KAN": "tgl_persetujuan",
+  "Kirim Sertifikat": "tgl_kirim_sertifikat",
+};
+
+const getStepDate = (data: AllProject, step: string): string => {
+  const key = leadTimeStepMap[step];
+  const dateValue = data[key];
+  if (!dateValue || dateValue === "") return "";
 
   try {
-    const date = new Date(value);
-    if (isNaN(date.getTime())) return "";
+    const date = new Date(dateValue);
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -24,19 +110,29 @@ const formatStepDate = (value?: string): string => {
   }
 };
 
+interface TrackingProgressProps {
+  data: AllProject;
+}
+
 export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
-  const steps: StepRow[] = getDataTable(data) ?? [];
+  const isStepCompleted = (step: string): boolean => {
+    const key = leadTimeStepMap[step];
+    if (!key) return false;
+    const value = data[key];
+    return !!value && value !== "";
+  };
 
   return (
     <div className="overflow-y-auto">
       <div className="relative">
-        <div className="absolute left-4 top-8 bottom-0 w-0.5 bg-linear-to-b from-blue-200 via-blue-300 to-blue-400" />
+        {/* Modern gradient line */}
+        <div className="absolute left-4 top-8 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-blue-300 to-blue-400" />
 
         <div className="flex flex-col space-y-4">
-          {steps.map((step, index) => {
-            const completed = !!step.tanggalStatus;
-            const stepDate = formatStepDate(step.tanggalStatus);
-            const Icon = step.icon ?? FileCheck;
+          {auditSteps.map((step, index) => {
+            const completed = isStepCompleted(step.name);
+            const stepDate = getStepDate(data, step.name);
+            const Icon = step.icon;
 
             return (
               <div className="flex items-start space-x-4 relative" key={index}>
@@ -63,7 +159,7 @@ export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
                     className={cn(
                       "p-3 rounded-lg border transition-all duration-300 hover:shadow-md",
                       completed
-                        ? "bg-linear-to-r from-blue-50 to-indigo-50 border-blue-200"
+                        ? "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
                         : "bg-gray-50 border-gray-200"
                     )}
                   >
@@ -74,7 +170,7 @@ export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
                           completed ? "text-blue-900" : "text-gray-500"
                         )}
                       >
-                        {step.tahapan}
+                        {step.name}
                       </span>
                       {stepDate && (
                         <span className="text-xs text-blue-600 font-medium bg-blue-100 px-2 py-1 rounded-full">
