@@ -30,62 +30,62 @@ import {
 const DEFAULT_FILE_NAME = "certificate.pdf";
 
 const getProjectStatus = (tahapan: string) => {
-  if (tahapan?.includes('sertifikat') || tahapan?.includes('selesai')) {
+  if (tahapan?.includes("sertifikat") || tahapan?.includes("selesai")) {
     return {
-      status: 'Completed',
-      variant: 'default' as const,
-      color: 'bg-green-500',
+      status: "Completed",
+      variant: "default" as const,
+      color: "bg-green-500",
       icon: CheckCircle,
-      textColor: 'text-green-700',
-      bgColor: 'bg-green-100',
-      borderColor: 'border-green-200'
+      textColor: "text-green-700",
+      bgColor: "bg-green-100",
+      borderColor: "border-green-200",
     };
   }
-  if (tahapan?.includes('survilance') || tahapan?.includes('sv')) {
+  if (tahapan?.includes("survilance") || tahapan?.includes("sv")) {
     return {
-      status: 'Surveillance',
-      variant: 'secondary' as const,
-      color: 'bg-blue-500',
+      status: "Surveillance",
+      variant: "secondary" as const,
+      color: "bg-blue-500",
       icon: Clock,
-      textColor: 'text-blue-700',
-      bgColor: 'bg-blue-100',
-      borderColor: 'border-blue-200'
+      textColor: "text-blue-700",
+      bgColor: "bg-blue-100",
+      borderColor: "border-blue-200",
     };
   }
-  if (tahapan?.includes('audit')) {
+  if (tahapan?.includes("audit")) {
     return {
-      status: 'In Audit',
-      variant: 'secondary' as const,
-      color: 'bg-orange-500',
+      status: "In Audit",
+      variant: "secondary" as const,
+      color: "bg-orange-500",
       icon: AlertCircle,
-      textColor: 'text-orange-700',
-      bgColor: 'bg-orange-100',
-      borderColor: 'border-orange-200'
+      textColor: "text-orange-700",
+      bgColor: "bg-orange-100",
+      borderColor: "border-orange-200",
     };
   }
   return {
-    status: 'In Progress',
-    variant: 'outline' as const,
-    color: 'bg-gray-500',
+    status: "In Progress",
+    variant: "outline" as const,
+    color: "bg-gray-500",
     icon: Clock,
-    textColor: 'text-gray-700',
-    bgColor: 'bg-gray-100',
-    borderColor: 'border-gray-200'
+    textColor: "text-gray-700",
+    bgColor: "bg-gray-100",
+    borderColor: "border-gray-200",
   };
 };
 
 const getProgressPercentage = (tahapan: string) => {
   const progressMap: Record<string, number> = {
-    'survei': 10,
-    'audit1': 20,
-    'audit2': 35,
-    'survilance1': 50,
-    'survilance2': 65,
-    'survilance3': 80,
-    'survilance4': 90,
-    'survilance5': 95,
-    'sertifikat': 100,
-    'selesai': 100
+    survei: 10,
+    audit1: 20,
+    audit2: 35,
+    survilance1: 50,
+    survilance2: 65,
+    survilance3: 80,
+    survilance4: 90,
+    survilance5: 95,
+    sertifikat: 100,
+    selesai: 100,
   };
   return progressMap[tahapan] || 0;
 };
@@ -95,7 +95,9 @@ const StatusBadge = ({ tahapan }: { tahapan: string }) => {
   const Icon = statusInfo.icon;
 
   return (
-    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${statusInfo.bgColor} ${statusInfo.borderColor} ${statusInfo.textColor}`}>
+    <div
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${statusInfo.bgColor} ${statusInfo.borderColor} ${statusInfo.textColor}`}
+    >
       <Icon className="h-3.5 w-3.5" />
       <span className="text-xs font-medium">{statusInfo.status}</span>
     </div>
@@ -118,10 +120,10 @@ const useFileTools = () => {
       const ext = fallbackType?.includes("pdf")
         ? "pdf"
         : fallbackType?.includes("png")
-        ? "png"
-        : fallbackType?.includes("jpeg") || fallbackType?.includes("jpg")
-        ? "jpg"
-        : "bin";
+          ? "png"
+          : fallbackType?.includes("jpeg") || fallbackType?.includes("jpg")
+            ? "jpg"
+            : "bin";
       return `certificate.${ext}`;
     },
     []
@@ -134,10 +136,10 @@ const useFileTools = () => {
       const ext = mime.includes("pdf")
         ? "pdf"
         : mime.includes("png")
-        ? "png"
-        : mime.includes("jpeg") || mime.includes("jpg")
-        ? "jpg"
-        : "bin";
+          ? "png"
+          : mime.includes("jpeg") || mime.includes("jpg")
+            ? "jpg"
+            : "bin";
       return { mime, ext, b64: dataMatch[2] };
     }
     const head = src.slice(0, 24);
@@ -147,10 +149,10 @@ const useFileTools = () => {
     const mime = isPdf
       ? "application/pdf"
       : isPng
-      ? "image/png"
-      : isJpg
-      ? "image/jpeg"
-      : "application/octet-stream";
+        ? "image/png"
+        : isJpg
+          ? "image/jpeg"
+          : "application/octet-stream";
     const ext = isPdf ? "pdf" : isPng ? "png" : isJpg ? "jpg" : "bin";
     return { mime, ext, b64: src };
   };
@@ -287,8 +289,12 @@ export const AuditStatusView = ({
               <StatusBadge tahapan={tahapan} />
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs font-medium">{normalizedField?.nama_tahapan ?? "-"}</span>
-                  <span className="text-xs text-muted-foreground">{progress}%</span>
+                  <span className="text-xs font-medium">
+                    {normalizedField?.nama_tahapan ?? "-"}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {progress}%
+                  </span>
                 </div>
                 <Progress value={progress} className="h-1.5" />
               </div>
@@ -353,7 +359,7 @@ export const AuditStatusView = ({
   ) => {
     const filter = filterValue.toLowerCase();
     const flatString = Object.values(row?.original)
-      .map((val) => (Array.isArray(val) ? val.join(" ") : val ?? ""))
+      .map((val) => (Array.isArray(val) ? val.join(" ") : (val ?? "")))
       .join(" ")
       .toLowerCase();
 
@@ -405,8 +411,8 @@ export const AuditStatusView = ({
                 name || DEFAULT_FILE_NAME
               }</strong>…</p>
               <a id="dl" href="${objectUrl}" download="${
-          name || DEFAULT_FILE_NAME
-        }">Unduh</a>
+                name || DEFAULT_FILE_NAME
+              }">Unduh</a>
               <script>
                 const a = document.getElementById('dl');
                 if (a) a.click();
@@ -439,61 +445,66 @@ export const AuditStatusView = ({
       {/* Header Section - Removed to avoid duplication since it's already in the main dashboard page */}
 
       <DataTable
-          filteredStandard={false}
-          isSearch={false}
-          columns={columns}
-          data={dataTransform}
-          uniqueStandards={uniqueStandards}
-          loading={false}
-          customGlobalFilter={customGlobalFilter}
-          children={(rowData, maybeIdx?: number) => {
-            const certificate = rowData?.sertifikat;
-            const derivedIdx =
-              typeof maybeIdx === "number" && !Number.isNaN(maybeIdx)
-                ? maybeIdx
-                : dataTransform.findIndex((d) => d === rowData);
+        filteredStandard={false}
+        isSearch={false}
+        columns={columns}
+        data={dataTransform}
+        uniqueStandards={uniqueStandards}
+        loading={false}
+        customGlobalFilter={customGlobalFilter}
+        children={(rowData, maybeIdx?: number) => {
+          const certificate = rowData?.sertifikat;
+          const derivedIdx =
+            typeof maybeIdx === "number" && !Number.isNaN(maybeIdx)
+              ? maybeIdx
+              : dataTransform.findIndex((d) => d === rowData);
 
-            const progress = getProgressPercentage(rowData.tahapan);
-            // const statusInfo = getProjectStatus(rowData.tahapan);
-            // const StatusIcon = statusInfo.icon;
-
-            return (
-              <div className="space-y-6 p-6 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
-                {/* Header Section */}
-                <div className="flex items-center justify-between pb-4 border-b">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <Building className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{rowData.customer}</h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <User className="h-3 w-3" />
-                        <span>{rowData.sales_person || "Not Assigned"}</span>
-                      </div>
-                    </div>
+          const progress = getProgressPercentage(rowData.tahapan);
+          // const statusInfo = getProjectStatus(rowData.tahapan);
+          // const StatusIcon = statusInfo.icon;
+          return (
+            <div className="space-y-6 p-6 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+              {/* Header Section */}
+              <div className="flex items-center justify-between pb-4 border-b">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <Building className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div className="flex items-center gap-4">
-                    <StatusBadge tahapan={rowData.tahapan} />
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">{progress}%</div>
-                      <div className="text-xs text-gray-500">Complete</div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {rowData.customer}
+                    </h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <User className="h-3 w-3" />
+                      <span>{rowData.sales_person || "Not Assigned"}</span>
                     </div>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                  {/* Left Column - Progress */}
-                  <div className="space-y-5">
-                    {/* Detailed Tracking */}
-                    <div className="p-4 bg-white rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-3">Detailed Timeline</h4>
-                      <div className="max-h-200 overflow-y-auto">
-                        <TrackingProgressView data={rowData} />
-                      </div>
+                <div className="flex items-center gap-4">
+                  <StatusBadge tahapan={rowData.tahapan} />
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {progress}%
                     </div>
-                    {/* Current Progress */}
-                    {/* <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                    <div className="text-xs text-gray-500">Complete</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {/* Left Column - Progress */}
+                <div className="space-y-5">
+                  {/* Detailed Tracking */}
+                  <div className="p-4 bg-white rounded-lg border border-gray-200">
+                    <h4 className="font-semibold text-gray-900 mb-3">
+                      Detailed Timeline
+                    </h4>
+                    <div className="max-h-200 overflow-y-auto">
+                      <TrackingProgressView data={rowData} />
+                    </div>
+                  </div>
+                  {/* Current Progress */}
+                  {/* <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
                       <div className="flex items-center gap-2 mb-3">
                         <TrendingUp className="h-4 w-4 text-blue-600" />
                         <h4 className="font-semibold text-gray-900">Current Progress</h4>
@@ -513,8 +524,8 @@ export const AuditStatusView = ({
                       </div>
                     </div> */}
 
-                    {/* Timeline */}
-                    {/* <div className="p-4 bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg border border-gray-100">
+                  {/* Timeline */}
+                  {/* <div className="p-4 bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg border border-gray-100">
                       <div className="flex items-center gap-2 mb-3">
                         <Calendar className="h-4 w-4 text-gray-600" />
                         <h4 className="font-semibold text-gray-900">Timeline</h4>
@@ -544,14 +555,12 @@ export const AuditStatusView = ({
                         </div>
                       </div>
                     </div> */}
+                </div>
 
-                    
-                  </div>
-
-                  {/* Right Column - Standards & Certificates */}
-                  <div className="space-y-5">
-                    {/* Standards */}
-                    {/* <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+                {/* Right Column - Standards & Certificates */}
+                <div className="space-y-5">
+                  {/* Standards */}
+                  {/* <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
                       <div className="flex items-center gap-2 mb-3">
                         <Award className="h-4 w-4 text-indigo-600" />
                         <h4 className="font-semibold text-gray-900">ISO Standards</h4>
@@ -573,8 +582,8 @@ export const AuditStatusView = ({
                       </div>
                     </div> */}
 
-                    {/* Accreditation */}
-                    {/* {Array.isArray(rowData.accreditation) && rowData.accreditation.length > 0 && (
+                  {/* Accreditation */}
+                  {/* {Array.isArray(rowData.accreditation) && rowData.accreditation.length > 0 && (
                       <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-100">
                         <div className="flex items-center gap-2 mb-3">
                           <Award className="h-4 w-4 text-green-600" />
@@ -594,46 +603,58 @@ export const AuditStatusView = ({
                       </div>
                     )} */}
 
-                    {/* Certificates */}
-                    <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-100">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-amber-600" />
-                          <h4 className="font-semibold text-gray-900">Certificates</h4>
-                        </div>
-                        {Array.isArray(certificate) && certificate.length > 0 && (
-                          <Badge variant="secondary" className="bg-amber-100 text-amber-700 border-amber-200">
-                            {certificate.length} files
-                          </Badge>
-                        )}
+                  {/* Certificates */}
+                  <div className="p-4 bg-linear-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-100">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-amber-600" />
+                        <h4 className="font-semibold text-gray-900">
+                          Certificates
+                        </h4>
                       </div>
-                      {((certificate as unknown as { file: string }[])?.length ?? 0) === 0 ? (
-                        <div className="text-center py-6 text-gray-500">
-                          <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">No certificates available</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-2 max-h-64 overflow-y-auto">
-                          {(certificate as unknown as { name?: string; standard?: string; file: string }[]).map((item, index) => (
-                            <AuditCertificateCard
-                              key={index}
-                              item={item}
-                              derivedIdx={derivedIdx}
-                              viewingIdx={viewingIdx}
-                              downloadingIdx={downloadingIdx}
-                              viewCertificate={viewCertificate}
-                              downloadCertificate={downloadCertificate}
-                            />
-                          ))}
-                        </div>
+                      {Array.isArray(certificate) && certificate.length > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-amber-100 text-amber-700 border-amber-200"
+                        >
+                          {certificate.length} files
+                        </Badge>
                       )}
                     </div>
+                    {((certificate as unknown as { file: string }[])?.length ??
+                      0) === 0 ? (
+                      <div className="text-center py-6 text-gray-500">
+                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No certificates available</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                        {(
+                          certificate as unknown as {
+                            name?: string;
+                            standard?: string;
+                            file: string;
+                          }[]
+                        ).map((item, index) => (
+                          <AuditCertificateCard
+                            key={index}
+                            item={item}
+                            derivedIdx={derivedIdx}
+                            viewingIdx={viewingIdx}
+                            downloadingIdx={downloadingIdx}
+                            viewCertificate={viewCertificate}
+                            downloadCertificate={downloadCertificate}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            );
-          }}
-        />
+            </div>
+          );
+        }}
+      />
     </div>
   );
 };
