@@ -24,11 +24,11 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: process.env.CONVEX_HOSTNAME as string,
+      ...(process.env.CONVEX_HOSTNAME ? [{
+        protocol: "https" as const,
+        hostname: process.env.CONVEX_HOSTNAME,
         pathname: "/**",
-      },
+      }] : []),
     ],
   },
 };

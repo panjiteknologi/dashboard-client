@@ -5,7 +5,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import DataTable from "@/components/ui/data-table";
 import { findTahapan } from "@/utils/getNormalizeTahapan";
-import { getlatestProgress, getNextStep } from "@/utils/getProgressAndField";
+import { getlatestProgress, getNextStep, getDataTable } from "@/utils/getProgressAndField";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -30,7 +30,9 @@ import {
 const DEFAULT_FILE_NAME = "certificate.pdf";
 
 const getProjectStatus = (tahapan: string) => {
-  if (tahapan?.includes("sertifikat") || tahapan?.includes("selesai")) {
+  const normalizedTahapan = tahapan?.toLowerCase() || "";
+
+  if (normalizedTahapan.includes("sertifikat") || normalizedTahapan.includes("selesai")) {
     return {
       status: "Completed",
       variant: "default" as const,
@@ -41,7 +43,7 @@ const getProjectStatus = (tahapan: string) => {
       borderColor: "border-green-200",
     };
   }
-  if (tahapan?.includes("survilance") || tahapan?.includes("sv")) {
+  if (normalizedTahapan.includes("survilance") || normalizedTahapan.includes("surveillance") || normalizedTahapan.startsWith("sv")) {
     return {
       status: "Surveillance",
       variant: "secondary" as const,
@@ -52,7 +54,7 @@ const getProjectStatus = (tahapan: string) => {
       borderColor: "border-blue-200",
     };
   }
-  if (tahapan?.includes("audit")) {
+  if (normalizedTahapan.includes("audit")) {
     return {
       status: "In Audit",
       variant: "secondary" as const,
@@ -61,6 +63,17 @@ const getProjectStatus = (tahapan: string) => {
       textColor: "text-orange-700",
       bgColor: "bg-orange-100",
       borderColor: "border-orange-200",
+    };
+  }
+  if (normalizedTahapan.includes("survei")) {
+    return {
+      status: "In Progress",
+      variant: "outline" as const,
+      color: "bg-yellow-500",
+      icon: Clock,
+      textColor: "text-yellow-700",
+      bgColor: "bg-yellow-100",
+      borderColor: "border-yellow-200",
     };
   }
   return {
@@ -74,20 +87,101 @@ const getProjectStatus = (tahapan: string) => {
   };
 };
 
-const getProgressPercentage = (tahapan: string) => {
-  const progressMap: Record<string, number> = {
-    survei: 10,
-    audit1: 20,
-    audit2: 35,
-    survilance1: 50,
-    survilance2: 65,
-    survilance3: 80,
-    survilance4: 90,
-    survilance5: 95,
-    sertifikat: 100,
-    selesai: 100,
-  };
-  return progressMap[tahapan] || 0;
+const getProgressPercentage = (data: AllProject, isISO = true) => {
+  try {
+    // Handle server-side rendering by using fallback logic
+    if (typeof window === 'undefined') {
+      const tahapan = data?.tahapan || '';
+      const progressMap: Record<string, number> = {
+        survei: 10,
+        audit1: 20,
+        audit2: 35,
+        surveilance1: 50,
+        surveilance2: 65,
+        surveilance3: 80,
+        surveilance4: 90,
+        surveilance5: 95,
+        survilance1: 50,
+        survilance2: 65,
+        survilance3: 80,
+        survilance4: 90,
+        survilance5: 95,
+        sv1: 50,
+        sv2: 65,
+        sv3: 80,
+        sv4: 90,
+        sv5: 95,
+        sertifikat: 100,
+        selesai: 100,
+      };
+      return progressMap[tahapan.toLowerCase()] || 0;
+    }
+
+    const steps = getDataTable(data) || [];
+
+    if (steps.length === 0) {
+      // Fallback to original logic if no steps
+      const tahapan = data?.tahapan || '';
+      const progressMap: Record<string, number> = {
+        survei: 10,
+        audit1: 20,
+        audit2: 35,
+        surveilance1: 50,
+        surveilance2: 65,
+        surveilance3: 80,
+        surveilance4: 90,
+        surveilance5: 95,
+        survilance1: 50,
+        survilance2: 65,
+        survilance3: 80,
+        survilance4: 90,
+        survilance5: 95,
+        sv1: 50,
+        sv2: 65,
+        sv3: 80,
+        sv4: 90,
+        sv5: 95,
+        sertifikat: 100,
+        selesai: 100,
+      };
+      return progressMap[tahapan.toLowerCase()] || 0;
+    }
+
+    // Count completed steps (steps that have tanggalStatus)
+    const completedSteps = steps.filter(step => step.tanggalStatus && step.tanggalStatus.trim() !== '').length;
+
+    // Calculate percentage based on completed steps
+    const percentage = Math.round((completedSteps / steps.length) * 100);
+
+    // Ensure max is 100
+    return Math.min(percentage, 100);
+  } catch (error) {
+    // Fallback to original logic if getDataTable fails
+    const tahapan = data?.tahapan || '';
+    const progressMap: Record<string, number> = {
+      survei: 10,
+      audit1: 20,
+      audit2: 35,
+      surveilance1: 50,
+      surveilance2: 65,
+      surveilance3: 80,
+      surveilance4: 90,
+      surveilance5: 95,
+      survilance1: 50,
+      survilance2: 65,
+      survilance3: 80,
+      survilance4: 90,
+      survilance5: 95,
+      sv1: 50,
+      sv2: 65,
+      sv3: 80,
+      sv4: 90,
+      sv5: 95,
+      sertifikat: 100,
+      selesai: 100,
+    };
+    return progressMap[tahapan.toLowerCase()] || 0;
+  }
 };
 
 const StatusBadge = ({ tahapan }: { tahapan: string }) => {
@@ -281,7 +375,7 @@ export const AuditStatusView = ({
         header: "Status & Progress",
         cell: ({ row }) => {
           const tahapan = row?.original?.tahapan;
-          const progress = getProgressPercentage(tahapan);
+          const progress = getProgressPercentage(row?.original);
           const normalizedField = findTahapan(tahapan as string);
 
           return (
@@ -336,18 +430,18 @@ export const AuditStatusView = ({
           );
         },
       },
-      {
-        header: "Lead Time",
-        accessorKey: "lead_time_finish",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Clock className="h-3.5 w-3.5 text-blue-600" />
-            <span className="text-sm font-medium text-blue-900">
-              {row?.original?.lead_time_finish ?? "-"}
-            </span>
-          </div>
-        ),
-      },
+      // {
+      //   header: "Lead Time",
+      //   accessorKey: "lead_time_finish",
+      //   cell: ({ row }) => (
+      //     <div className="flex items-center gap-2">
+      //       <Clock className="h-3.5 w-3.5 text-blue-600" />
+      //       <span className="text-sm font-medium text-blue-900">
+      //         {row?.original?.lead_time_finish ?? "-"}
+      //       </span>
+      //     </div>
+      //   ),
+      // },
     ],
     []
   );
@@ -459,7 +553,7 @@ export const AuditStatusView = ({
               ? maybeIdx
               : dataTransform.findIndex((d) => d === rowData);
 
-          const progress = getProgressPercentage(rowData.tahapan);
+          const progress = getProgressPercentage(rowData);
           // const statusInfo = getProjectStatus(rowData.tahapan);
           // const StatusIcon = statusInfo.icon;
           return (
@@ -628,7 +722,7 @@ export const AuditStatusView = ({
                         <p className="text-sm">No certificates available</p>
                       </div>
                     ) : (
-                      <div className="space-y-2 max-h-64 overflow-y-auto">
+                      <div className="space-y-2 max-h-200 overflow-y-auto">
                         {(
                           certificate as unknown as {
                             name?: string;
