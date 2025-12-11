@@ -8,7 +8,6 @@ export function findTahapan(namaTahapan: string) {
 
 export function normalizeFieldTahapan(field: AllProject) {
   const tahapanData = findTahapan(field.tahapan as string);
-
   return {
     ...field,
     tahapan: tahapanData?.id_tahapan ?? null,
