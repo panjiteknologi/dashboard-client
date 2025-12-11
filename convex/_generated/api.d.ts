@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as dashboard from "../dashboard.js";
 import type * as libraryVideos from "../libraryVideos.js";
 import type * as news from "../news.js";
 import type * as regulationCategories from "../regulationCategories.js";
@@ -23,6 +24,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  dashboard: typeof dashboard;
   libraryVideos: typeof libraryVideos;
   news: typeof news;
   regulationCategories: typeof regulationCategories;

@@ -161,14 +161,16 @@ export const create = mutation({
           })
         )
       ),
-      subCategoryId: v.id("regulationSubCategories"),
+      subCategoryId: v.optional(v.id("regulationSubCategories")),
     }),
   },
   handler: async (ctx, args) => {
-    // Verify subcategory exists
-    const subCategory = await ctx.db.get(args.data.subCategoryId);
-    if (!subCategory) {
-      throw new Error("Regulation subcategory not found");
+    // Verify subcategory exists if provided
+    if (args.data.subCategoryId) {
+      const subCategory = await ctx.db.get(args.data.subCategoryId);
+      if (!subCategory) {
+        throw new Error("Regulation subcategory not found");
+      }
     }
 
     const regulationId = await ctx.db.insert("regulations", args.data);

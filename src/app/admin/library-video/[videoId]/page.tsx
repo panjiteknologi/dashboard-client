@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AdminLayout from "@/layout/admin-layout.tsx";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, Loader2 } from "lucide-react";
 import { SelectableCombobox } from "@/components/ui/selectable-combobox";
 
 export default function EditLibraryVideoPage() {
@@ -25,8 +25,10 @@ export default function EditLibraryVideoPage() {
   const createSubCategoryMutation = useMutation(api.videoSubCategories.create);
 
   const categories = useQuery(api.videoCategories.list);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<Id<"videoCategories"> | undefined>();
-  
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    Id<"videoCategories"> | undefined
+  >();
+
   // Get subcategory to find its category
   const currentSubCategory = useQuery(
     api.videoSubCategories.get,
@@ -47,6 +49,7 @@ export default function EditLibraryVideoPage() {
     url: "",
     subCategoryId: "" as Id<"videoSubCategories"> | "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load video data and set category
   useEffect(() => {
@@ -114,23 +117,23 @@ export default function EditLibraryVideoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!formData.subCategoryId) {
-        toast.error("Please select a sub category");
-        return;
-      }
-
+      setIsSubmitting(true);
       await updateMutation({
         id: videoId,
         title: formData.title,
         description: formData.description,
         url: formData.url,
-        subCategoryId: formData.subCategoryId as Id<"videoSubCategories">,
+        subCategoryId: formData.subCategoryId
+          ? (formData.subCategoryId as Id<"videoSubCategories">)
+          : undefined,
       });
       toast.success("Video updated successfully");
       router.push("/admin/library-video");
     } catch (error) {
       toast.error("Failed to update video");
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -150,7 +153,7 @@ export default function EditLibraryVideoPage() {
 
   const categoryOptions =
     categories?.map((cat) => ({ id: cat._id, name: cat.name })) || [];
-  
+
   // Include current subcategory even if category changes
   const subCategoryOptions = subCategories
     ? [
@@ -161,8 +164,8 @@ export default function EditLibraryVideoPage() {
           : []),
       ]
     : currentSubCategory
-    ? [{ id: currentSubCategory._id, name: currentSubCategory.name }]
-    : [];
+      ? [{ id: currentSubCategory._id, name: currentSubCategory.name }]
+      : [];
 
   return (
     <AdminLayout>
@@ -185,7 +188,6 @@ export default function EditLibraryVideoPage() {
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
-                  required
                   value={formData.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                 />
@@ -195,7 +197,6 @@ export default function EditLibraryVideoPage() {
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
-                  required
                   value={formData.description}
                   onChange={(e) => handleChange("description", e.target.value)}
                   rows={3}
@@ -207,7 +208,6 @@ export default function EditLibraryVideoPage() {
                 <Input
                   id="url"
                   type="url"
-                  required
                   value={formData.url}
                   onChange={(e) => handleChange("url", e.target.value)}
                   placeholder="https://..."
@@ -256,7 +256,12 @@ export default function EditLibraryVideoPage() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Update</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Update
+              </Button>
             </div>
           </form>
         </div>
@@ -264,4 +269,3 @@ export default function EditLibraryVideoPage() {
     </AdminLayout>
   );
 }
-

@@ -92,7 +92,7 @@ export default defineSchema({
     title: v.string(),
     description: v.string(),
     url: v.string(),
-    subCategoryId: v.id("videoSubCategories"),
+    subCategoryId: v.optional(v.id("videoSubCategories")),
   }).index("by_subCategoryId", ["subCategoryId"]),
 
   // Regulation Categories table
@@ -158,7 +158,7 @@ export default defineSchema({
     ),
 
     // Reference to subcategory
-    subCategoryId: v.id("regulationSubCategories"),
+    subCategoryId: v.optional(v.id("regulationSubCategories")),
   })
     .index("by_subCategoryId", ["subCategoryId"])
     .index("by_status", ["status"])

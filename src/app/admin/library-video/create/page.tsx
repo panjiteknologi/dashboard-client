@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AdminLayout from "@/layout/admin-layout.tsx";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, Loader2 } from "lucide-react";
 import { SelectableCombobox } from "@/components/ui/selectable-combobox";
 
 export default function CreateLibraryVideoPage() {
@@ -35,6 +35,7 @@ export default function CreateLibraryVideoPage() {
     url: "",
     subCategoryId: "" as Id<"videoSubCategories"> | "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -83,24 +84,24 @@ export default function CreateLibraryVideoPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!formData.subCategoryId) {
-        toast.error("Please select a sub category");
-        return;
-      }
-
+      setIsSubmitting(true);
       const id = Date.now();
       await createMutation({
         id,
         title: formData.title,
         description: formData.description,
         url: formData.url,
-        subCategoryId: formData.subCategoryId as Id<"videoSubCategories">,
+        subCategoryId: formData.subCategoryId
+          ? (formData.subCategoryId as Id<"videoSubCategories">)
+          : undefined,
       });
       toast.success("Video created successfully");
       router.push("/admin/library-video");
     } catch (error) {
       toast.error("Failed to create video");
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -130,7 +131,6 @@ export default function CreateLibraryVideoPage() {
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
-                  required
                   value={formData.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                 />
@@ -140,7 +140,6 @@ export default function CreateLibraryVideoPage() {
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
-                  required
                   value={formData.description}
                   onChange={(e) => handleChange("description", e.target.value)}
                   rows={3}
@@ -152,7 +151,6 @@ export default function CreateLibraryVideoPage() {
                 <Input
                   id="url"
                   type="url"
-                  required
                   value={formData.url}
                   onChange={(e) => handleChange("url", e.target.value)}
                   placeholder="https://..."
@@ -197,11 +195,16 @@ export default function CreateLibraryVideoPage() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push("/admin/library-video")}
+                // onClick={() => router.push("/admin/library-video")}
               >
                 Cancel
               </Button>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Create
+              </Button>
             </div>
           </form>
         </div>

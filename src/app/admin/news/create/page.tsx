@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AdminLayout from "@/layout/admin-layout.tsx";
-import { ArrowLeftIcon, UploadIcon, XIcon } from "lucide-react";
+import { ArrowLeftIcon, UploadIcon, XIcon, Loader2 } from "lucide-react";
 
 // Function to generate news number
 const generateNewsNumber = (lastNumber?: string): string => {
@@ -47,6 +47,7 @@ export default function CreateNewsPage() {
     null
   );
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -162,6 +163,7 @@ export default function CreateNewsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsSubmitting(true);
       // Generate ID from timestamp
       const id = Date.now();
 
@@ -193,6 +195,8 @@ export default function CreateNewsPage() {
     } catch (error) {
       toast.error("Failed to create news");
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -251,7 +255,6 @@ export default function CreateNewsPage() {
                 <Label htmlFor="number">Number *</Label>
                 <Input
                   id="number"
-                  required
                   value={formData.number}
                   onChange={(e) => handleChange("number", e.target.value)}
                   readOnly
@@ -266,7 +269,6 @@ export default function CreateNewsPage() {
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
-                  required
                   value={formData.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                 />
@@ -276,7 +278,6 @@ export default function CreateNewsPage() {
                 <Label htmlFor="subtitle">Subtitle *</Label>
                 <Input
                   id="subtitle"
-                  required
                   value={formData.subtitle}
                   onChange={(e) => handleChange("subtitle", e.target.value)}
                 />
@@ -395,7 +396,6 @@ export default function CreateNewsPage() {
                   <Label htmlFor="author">Author *</Label>
                   <Input
                     id="author"
-                    required
                     value={formData.author}
                     onChange={(e) => handleChange("author", e.target.value)}
                   />
@@ -407,7 +407,6 @@ export default function CreateNewsPage() {
                   <Label htmlFor="issuer">Issuer *</Label>
                   <Input
                     id="issuer"
-                    required
                     value={formData.issuer}
                     onChange={(e) => handleChange("issuer", e.target.value)}
                   />
@@ -416,7 +415,6 @@ export default function CreateNewsPage() {
                   <Label htmlFor="sector">Sector *</Label>
                   <Input
                     id="sector"
-                    required
                     value={formData.sector}
                     onChange={(e) => handleChange("sector", e.target.value)}
                   />
@@ -429,7 +427,6 @@ export default function CreateNewsPage() {
                   <Input
                     id="publishedAt"
                     type="date"
-                    required
                     value={formData.publishedAt}
                     onChange={(e) =>
                       handleChange("publishedAt", e.target.value)
@@ -441,7 +438,6 @@ export default function CreateNewsPage() {
                   <Input
                     id="effectiveAt"
                     type="date"
-                    required
                     value={formData.effectiveAt}
                     onChange={(e) =>
                       handleChange("effectiveAt", e.target.value)
@@ -471,7 +467,6 @@ export default function CreateNewsPage() {
                 <Label htmlFor="summary">Summary *</Label>
                 <Textarea
                   id="summary"
-                  required
                   value={formData.summary}
                   onChange={(e) => handleChange("summary", e.target.value)}
                   rows={3}
@@ -577,7 +572,10 @@ export default function CreateNewsPage() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create
+              </Button>
             </div>
           </form>
         </div>

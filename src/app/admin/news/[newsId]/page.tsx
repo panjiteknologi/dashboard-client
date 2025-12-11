@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AdminLayout from "@/layout/admin-layout.tsx";
-import { ArrowLeftIcon, UploadIcon, XIcon } from "lucide-react";
+import { ArrowLeftIcon, UploadIcon, XIcon, Loader2 } from "lucide-react";
 
 export default function EditNewsPage() {
   const router = useRouter();
@@ -38,6 +38,7 @@ export default function EditNewsPage() {
     null
   );
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -186,6 +187,7 @@ export default function EditNewsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setIsSubmitting(true);
       // Get image URL if storageId exists
       let imageUrl = "";
       if (imageStorageId) {
@@ -214,6 +216,8 @@ export default function EditNewsPage() {
     } catch (error) {
       toast.error("Failed to update news");
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -286,7 +290,6 @@ export default function EditNewsPage() {
                 <Label htmlFor="number">Number *</Label>
                 <Input
                   id="number"
-                  required
                   value={formData.number}
                   onChange={(e) => handleChange("number", e.target.value)}
                   readOnly
@@ -301,7 +304,6 @@ export default function EditNewsPage() {
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
-                  required
                   value={formData.title}
                   onChange={(e) => handleChange("title", e.target.value)}
                 />
@@ -311,7 +313,6 @@ export default function EditNewsPage() {
                 <Label htmlFor="subtitle">Subtitle *</Label>
                 <Input
                   id="subtitle"
-                  required
                   value={formData.subtitle}
                   onChange={(e) => handleChange("subtitle", e.target.value)}
                 />
@@ -430,7 +431,6 @@ export default function EditNewsPage() {
                   <Label htmlFor="author">Author *</Label>
                   <Input
                     id="author"
-                    required
                     value={formData.author}
                     onChange={(e) => handleChange("author", e.target.value)}
                   />
@@ -442,7 +442,6 @@ export default function EditNewsPage() {
                   <Label htmlFor="issuer">Issuer *</Label>
                   <Input
                     id="issuer"
-                    required
                     value={formData.issuer}
                     onChange={(e) => handleChange("issuer", e.target.value)}
                   />
@@ -451,7 +450,6 @@ export default function EditNewsPage() {
                   <Label htmlFor="sector">Sector *</Label>
                   <Input
                     id="sector"
-                    required
                     value={formData.sector}
                     onChange={(e) => handleChange("sector", e.target.value)}
                   />
@@ -464,7 +462,6 @@ export default function EditNewsPage() {
                   <Input
                     id="publishedAt"
                     type="date"
-                    required
                     value={formData.publishedAt}
                     onChange={(e) =>
                       handleChange("publishedAt", e.target.value)
@@ -476,7 +473,6 @@ export default function EditNewsPage() {
                   <Input
                     id="effectiveAt"
                     type="date"
-                    required
                     value={formData.effectiveAt}
                     onChange={(e) =>
                       handleChange("effectiveAt", e.target.value)
@@ -506,7 +502,6 @@ export default function EditNewsPage() {
                 <Label htmlFor="summary">Summary *</Label>
                 <Textarea
                   id="summary"
-                  required
                   value={formData.summary}
                   onChange={(e) => handleChange("summary", e.target.value)}
                   rows={3}
@@ -612,7 +607,10 @@ export default function EditNewsPage() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Update</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Update
+              </Button>
             </div>
           </form>
         </div>

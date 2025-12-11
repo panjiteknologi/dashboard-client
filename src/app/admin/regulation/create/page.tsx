@@ -24,6 +24,7 @@ import {
   XIcon,
   PlusIcon,
   TrashIcon,
+  Loader2,
 } from "lucide-react";
 import { SelectableCombobox } from "@/components/ui/selectable-combobox";
 import { generateRegulationNumber } from "@/utils/generateRegulationNumber";
@@ -52,6 +53,7 @@ export default function CreateRegulationPage() {
     null
   );
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -296,11 +298,7 @@ export default function CreateRegulationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!formData.subCategoryId) {
-        toast.error("Please select a sub category");
-        return;
-      }
-
+      setIsSubmitting(true);
       // Generate ID from timestamp
       const id = Date.now();
 
@@ -354,8 +352,9 @@ export default function CreateRegulationPage() {
             validRelatedRegulations.length > 0
               ? validRelatedRegulations
               : undefined,
-          subCategoryId:
-            formData.subCategoryId as Id<"regulationSubCategories">,
+          subCategoryId: formData.subCategoryId
+            ? (formData.subCategoryId as Id<"regulationSubCategories">)
+            : undefined,
         },
       });
       toast.success("Regulation created successfully");
@@ -363,6 +362,8 @@ export default function CreateRegulationPage() {
     } catch (error) {
       toast.error("Failed to create regulation");
       console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -393,7 +394,6 @@ export default function CreateRegulationPage() {
                   <Label htmlFor="title">Title *</Label>
                   <Input
                     id="title"
-                    required
                     value={formData.title}
                     onChange={(e) => handleChange("title", e.target.value)}
                   />
@@ -499,7 +499,6 @@ export default function CreateRegulationPage() {
                   <Label htmlFor="type">Type *</Label>
                   <Input
                     id="type"
-                    required
                     value={formData.type}
                     onChange={(e) => handleChange("type", e.target.value)}
                     placeholder="e.g., Undang-Undang, Peraturan Menteri"
@@ -549,7 +548,6 @@ export default function CreateRegulationPage() {
                   <Label htmlFor="issuer">Issuer *</Label>
                   <Input
                     id="issuer"
-                    required
                     value={formData.issuer}
                     onChange={(e) => handleChange("issuer", e.target.value)}
                     placeholder="e.g., Departemen Tenaga Kerja"
@@ -559,7 +557,6 @@ export default function CreateRegulationPage() {
                   <Label htmlFor="sector">Sector *</Label>
                   <Input
                     id="sector"
-                    required
                     value={formData.sector}
                     onChange={(e) => handleChange("sector", e.target.value)}
                     placeholder="e.g., K3, Lingkungan"
@@ -573,7 +570,6 @@ export default function CreateRegulationPage() {
                   <Input
                     id="publishedAt"
                     type="date"
-                    required
                     value={formData.publishedAt}
                     onChange={(e) =>
                       handleChange("publishedAt", e.target.value)
@@ -585,7 +581,6 @@ export default function CreateRegulationPage() {
                   <Input
                     id="effectiveAt"
                     type="date"
-                    required
                     value={formData.effectiveAt}
                     onChange={(e) =>
                       handleChange("effectiveAt", e.target.value)
@@ -608,7 +603,6 @@ export default function CreateRegulationPage() {
                 <Label htmlFor="summary">Summary *</Label>
                 <Textarea
                   id="summary"
-                  required
                   value={formData.summary}
                   onChange={(e) => handleChange("summary", e.target.value)}
                   rows={4}
@@ -811,7 +805,10 @@ export default function CreateRegulationPage() {
               >
                 Cancel
               </Button>
-              <Button type="submit">Create</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Create
+              </Button>
             </div>
           </form>
         </div>

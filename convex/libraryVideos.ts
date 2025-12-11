@@ -89,13 +89,15 @@ export const create = mutation({
     title: v.string(),
     description: v.string(),
     url: v.string(),
-    subCategoryId: v.id("videoSubCategories"),
+    subCategoryId: v.optional(v.id("videoSubCategories")),
   },
   handler: async (ctx, args) => {
-    // Verify subcategory exists
-    const subCategory = await ctx.db.get(args.subCategoryId);
-    if (!subCategory) {
-      throw new Error("Video subcategory not found");
+    // Verify subcategory exists if provided
+    if (args.subCategoryId) {
+      const subCategory = await ctx.db.get(args.subCategoryId);
+      if (!subCategory) {
+        throw new Error("Video subcategory not found");
+      }
     }
 
     const videoId = await ctx.db.insert("libraryVideos", {
