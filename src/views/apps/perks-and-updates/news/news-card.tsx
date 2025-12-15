@@ -5,9 +5,9 @@ import { Calendar, Clock, User, TrendingUp } from "lucide-react";
 
 const getTypeBadgeColor = (type: string) => {
   const colors: Record<string, string> = {
-    "Berita": "bg-blue-100 text-blue-700 border-blue-200",
-    "Event": "bg-purple-100 text-purple-700 border-purple-200",
-    "Update": "bg-orange-100 text-orange-700 border-orange-200",
+    Berita: "bg-blue-100 text-blue-700 border-blue-200",
+    Event: "bg-purple-100 text-purple-700 border-purple-200",
+    Update: "bg-orange-100 text-orange-700 border-orange-200",
     "Studi Kasus": "bg-green-100 text-green-700 border-green-200",
   };
   return colors[type] || "bg-gray-100 text-gray-700 border-gray-200";
@@ -16,11 +16,11 @@ const getTypeBadgeColor = (type: string) => {
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   };
-  return date.toLocaleDateString('id-ID', options);
+  return date.toLocaleDateString("id-ID", options);
 };
 
 export default function NewsCard({
@@ -42,7 +42,7 @@ export default function NewsCard({
       <div
         className={`${
           view === "list" ? "w-full sm:w-64 h-48 sm:h-full" : "h-48 sm:h-56"
-        } relative flex-shrink-0 overflow-hidden`}
+        } relative shrink-0 overflow-hidden`}
       >
         <Image
           src={data.image}
@@ -51,7 +51,9 @@ export default function NewsCard({
           className="object-cover transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:brightness-75"
         />
         <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
-          <Badge className={`${getTypeBadgeColor(data.type)} border font-semibold shadow-sm text-xs`}>
+          <Badge
+            className={`${getTypeBadgeColor(data.type)} border font-semibold shadow-sm text-xs`}
+          >
             {data.type}
           </Badge>
         </div>
@@ -70,8 +72,16 @@ export default function NewsCard({
         <div className="flex flex-wrap gap-2 sm:gap-3 text-xs text-muted-foreground pt-2 border-t">
           <div className="flex items-center gap-1">
             <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-            <span className="hidden sm:inline">{formatDate(data.publishedAt)}</span>
-            <span className="sm:hidden">{new Date(data.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+            <span className="hidden sm:inline">
+              {formatDate(data.publishedAt)}
+            </span>
+            <span className="sm:hidden">
+              {new Date(data.publishedAt).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />

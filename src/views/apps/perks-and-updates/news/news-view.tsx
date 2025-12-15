@@ -43,7 +43,6 @@ export default function NewsView({
 
   return (
     <Fragment>
-      {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg">
@@ -61,7 +60,6 @@ export default function NewsView({
         <NewsToogleView view={view} setView={setView} />
       </div>
 
-      {/* Featured News Section */}
       {featuredNews && view === "grid" && (
         <div
           onClick={() =>
@@ -78,7 +76,6 @@ export default function NewsView({
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
 
-            {/* Content Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 text-white">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <Badge
@@ -141,7 +138,6 @@ export default function NewsView({
         </div>
       )}
 
-      {/* Latest News Section */}
       <div className="mb-3 sm:mb-4">
         <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 flex items-center gap-2">
           <span className="w-1 h-5 sm:h-6 bg-primary rounded-full"></span>
