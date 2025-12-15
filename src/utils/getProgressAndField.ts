@@ -42,14 +42,14 @@ const STEP_META: Record<string, StepMeta> = {
     category: "Draft",
     color: "bg-yellow-500",
   },
-   "Persetujuan Draft Sertifikat Klien": {
-    icon: FileCheck,
-    category: "Draft",
-    color: "bg-yellow-500",
-  },
+  //  "Persetujuan Draft Sertifikat Klien": {
+  //   icon: FileCheck,
+  //   category: "Draft",
+  //   color: "bg-yellow-500",
+  // },
   "Persetujuan Draft Sertifikat": {
     icon: CheckCircle,
-    category: "Draft Approval",
+    category: "Draft",
     color: "bg-lime-500",
   },
   "Kirim Sertifikat": {
@@ -422,11 +422,12 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
         "",
     }),
     attachMeta({
-      tahapan: "Persetujuan Draft Sertifikat Klien",
-      tanggalStatus: field?.tgl_peersetujaun_draft_sertifikat || "",
-      catatan: field?.note_tgl_peersetujaun_draft_sertifikat || "",
+      tahapan: "Persetujuan Draft Sertifikat",
+      tanggalStatus: field?.tgl_persetujaun_draft_sertifikat || "",
+      catatan: field?.note_tgl_persetujaun_draft_sertifikat || "",
       leadTime:
-        field?.lead_time_tgl_peersetujaun_draft_sertifikat_to_tgl_pengajuan || "",
+        field?.lead_time_tgl_persetujaun_draft_sertifikat_to_tgl_pengajuan ||
+        "",
     }),
     // attachMeta({
     //   tahapan: "Pengiriman Draft Sertifikat",
@@ -582,11 +583,12 @@ function getFieldISO(field: AllProject): StepRow[] {
         "",
     }),
     attachMeta({
-      tahapan: "Persetujuan Draft Sertifikat Klien",
-      tanggalStatus: field?.tgl_peersetujaun_draft_sertifikat || "",
-      catatan: field?.note_tgl_peersetujaun_draft_sertifikat || "",
+      tahapan: "Persetujuan Draft Sertifikat",
+      tanggalStatus: field?.tgl_persetujaun_draft_sertifikat || "",
+      catatan: field?.note_tgl_persetujaun_draft_sertifikat || "",
       leadTime:
-        field?.lead_time_tgl_peersetujaun_draft_sertifikat_to_tgl_pengajuan || "",
+        field?.lead_time_tgl_persetujaun_draft_sertifikat_to_tgl_pengajuan ||
+        "",
     }),
     // attachMeta({
     //   tahapan: "Pengiriman Draft Sertifikat",
