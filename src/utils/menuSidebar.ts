@@ -12,12 +12,12 @@ import {
   ListChecks,
   LucideGitPullRequestCreate,
   Newspaper,
-  NotebookTextIcon,
+  // NotebookTextIcon,
   Search,
   Settings,
   // SquareTerminal,
   User2,
-  Users,
+  // Users,
   Video,
   type LucideIcon,
 } from "lucide-react";
@@ -59,11 +59,11 @@ export const SidebarAppsMenu: {
           url: "/dashboard",
           icon: LayoutDashboard,
         },
-        {
-          title: "Application Form",
-          url: "/application-form",
-          icon: NotebookTextIcon,
-        },
+        // {
+        //   title: "Application Form",
+        //   url: "/application-form",
+        //   icon: NotebookTextIcon,
+        // },
 
         // {
         //   title: "Mandays Calculator",
@@ -131,11 +131,11 @@ export const SidebarAppsMenu: {
               url: "https://tsi-document.manajemensistem.com/",
               icon: FileCheck2,
             },
-            {
-              title: "Audit Document Check",
-              url: "/audit-process/audit-document-check",
-              icon: FileCheck2,
-            },
+            // {
+            //   title: "Audit Document Check",
+            //   url: "/audit-process/audit-document-check",
+            //   icon: FileCheck2,
+            // },
             {
               title: "Audit Report & Capa",
               url: "/audit-process/capa-and-report",
@@ -238,11 +238,11 @@ export const SidebarAppsMenu: {
         //   url: "/perks-and-updates/rewards",
         //   icon: BadgeCheck,
         // },
-        {
-          title: "Membership",
-          url: "/perks-and-updates/membership",
-          icon: Users,
-        },
+        // {
+        //   title: "Membership",
+        //   url: "/perks-and-updates/membership",
+        //   icon: Users,
+        // },
         {
           title: "TSI News",
           url: "/perks-and-updates/news",
