@@ -1,4 +1,5 @@
 "use client";
+
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { NewsType } from "@/types/news";
