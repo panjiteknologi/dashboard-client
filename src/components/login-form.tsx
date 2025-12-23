@@ -63,7 +63,7 @@ export function LoginForm({
         router.refresh();
       }
     } catch (error) {
-      console.log("error auth : ", error);
+      // console.log("error auth : ", error);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);

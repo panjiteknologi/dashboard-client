@@ -18,7 +18,7 @@ export const CapaReportView = ({
   loading: boolean;
 }) => {
 
-  console.log('data',data)
+  // console.log('data',data)
   const columns = useMemo<ColumnDef<CapaTypes>[]>(
     () => [
       {

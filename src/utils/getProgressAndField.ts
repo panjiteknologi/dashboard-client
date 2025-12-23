@@ -389,14 +389,14 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
       leadTime:
         field?.lead_time_tgl_kontrak_to_tgl_pengiriman_notif_st_satu || "",
     }),
-    attachMeta({
-      tahapan: "Pengiriman Notifikasi ST Satu",
-      tanggalStatus: field?.tgl_pengiriman_notif_st_satu || "",
-      catatan: field?.note_tgl_pengiriman_notif_st_satu || "",
-      leadTime:
-        field?.lead_time_review_penugasan_to_pengiriman_notifikasi_st_satu ||
-        "",
-    }),
+    // attachMeta({
+    //   tahapan: "Pengiriman Notifikasi ST Satu",
+    //   tanggalStatus: field?.tgl_pengiriman_notif_st_satu || "",
+    //   catatan: field?.note_tgl_pengiriman_notif_st_satu || "",
+    //   leadTime:
+    //     field?.lead_time_review_penugasan_to_pengiriman_notifikasi_st_satu ||
+    //     "",
+    // }),
     attachMeta({
       tahapan: "Pengiriman Audit Plan ST Satu",
       tanggalStatus: field?.tgl_pengiriman_audit_plan_st_satu || "",
@@ -423,10 +423,10 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
     }),
     attachMeta({
       tahapan: "Persetujuan Draft Sertifikat",
-      tanggalStatus: field?.tgl_persetujaun_draft_sertifikat || "",
-      catatan: field?.note_tgl_persetujaun_draft_sertifikat || "",
+      tanggalStatus: field?.tgl_persetujuan_draft_sertifikat || "",
+      catatan: field?.note_tgl_persetujuan_draft_sertifikat || "",
       leadTime:
-        field?.lead_time_tgl_persetujaun_draft_sertifikat_to_tgl_pengajuan ||
+        field?.lead_time_tgl_persetujuan_draft_sertifikat_to_tgl_pengajuan ||
         "",
     }),
     // attachMeta({
@@ -444,9 +444,9 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
     // }),
     attachMeta({
       tahapan: "Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
-      tanggalStatus: field?.tgl_persetujuan || "",
-      catatan: field?.note_tgl_persetujuan || "",
-      leadTime: field?.lead_time_tgl_persetujuan_to_tgl_kirim_sertifikat || "",
+      tanggalStatus: field?.tgl_persetujuan_kan || "",
+      catatan: field?.note_tgl_persetujuan_kan || "",
+      leadTime: field?.lead_time_tgl_persetujuan_kan_to_tgl_kirim_sertifikat || "",
     }),
     attachMeta({
       tahapan: "Kirim Sertifikat",
@@ -584,10 +584,10 @@ function getFieldISO(field: AllProject): StepRow[] {
     }),
     attachMeta({
       tahapan: "Persetujuan Draft Sertifikat",
-      tanggalStatus: field?.tgl_persetujaun_draft_sertifikat || "",
-      catatan: field?.note_tgl_persetujaun_draft_sertifikat || "",
+      tanggalStatus: field?.tgl_persetujuan_draft_sertifikat || "",
+      catatan: field?.note_tgl_persetujuan_draft_sertifikat || "",
       leadTime:
-        field?.lead_time_tgl_persetujaun_draft_sertifikat_to_tgl_pengajuan ||
+        field?.lead_time_tgl_persetujuan_draft_sertifikat_to_tgl_pengajuan ||
         "",
     }),
     // attachMeta({

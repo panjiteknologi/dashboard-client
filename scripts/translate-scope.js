@@ -294,23 +294,23 @@ function translateScope(obj) {
 
 // Main function
 async function main() {
-  console.log('🚀 Memulai translate scope_en.json...');
+  // console.log('🚀 Memulai translate scope_en.json...');
 
   const inputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_en.json');
   const outputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_id.json');
 
-  console.log('📖 Membaca file scope_en.json...');
+  // console.log('📖 Membaca file scope_en.json...');
   const rawData = fs.readFileSync(inputPath, 'utf8');
   const scopeData = JSON.parse(rawData);
 
-  console.log('🔄 Mentranslate data...');
+  // console.log('🔄 Mentranslate data...');
   const translatedData = translateScope(scopeData);
 
-  console.log('💾 Menyimpan file scope_id.json...');
+  // console.log('💾 Menyimpan file scope_id.json...');
   fs.writeFileSync(outputPath, JSON.stringify(translatedData, null, 2), 'utf8');
 
-  console.log('✅ Translate selesai! File disimpan di:', outputPath);
-  console.log('📊 Total scope keys:', Object.keys(translatedData).length);
+  // console.log('✅ Translate selesai! File disimpan di:', outputPath);
+  // console.log('📊 Total scope keys:', Object.keys(translatedData).length);
 }
 
 main().catch(console.error);

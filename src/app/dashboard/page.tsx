@@ -24,8 +24,17 @@ interface DashboardProject {
   accreditation: string;
   customer_id: string;
   customer: string;
-  // Additional dashboard-specific properties
+  // Tahapan/Phase properties
   tahapan?: string;
+  // Certificate dates
+  tgl_kirim_sertifikat?: string;
+  tgl_persetujuan_draft_sertifikat?: string;
+  tgl_pengiriman_draft_sertifikat?: string;
+  // Audit dates
+  tgl_pelaksanaan_audit?: string;
+  tgl_pelaksanaan_audit_st_satu?: string;
+  tgl_pelaksanaan_audit_st_dua?: string;
+  // Metadata
   sertifikat?: string[] | Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
@@ -43,21 +52,136 @@ import {
   Calendar,
   // AlertCircle,
   CheckCircle,
-  FileText
+  FileText,
+  Loader2
 } from "lucide-react";
+
+// Skeleton component for loading state
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8">
+      {/* Summary Cards Skeleton */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-3">
+                <div className="size-9 rounded-lg bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-24 bg-muted rounded" />
+                  <div className="h-6 w-16 bg-muted rounded" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Completion Rate Skeleton */}
+        <Card className="lg:col-span-1 animate-pulse">
+          <CardHeader className="pb-4">
+            <div className="h-5 w-32 bg-muted rounded mb-2" />
+            <div className="h-4 w-48 bg-muted rounded" />
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="h-8 w-20 bg-muted rounded" />
+                <div className="h-4 w-16 bg-muted rounded" />
+              </div>
+              <div className="h-3 w-full bg-muted rounded" />
+              <div className="h-3 w-32 bg-muted rounded" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Phase Distribution Skeleton */}
+        <Card className="lg:col-span-2 animate-pulse">
+          <CardHeader className="pb-4">
+            <div className="h-5 w-48 bg-muted rounded mb-2" />
+            <div className="h-4 w-64 bg-muted rounded" />
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 rounded-full bg-muted" />
+                    <div className="h-4 w-24 bg-muted rounded" />
+                  </div>
+                  <div className="h-5 w-8 bg-muted rounded" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Projects Table Skeleton */}
+      <Card className="animate-pulse">
+        <CardHeader className="to-indigo-600 rounded-t-lg">
+          <div className="flex items-center gap-4">
+            <div className="bg-white/20 rounded-lg size-7" />
+            <div className="space-y-2">
+              <div className="h-6 w-48 bg-white/20 rounded" />
+              <div className="h-4 w-64 bg-white/20 rounded" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-8">
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-16 bg-muted rounded animate-pulse" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 export default function Page() {
   const router = useRouter();
   const { status } = useSession();
-  const { data: dateCustomer = [] } = useDateCustomerQuery({
-    staleTime: 5 * 60 * 1000,
+
+  // Always refetch on mount - like refresh halaman
+  const {
+    data: dateCustomer,
+    isLoading: isLoadingDateCustomer,
+    isFetching: isFetchingDateCustomer,
+    error: errorDateCustomer,
+    refetch: refetchDateCustomer
+  } = useDateCustomerQuery({
+    staleTime: 0, // Always consider data stale
+    refetchOnMount: false, // Manual refetch
+    retry: 2,
   });
 
-  const { data: standards = [] } = useDataStandardQuery({
-    staleTime: 5 * 60 * 1000,
+  const {
+    data: standards,
+    isLoading: isLoadingStandards,
+    isFetching: isFetchingStandards,
+    error: errorStandards,
+    refetch: refetchStandards
+  } = useDataStandardQuery({
+    staleTime: 0, // Always consider data stale
+    refetchOnMount: false, // Manual refetch
+    retry: 2,
   });
+
+  // Force refetch on mount
+  useEffect(() => {
+    refetchDateCustomer();
+    refetchStandards();
+  }, []);
+
+  // Simple loading logic
+  const isLoading = isLoadingDateCustomer || isLoadingStandards;
+  const isRefetching = isFetchingDateCustomer || isFetchingStandards;
 
   const uniqueStandards = useMemo(() => {
+    if (!standards) return [];
     const allStandards = standards.flatMap(
       (item: { standard_name: string }) => item?.standard_name || []
     );
@@ -65,35 +189,123 @@ export default function Page() {
   }, [standards]);
 
   const dataStandar = uniqueStandards ?? [];
-  const data = useMemo(() => dateCustomer?.data ?? [], [dateCustomer?.data]) as DashboardProject[];
+  const data = useMemo(() => {
+    // Handle different response structures
+    if (!dateCustomer) return [];
+    if (Array.isArray(dateCustomer)) return dateCustomer;
+    if (dateCustomer?.data && Array.isArray(dateCustomer.data)) return dateCustomer.data;
+    return [];
+  }, [dateCustomer]) as DashboardProject[];
 
   // Calculate dashboard statistics
   const dashboardStats = useMemo(() => {
-    const totalProjects = data.length;
-    const completedProjects = data.filter((item: DashboardProject) =>
-      item.tahapan?.includes('sertifikat') || item.tahapan?.includes('selesai')
-    ).length;
-    const surveillanceProjects = data.filter((item: DashboardProject) =>
-      item.tahapan?.includes('survilance') || item.tahapan?.includes('sv')
-    ).length;
-    const totalCertificates = data.reduce((acc, item: DashboardProject) =>
-      acc + (Array.isArray(item.sertifikat) ? item.sertifikat.length : 0), 0
-    );
+    // Ensure data is an array and filter out null/undefined items
+    const validData = Array.isArray(data) ? data.filter((item): item is DashboardProject => item != null) : [];
 
-    const tahapanCounts = data.reduce((acc, item: DashboardProject) => {
-      const tahapan = item.tahapan || 'unknown';
-      acc[tahapan] = (acc[tahapan] || 0) + 1;
+    const totalProjects = validData.length;
+
+    // Completed projects: projects that have certificate issued (tgl_kirim_sertifikat exists)
+    const completedProjects = validData.filter((item: DashboardProject) =>
+      item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ''
+    ).length;
+
+    // Surveillance projects: projects in surveilance1-5 phase (tahapan id 2-6)
+    const surveillanceProjects = validData.filter((item: DashboardProject) => {
+      const tahapan = item?.tahapan?.toLowerCase() || '';
+      return tahapan.includes('surveilance') ||
+             tahapan.includes('surveillance') ||
+             tahapan === 'surveilance1' ||
+             tahapan === 'surveilance2' ||
+             tahapan === 'surveilance3' ||
+             tahapan === 'surveilance4' ||
+             tahapan === 'surveilance5';
+    }).length;
+
+    // Total certificates: count projects with issued certificates
+    const totalCertificates = validData.filter((item: DashboardProject) =>
+      item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ''
+    ).length;
+
+    // Phase distribution using normalized tahapan names
+    const tahapanCounts = validData.reduce((acc, item: DashboardProject) => {
+      const tahapanRaw = item?.tahapan || 'unknown';
+
+      // Normalize tahapan to display names
+      let displayName = 'Unknown';
+      const tahapanLower = tahapanRaw.toLowerCase();
+
+      if (tahapanLower === 'ia' || tahapanLower.includes('initial') || tahapanLower.includes('audit')) {
+        displayName = 'Initial Audit';
+      } else if (tahapanLower.includes('surveilance1') || tahapanLower.includes('surveillance1') || tahapanLower === 'sv1') {
+        displayName = 'Surveillance 1';
+      } else if (tahapanLower.includes('surveilance2') || tahapanLower.includes('surveillance2') || tahapanLower === 'sv2') {
+        displayName = 'Surveillance 2';
+      } else if (tahapanLower.includes('surveilance3') || tahapanLower.includes('surveillance3') || tahapanLower === 'sv3') {
+        displayName = 'Surveillance 3';
+      } else if (tahapanLower.includes('surveilance4') || tahapanLower.includes('surveillance4') || tahapanLower === 'sv4') {
+        displayName = 'Surveillance 4';
+      } else if (tahapanLower.includes('surveilance5') || tahapanLower.includes('surveillance5') || tahapanLower === 'sv5') {
+        displayName = 'Surveillance 5';
+      } else if (tahapanLower.includes('recertification') || tahapanLower === 'rc') {
+        displayName = 'Recertification';
+      } else if (tahapanLower.includes('special') || tahapanLower === 'sp') {
+        displayName = 'Special Audit';
+      } else if (tahapanLower !== 'unknown') {
+        displayName = tahapanRaw;
+      }
+
+      acc[displayName] = (acc[displayName] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const recentProjects = data
-      .filter((item: DashboardProject) => item.created_at || item.updated_at)
-      .sort((a: DashboardProject, b: DashboardProject) => {
-        const dateA = new Date(a.updated_at || a.created_at || 0);
-        const dateB = new Date(b.updated_at || b.created_at || 0);
+    // Recent projects based on latest activity
+    const recentProjects = validData
+      .filter((item: DashboardProject) => {
+        // Get the latest date from any field
+        const dates = [
+          item?.updated_at,
+          item?.created_at,
+          item?.tgl_kirim_sertifikat,
+          item?.tgl_persetujuan_draft_sertifikat,
+          item?.tgl_pengiriman_draft_sertifikat,
+          item?.tgl_pelaksanaan_audit,
+          item?.tgl_pelaksanaan_audit_st_satu,
+          item?.tgl_pelaksanaan_audit_st_dua,
+        ].filter(Boolean);
+        return dates.length > 0;
+      })
+      .map((item: DashboardProject) => {
+        // Find the latest date
+        const dates = [
+          { date: item?.updated_at, field: 'updated_at' },
+          { date: item?.created_at, field: 'created_at' },
+          { date: item?.tgl_kirim_sertifikat, field: 'tgl_kirim_sertifikat' },
+          { date: item?.tgl_persetujuan_draft_sertifikat, field: 'tgl_persetujuan_draft_sertifikat' },
+          { date: item?.tgl_pengiriman_draft_sertifikat, field: 'tgl_pengiriman_draft_sertifikat' },
+          { date: item?.tgl_pelaksanaan_audit, field: 'tgl_pelaksanaan_audit' },
+          { date: item?.tgl_pelaksanaan_audit_st_satu, field: 'tgl_pelaksanaan_audit_st_satu' },
+          { date: item?.tgl_pelaksanaan_audit_st_dua, field: 'tgl_pelaksanaan_audit_st_dua' },
+        ].filter(d => d?.date);
+
+        const latest = dates.reduce((latest, current) => {
+          const currentDate = new Date(current.date || 0);
+          const latestDate = new Date(latest.date || 0);
+          return currentDate.getTime() > latestDate.getTime() ? current : latest;
+        }, dates[0] || { date: item?.created_at || item?.updated_at || '0', field: 'created_at' });
+
+        return {
+          ...item,
+          latestDate: latest.date,
+          latestField: latest.field,
+        };
+      })
+      .sort((a: any, b: any) => {
+        const dateA = new Date(a.latestDate || 0);
+        const dateB = new Date(b.latestDate || 0);
         return dateB.getTime() - dateA.getTime();
       })
-      .slice(0, 5);
+      .slice(0, 5)
+      .map(({ latestDate, latestField, ...rest }: any) => rest);
 
     return {
       totalProjects,
@@ -128,6 +340,20 @@ export default function Page() {
     }
   }, [status, router]);
 
+  // Show skeleton during initial load
+  if (isLoading) {
+    return (
+      <DashboardLayout
+        href="/apps/dashboard"
+        titleHeader="Dashboard"
+        subTitleHeader="Monitoring Overview"
+        menuSidebar={SidebarAppsMenu as AppSidebarTypes}
+      >
+        <DashboardSkeleton />
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout
       href="/apps/dashboard"
@@ -135,6 +361,14 @@ export default function Page() {
       subTitleHeader="Monitoring Overview"
       menuSidebar={SidebarAppsMenu as AppSidebarTypes}
     >
+      {/* Refetching indicator */}
+      {isRefetching && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 animate-pulse">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Updating data...</span>
+        </div>
+      )}
+
       <div className="space-y-8">
         {/* Summary Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -209,13 +443,22 @@ export default function Page() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {Object.entries(dashboardStats.tahapanCounts)
                   .filter(([, count]) => count > 0)
-                  .sort(([a], [b]) => a.localeCompare(b))
+                  .sort(([a], [b]) => {
+                    // Custom sort order for phases
+                    const order = ['Initial Audit', 'Surveillance 1', 'Surveillance 2', 'Surveillance 3', 'Surveillance 4', 'Surveillance 5', 'Recertification', 'Special Audit'];
+                    const indexA = order.indexOf(a);
+                    const indexB = order.indexOf(b);
+                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                    if (indexA !== -1) return -1;
+                    if (indexB !== -1) return 1;
+                    return a.localeCompare(b);
+                  })
                   .map(([tahapan, count]) => (
                     <div key={tahapan} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 rounded-full bg-primary" />
-                        <span className="text-sm font-medium capitalize">
-                          {tahapan.replace('survilance', 'Surveillance')}
+                        <span className="text-sm font-medium">
+                          {tahapan}
                         </span>
                       </div>
                       <Badge variant="secondary" className="font-semibold">{count}</Badge>

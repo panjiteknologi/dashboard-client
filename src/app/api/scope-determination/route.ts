@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         });
 
         // ====== TYPO CORRECTION WITH AI ======
-        console.log(`🔍 Original query: "${query}"`);
+        // console.log(`🔍 Original query: "${query}"`);
 
         let correctedQuery = query;
         let hasCorrected = false;
@@ -122,9 +122,9 @@ Instructions:
             if (suggestedQuery && suggestedQuery !== query && suggestedQuery.toLowerCase() !== query.toLowerCase()) {
                 correctedQuery = suggestedQuery;
                 hasCorrected = true;
-                console.log(`✅ Typo corrected (${correctionLanguage}): "${query}" → "${correctedQuery}"`);
+                // console.log(`✅ Typo corrected (${correctionLanguage}): "${query}" → "${correctedQuery}"`);
             } else {
-                console.log(`✓ No typo detected in: "${query}" (${correctionLanguage})`);
+                // console.log(`✓ No typo detected in: "${query}" (${correctionLanguage})`);
             }
         } catch (typoError) {
             console.error('⚠️ Typo correction failed, using original query:', typoError);
@@ -140,8 +140,8 @@ Instructions:
         // END: LANGUAGE SELECTION LOGIC
         // =================================================================
 
-        console.log(`🌐 Selected language: ${language} (${selectedLang})`);
-        console.log(`📂 Using scope data: scope_${isIndonesian ? 'id' : 'en'}.json`);
+        // console.log(`🌐 Selected language: ${language} (${selectedLang})`);
+        // console.log(`📂 Using scope data: scope_${isIndonesian ? 'id' : 'en'}.json`);
 
         // --- DIRECT SEARCH LOGIC ---
         function searchInScopeData(keyword: string) {
@@ -153,7 +153,7 @@ Instructions:
 
             if (!trimmedKeyword) return results;
 
-            console.log(`🔍 Attempting direct search for: "${trimmedKeyword}" (${isSingleWord ? 'single word' : 'phrase'})`);
+            // console.log(`🔍 Attempting direct search for: "${trimmedKeyword}" (${isSingleWord ? 'single word' : 'phrase'})`);
 
             // Common words to filter out (Indonesian and English)
             const stopWords = [
@@ -176,11 +176,11 @@ Instructions:
                 ? trimmedKeyword.toLowerCase().split(/\s+/).filter(word => !stopWords.includes(word) && word.length > 2)
                 : [trimmedKeyword.toLowerCase()];
 
-            console.log(`🔍 Search tokens after filtering: [${searchWords.join(', ')}]`);
+            // console.log(`🔍 Search tokens after filtering: [${searchWords.join(', ')}]`);
 
             // If no meaningful keywords left after filtering, return empty results
             if (searchWords.length === 0 || (searchWords.length === 1 && searchWords[0].length <= 2)) {
-                console.log(`⚠️ No meaningful keywords found after filtering stop words`);
+                // console.log(`⚠️ No meaningful keywords found after filtering stop words`);
                 return results;
             }
 
@@ -298,12 +298,12 @@ Instructions:
 
         if (canUseDirectSearch) {
             directSearchResults = searchInScopeData(correctedQuery);
-            console.log(`🔍 Direct search found ${directSearchResults.length} matches for "${correctedQuery}"`);
+            // console.log(`🔍 Direct search found ${directSearchResults.length} matches for "${correctedQuery}"`);
         }
 
         // --- DIRECT SEARCH RESULT PROCESSING ---
         if (directSearchResults.length > 0) {
-            console.log(`✅ Using direct search results (${directSearchResults.length} matches)`);
+            // console.log(`✅ Using direct search results (${directSearchResults.length} matches)`);
             directSearchResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
             const groupedResults: Record<string, GroupedResult> = {};
@@ -387,7 +387,7 @@ Instructions:
             const detailedResults = Object.values(groupedResults).filter(r => r.relevance_score >= 20 && r.nace_child_details.length > 0);
             detailedResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
-            console.log(`📦 Grouped into ${detailedResults.length} result cards (Direct Search)`);
+            // console.log(`📦 Grouped into ${detailedResults.length} result cards (Direct Search)`);
 
             // Build detailed explanation with IAF and NACE Child information
             let penjelasan = '';
@@ -504,7 +504,7 @@ Instructions:
         // =====================================================================================
         // Main Path: Semantic Search dengan AI
         // =====================================================================================
-        console.log(`⚠️ Direct results not found or query is complex, falling back to AI semantic search`);
+        // console.log(`⚠️ Direct results not found or query is complex, falling back to AI semantic search`);
 
         // Prepare the data for AI analysis
         const scopeContext = JSON.stringify(scopeData, (key, value) => {
@@ -693,7 +693,7 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
             }, { status: 500 });
         }
 
-        console.log(`📊 AI returned ${aiResult.hasil_pencarian.length} results (Semantic Search)`);
+        // console.log(`📊 AI returned ${aiResult.hasil_pencarian.length} results (Semantic Search)`);
 
         const groupedResults: Record<string, GroupedResult> = {};
 
@@ -813,7 +813,7 @@ Example: If result only contains "apa" but not "plastik" or "rambut", DO NOT inc
         const detailedResults = Object.values(groupedResults).filter(r => r.relevance_score >= 50 && r.nace_child_details.length > 0);
         detailedResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
-        console.log(`📦 Grouped into ${detailedResults.length} result cards (Semantic Search)`);
+        // console.log(`📦 Grouped into ${detailedResults.length} result cards (Semantic Search)`);
 
         // Build detailed explanation with IAF and NACE Child information
         let penjelasan = '';

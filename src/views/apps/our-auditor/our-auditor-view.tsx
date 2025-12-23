@@ -64,11 +64,47 @@ export const OurAuditorView = ({
   skeletonProjectRows?: number;
 }) => {
   const auditors: OurAuditor[] = useMemo(() => {
-    const arr = data?.data?.auditors;
-    return Array.isArray(arr) ? arr : [];
+    // Handle different data structures
+    let arr: OurAuditor[] = [];
+
+    // Structure 1: { data: { auditors: [...] } }
+    if (data?.data?.auditors && Array.isArray(data.data.auditors)) {
+      arr = data.data.auditors;
+    }
+    // Structure 2: Direct array
+    else if (Array.isArray(data)) {
+      arr = data;
+    }
+    // Structure 3: { data: [...] }
+    else if (data?.data && Array.isArray(data.data)) {
+      // If data.data contains projects/customers directly, convert to auditor format
+      arr = data.data.map((item: any, index: number) => ({
+        id: item.id || index,
+        name: item.sales_person || item.auditor_name || `Auditor ${index + 1}`,
+        projects: [item].map((p: any) => ({
+          plan_id: p.id,
+          document_no: p.document_no || p.aplication_form || '',
+          customer_name: p.customer || p.customer_name || '',
+          iso_standards: p.iso_standards || [],
+          audit_stage: p.audit_stage || p.tahapan || '',
+          audit_date: p.audit_date,
+          certification_type: p.certification_type,
+          audit_method: p.audit_method,
+          scope: p.scope,
+          state: p.state,
+          audit_start: p.audit_start,
+          audit_end: p.audit_end,
+          contact_person: p.contact_person,
+          auditor_role: p.auditor_role,
+        })),
+      }));
+    }
+
+    return arr;
   }, [data]);
 
-  const isLoading = loading ?? !Array.isArray(data?.data?.auditors);
+  // Simplified loading logic - only use the loading prop
+  const isLoading = loading ?? false;
 
   const [query, setQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");
