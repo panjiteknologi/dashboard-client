@@ -193,7 +193,7 @@ export function ReminderSurveillanceProvider({
         audit_stage: auditStage,
       });
 
-      console.log("✅ Berhasil submit audit request:", res);
+      // console.log("✅ Berhasil submit audit request:", res);
 
       toast.success("Berhasil mengirim data", {
         description: `Data *Lanjut* untuk sertifikat ${
@@ -258,7 +258,7 @@ export function ReminderSurveillanceProvider({
         tahapan_audit: tahapanAuditLabel,
       });
 
-      console.log("✅ Payload CRM yang akan dikirim:", res);
+      // console.log("✅ Payload CRM yang akan dikirim:", res);
 
       toast.success("Berhasil mengirim data", {
         description: `Data *Tidak Lanjut* untuk sertifikat ${
