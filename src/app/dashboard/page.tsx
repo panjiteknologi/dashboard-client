@@ -150,7 +150,6 @@ export default function Page() {
     data: dateCustomer,
     isLoading: isLoadingDateCustomer,
     isFetching: isFetchingDateCustomer,
-    error: errorDateCustomer,
     refetch: refetchDateCustomer
   } = useDateCustomerQuery({
     staleTime: 0, // Always consider data stale
@@ -162,7 +161,6 @@ export default function Page() {
     data: standards,
     isLoading: isLoadingStandards,
     isFetching: isFetchingStandards,
-    error: errorStandards,
     refetch: refetchStandards
   } = useDataStandardQuery({
     staleTime: 0, // Always consider data stale
@@ -174,7 +172,8 @@ export default function Page() {
   useEffect(() => {
     refetchDateCustomer();
     refetchStandards();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally empty - only run on mount
 
   // Simple loading logic
   const isLoading = isLoadingDateCustomer || isLoadingStandards;
@@ -299,13 +298,13 @@ export default function Page() {
           latestField: latest.field,
         };
       })
-      .sort((a: any, b: any) => {
-        const dateA = new Date(a.latestDate || 0);
-        const dateB = new Date(b.latestDate || 0);
+      .sort((a, b) => {
+        const dateA = new Date((a as DashboardProject & { latestDate?: string }).latestDate || 0);
+        const dateB = new Date((b as DashboardProject & { latestDate?: string }).latestDate || 0);
         return dateB.getTime() - dateA.getTime();
       })
       .slice(0, 5)
-      .map(({ latestDate, latestField, ...rest }: any) => rest);
+      .map(({ latestDate, latestField, ...rest }) => rest);
 
     return {
       totalProjects,
