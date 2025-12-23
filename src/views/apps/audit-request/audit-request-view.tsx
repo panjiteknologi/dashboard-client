@@ -233,7 +233,7 @@ const InnerView = ({
             (c) => c.audit_stage === stage
           );
 
-          console.log(filteredByStage);
+          // console.log(filteredByStage);
 
           return (
             <Fragment key={stage}>
