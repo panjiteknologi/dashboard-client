@@ -3,16 +3,16 @@ const path = require('path');
 
 // Main function
 async function main() {
-  console.log('🚀 Memulai konsolidasi scope_en.json...');
+  // console.log('🚀 Memulai konsolidasi scope_en.json...');
 
   const inputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_en.json');
   const outputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_en_consolidated.json');
 
-  console.log('📖 Membaca file scope_en.json...');
+  // console.log('📖 Membaca file scope_en.json...');
   const rawData = fs.readFileSync(inputPath, 'utf8');
   const scopeData = JSON.parse(rawData);
 
-  console.log('🔄 Menggabungkan data dengan standar, IAF, dan NACE yang sama...');
+  // console.log('🔄 Menggabungkan data dengan standar, IAF, dan NACE yang sama...');
 
   const consolidatedData = {};
 
@@ -87,16 +87,16 @@ async function main() {
     consolidatedData[scopeKey] = consolidatedScope;
   }
 
-  console.log('💾 Menyimpan file scope_en_consolidated.json...');
+  // console.log('💾 Menyimpan file scope_en_consolidated.json...');
   fs.writeFileSync(outputPath, JSON.stringify(consolidatedData, null, 2), 'utf8');
 
-  console.log('✅ Konsolidasi selesai!');
-  console.log('📊 Total scope keys:', Object.keys(consolidatedData).length);
+  // console.log('✅ Konsolidasi selesai!');
+  // console.log('📊 Total scope keys:', Object.keys(consolidatedData).length);
 
   // Show statistics
   for (const [scopeKey, scopeValue] of Object.entries(consolidatedData)) {
     const totalIAF = scopeValue.scope.length;
-    console.log(`   ${scopeKey}: ${totalIAF} IAF codes`);
+    // console.log(`   ${scopeKey}: ${totalIAF} IAF codes`);
   }
 }
 

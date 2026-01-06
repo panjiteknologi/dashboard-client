@@ -8,11 +8,35 @@ import {
   Search,
   UserCircle2,
 } from "lucide-react";
-import { AllOurAuditor, OurAuditor } from "@/types/our-auditor";
+import { AllOurAuditor, OurAuditor, OurAuditorProject } from "@/types/our-auditor";
 import { OurAuditorCard } from "./our-auditor-card";
 import { cx } from "@/utils";
 import { THEME } from "@/constant";
 import { OurAuditorCardSkeleton } from "./our-auditor-card-skeleton";
+
+// Type for raw API response
+interface RawAuditorData {
+  id?: number;
+  sales_person?: string;
+  auditor_name?: string;
+  customer?: string;
+  customer_name?: string;
+  document_no?: string;
+  aplication_form?: string;
+  iso_standards?: string[];
+  audit_stage?: string;
+  tahapan?: string;
+  audit_date?: string;
+  certification_type?: string;
+  audit_method?: string;
+  scope?: string;
+  state?: string;
+  audit_start?: string;
+  audit_end?: string;
+  contact_person?: string;
+  auditor_role?: string;
+  [key: string]: unknown; // Allow additional properties
+}
 
 const Shimmer = ({ className = "" }: { className?: string }) => {
   return (
@@ -64,11 +88,50 @@ export const OurAuditorView = ({
   skeletonProjectRows?: number;
 }) => {
   const auditors: OurAuditor[] = useMemo(() => {
-    const arr = data?.data?.auditors;
-    return Array.isArray(arr) ? arr : [];
+    // Handle different data structures
+    let arr: OurAuditor[] = [];
+
+    // Structure 1: { data: { auditors: [...] } }
+    if (data?.data?.auditors && Array.isArray(data.data.auditors)) {
+      arr = data.data.auditors;
+    }
+    // Structure 2: Direct array
+    else if (Array.isArray(data)) {
+      arr = data;
+    }
+    // Structure 3: { data: [...] }
+    else if (data?.data && Array.isArray(data.data)) {
+      // If data.data contains projects/customers directly, convert to auditor format
+      arr = data.data.map((item: unknown, index: number) => {
+        const rawItem = item as RawAuditorData;
+        return {
+          id: rawItem.id || index,
+          name: rawItem.sales_person || rawItem.auditor_name || `Auditor ${index + 1}`,
+          projects: [{
+            plan_id: rawItem.id || 0,
+            document_no: rawItem.document_no || rawItem.aplication_form || '',
+            customer_name: rawItem.customer || rawItem.customer_name || '',
+            iso_standards: rawItem.iso_standards || [],
+            audit_stage: rawItem.audit_stage || rawItem.tahapan || '',
+            audit_date: rawItem.audit_date,
+            certification_type: rawItem.certification_type,
+            audit_method: rawItem.audit_method,
+            scope: rawItem.scope,
+            state: rawItem.state,
+            audit_start: rawItem.audit_start,
+            audit_end: rawItem.audit_end,
+            contact_person: rawItem.contact_person,
+            auditor_role: rawItem.auditor_role,
+          }],
+        };
+      });
+    }
+
+    return arr;
   }, [data]);
 
-  const isLoading = loading ?? !Array.isArray(data?.data?.auditors);
+  // Simplified loading logic - only use the loading prop
+  const isLoading = loading ?? false;
 
   const [query, setQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("all");

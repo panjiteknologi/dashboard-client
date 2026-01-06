@@ -159,8 +159,8 @@ export function AuditRequestProvider({
         note: noteDraft,
       });
 
-      console.log("✅ Berhasil update catatan audit request:", res);
-      console.log(certificate);
+      // console.log("✅ Berhasil update catatan audit request:", res);
+      // console.log(certificate);
       toast.success("Berhasil menambahkan catatan", {
         description: `Catatan pada sertifikat ${
           res?.result?.data?.name ?? res?.result?.data?.name
@@ -191,7 +191,7 @@ export function AuditRequestProvider({
         selectedRequest.id
       );
 
-      console.log("✅ Berhasil menghapus data ini", res);
+      // console.log("✅ Berhasil menghapus data ini", res);
 
       toast.success("Berhasil menghapus data", {
         description: `Data pada sertifikat ${

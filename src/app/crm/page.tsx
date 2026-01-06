@@ -25,7 +25,7 @@ export default function Page() {
 
   const crmData: DataCRMType[] = useMemo(() => data?.data ?? [], [data?.data]);
 
-  console.log("crmData", crmData);
+  // console.log("crmData", crmData);
   const pagination = useMemo(() => {
     const totalCountFromApi = data?.count;
     const apiLimit = data?.limit ?? limit;
