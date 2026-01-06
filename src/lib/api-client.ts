@@ -7,6 +7,7 @@ const apiClient = axios.create({
   baseURL: env.NEXT_PUBLIC_ENDPOINT_URL || "https://erp.tsicertification.com",
   headers: {
     "Content-Type": "application/json",
+    "x-vercel-protection": "secret-kode-tsi-2026",
   },
 });
 
