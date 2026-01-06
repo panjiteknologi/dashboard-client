@@ -2,6 +2,7 @@
 import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 import type { NextAuthConfig } from "next-auth";
+import https from "https";
 
 export default {
   providers: [
@@ -32,9 +33,20 @@ export default {
                 password: credentials?.password,
               };
 
-          const response = await axios.post(endpoint, {
-            params,
+          const httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
           });
+
+          const response = await axios.post(
+            endpoint,
+            {
+              params,
+            },
+            {
+              httpsAgent,
+              timeout: 10000,
+            }
+          );
 
           if (!response.data || !response.data.result) {
             return null;
@@ -73,6 +85,12 @@ export default {
 
           return null;
         } catch (e: any) {
+          console.log("error auth : ", {
+            message: e?.message,
+            code: e?.code,
+            response: e?.response?.data,
+          });
+
           const errorMessage =
             e?.response?.data?.message || "Authentication failed";
           throw new Error(errorMessage);
