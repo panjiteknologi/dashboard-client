@@ -62,13 +62,13 @@ export const useScopeDetermination = (): UseScopeDeterminationResult => {
 
       // Log response to console as requested
       // console.group('🔍 Scope Determination Result');
-      // console.log('Query:', data.query);
-      // console.log('Hasil Pencarian:', data.hasil_pencarian);
-      // console.log('Penjelasan:', data.penjelasan);
-      // console.log('Saran:', data.saran);
-      // console.log('Detail Scope:', data.detail_scope);
+      // // console.log('Query:', data.query);
+      // // console.log('Hasil Pencarian:', data.hasil_pencarian);
+      // // console.log('Penjelasan:', data.penjelasan);
+      // // console.log('Saran:', data.saran);
+      // // console.log('Detail Scope:', data.detail_scope);
       // if (data.raw_ai_response) {
-      //   console.log('Raw AI Response:', data.raw_ai_response);
+      //   // console.log('Raw AI Response:', data.raw_ai_response);
       // }
       console.groupEnd();
     } catch (err) {

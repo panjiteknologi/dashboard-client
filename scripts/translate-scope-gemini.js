@@ -163,7 +163,7 @@ function applyTranslations(scopeData, translationMap) {
 }
 
 async function main() {
-  console.log('🚀 Memulai translate scope_en.json menggunakan Gemini AI...');
+  // console.log('🚀 Memulai translate scope_en.json menggunakan Gemini AI...');
 
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
   if (!GEMINI_API_KEY) {
@@ -176,15 +176,15 @@ async function main() {
   const inputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_en.json');
   const outputPath = path.join(__dirname, '..', 'src', 'lib', 'scope_id.json');
 
-  console.log('📖 Membaca file scope_en.json...');
+  // console.log('📖 Membaca file scope_en.json...');
   const rawData = fs.readFileSync(inputPath, 'utf8');
   const scopeData = JSON.parse(rawData);
 
-  console.log('🔍 Mengumpulkan semua teks yang perlu ditranslate...');
+  // console.log('🔍 Mengumpulkan semua teks yang perlu ditranslate...');
   const textsToTranslate = collectTextsToTranslate(scopeData);
-  console.log(`📝 Total teks yang perlu ditranslate: ${textsToTranslate.length}`);
+  // console.log(`📝 Total teks yang perlu ditranslate: ${textsToTranslate.length}`);
 
-  console.log('🌐 Memulai proses translate dengan Gemini AI...');
+  // console.log('🌐 Memulai proses translate dengan Gemini AI...');
   const translationMap = new Map();
 
   // Process in batches
@@ -194,7 +194,7 @@ async function main() {
     const batch = textsToTranslate.slice(i, i + BATCH_SIZE);
     const batchNum = Math.floor(i / BATCH_SIZE) + 1;
 
-    console.log(`   Batch ${batchNum}/${totalBatches} (${batch.length} items)...`);
+    // console.log(`   Batch ${batchNum}/${totalBatches} (${batch.length} items)...`);
 
     const translations = await translateWithGemini(batch, ai);
 
@@ -205,7 +205,7 @@ async function main() {
 
     // Progress
     const progress = Math.min(100, Math.round((i + batch.length) / textsToTranslate.length * 100));
-    console.log(`   Progress: ${progress}% (${i + batch.length}/${textsToTranslate.length})`);
+    // console.log(`   Progress: ${progress}% (${i + batch.length}/${textsToTranslate.length})`);
 
     // Delay to avoid rate limits (except for last batch)
     if (i + BATCH_SIZE < textsToTranslate.length) {
@@ -213,17 +213,17 @@ async function main() {
     }
   }
 
-  console.log('🔄 Menerapkan translations ke data...');
+  // console.log('🔄 Menerapkan translations ke data...');
   const translatedData = applyTranslations(scopeData, translationMap);
 
-  console.log('💾 Menyimpan file scope_id.json...');
+  // console.log('💾 Menyimpan file scope_id.json...');
   fs.writeFileSync(outputPath, JSON.stringify(translatedData, null, 2), 'utf8');
 
-  console.log('✅ Translate selesai!');
-  console.log('📊 Statistik:');
-  console.log(`   - Total scope keys: ${Object.keys(translatedData).length}`);
-  console.log(`   - Total teks ditranslate: ${translationMap.size}`);
-  console.log(`   - Output file: ${outputPath}`);
+  // console.log('✅ Translate selesai!');
+  // console.log('📊 Statistik:');
+  // console.log(`   - Total scope keys: ${Object.keys(translatedData).length}`);
+  // console.log(`   - Total teks ditranslate: ${translationMap.size}`);
+  // console.log(`   - Output file: ${outputPath}`);
 }
 
 main().catch(console.error);
