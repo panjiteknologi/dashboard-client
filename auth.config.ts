@@ -2,7 +2,6 @@
 import Credentials from "next-auth/providers/credentials";
 import axios from "axios";
 import type { NextAuthConfig } from "next-auth";
-import https from "https";
 
 export default {
   providers: [
@@ -33,18 +32,15 @@ export default {
                 password: credentials?.password,
               };
 
-          const httpsAgent = new https.Agent({
-            rejectUnauthorized: false,
-          });
-
           const response = await axios.post(
             endpoint,
             {
               params,
             },
             {
-              httpsAgent,
-              timeout: 10000,
+              headers: {
+                "x-vercel-protection": "secret-kode-tsi-2026",
+              },
             }
           );
 
