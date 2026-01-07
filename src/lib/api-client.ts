@@ -1,14 +1,14 @@
-import { env } from "@/env";
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import { getSession, signOut } from "next-auth/react";
+import { env } from '@/env';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { getSession, signOut } from 'next-auth/react';
 
 // Create base axios instance
 const apiClient = axios.create({
-  baseURL: env.NEXT_PUBLIC_ENDPOINT_URL || "https://erp.tsicertification.com",
+  baseURL: env.NEXT_PUBLIC_ENDPOINT_URL || 'https://erp.tsicertification.com',
   headers: {
-    "Content-Type": "application/json",
-    "x-vercel-protection": "secret-kode-tsi-2026",
-  },
+    'Content-Type': 'application/json'
+    // "x-vercel-protection": "secret-kode-tsi-2026",
+  }
 });
 
 // Request interceptor for API calls
@@ -17,7 +17,7 @@ apiClient.interceptors.request.use(
     const session = await getSession();
     if (session?.user?.access_token) {
       config.headers.Authorization = `Bearer ${session.user.access_token}`;
-      config.headers["Content-Type"] = "application/json";
+      config.headers['Content-Type'] = 'application/json';
     }
 
     return config;
@@ -37,8 +37,8 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      if (typeof window !== "undefined") {
-        await signOut({ callbackUrl: "/login" });
+      if (typeof window !== 'undefined') {
+        await signOut({ callbackUrl: '/login' });
       }
 
       return Promise.reject(error);
