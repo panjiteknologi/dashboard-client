@@ -11,7 +11,13 @@ import { SidebarAppsMenu } from "@/utils";
 import DashboardLayout from "@/layout/dashboard-layout";
 import { AuditStatusView } from "@/views/apps";
 import { DashboardCard } from "@/views/apps/dashboard/dashboard-card";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { AllProject } from "@/types/projects";
@@ -53,7 +59,7 @@ import {
   // AlertCircle,
   CheckCircle,
   FileText,
-  Loader2
+  Loader2,
 } from "lucide-react";
 
 // Skeleton component for loading state
@@ -105,7 +111,10 @@ function DashboardSkeleton() {
           <CardContent className="pt-0">
             <div className="grid gap-4 sm:grid-cols-2">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-3 h-3 rounded-full bg-muted" />
                     <div className="h-4 w-24 bg-muted rounded" />
@@ -150,7 +159,7 @@ export default function Page() {
     data: dateCustomer,
     isLoading: isLoadingDateCustomer,
     isFetching: isFetchingDateCustomer,
-    refetch: refetchDateCustomer
+    refetch: refetchDateCustomer,
   } = useDateCustomerQuery({
     staleTime: 0, // Always consider data stale
     refetchOnMount: false, // Manual refetch
@@ -161,7 +170,7 @@ export default function Page() {
     data: standards,
     isLoading: isLoadingStandards,
     isFetching: isFetchingStandards,
-    refetch: refetchStandards
+    refetch: refetchStandards,
   } = useDataStandardQuery({
     staleTime: 0, // Always consider data stale
     refetchOnMount: false, // Manual refetch
@@ -192,70 +201,107 @@ export default function Page() {
     // Handle different response structures
     if (!dateCustomer) return [];
     if (Array.isArray(dateCustomer)) return dateCustomer;
-    if (dateCustomer?.data && Array.isArray(dateCustomer.data)) return dateCustomer.data;
+    if (dateCustomer?.data && Array.isArray(dateCustomer.data))
+      return dateCustomer.data;
     return [];
   }, [dateCustomer]) as DashboardProject[];
 
   // Calculate dashboard statistics
   const dashboardStats = useMemo(() => {
     // Ensure data is an array and filter out null/undefined items
-    const validData = Array.isArray(data) ? data.filter((item): item is DashboardProject => item != null) : [];
+    const validData = Array.isArray(data)
+      ? data.filter((item): item is DashboardProject => item != null)
+      : [];
 
     const totalProjects = validData.length;
 
     // Completed projects: projects that have certificate issued (tgl_kirim_sertifikat exists)
-    const completedProjects = validData.filter((item: DashboardProject) =>
-      item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ''
+    const completedProjects = validData.filter(
+      (item: DashboardProject) =>
+        item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ""
     ).length;
 
-    // Surveillance projects: projects in surveilance1-5 phase (tahapan id 2-6)
+    // Surveillance projects: projects in surveillance1-5 phase (tahapan id 2-6)
     const surveillanceProjects = validData.filter((item: DashboardProject) => {
-      const tahapan = item?.tahapan?.toLowerCase() || '';
-      return tahapan.includes('surveilance') ||
-             tahapan.includes('surveillance') ||
-             tahapan === 'surveilance1' ||
-             tahapan === 'surveilance2' ||
-             tahapan === 'surveilance3' ||
-             tahapan === 'surveilance4' ||
-             tahapan === 'surveilance5';
+      const tahapan = item?.tahapan?.toLowerCase() || "";
+      return (
+        tahapan.includes("surveillance") ||
+        tahapan.includes("surveillance") ||
+        tahapan === "surveillance1" ||
+        tahapan === "surveillance2" ||
+        tahapan === "surveillance3" ||
+        tahapan === "surveillance4" ||
+        tahapan === "surveillance5"
+      );
     }).length;
 
     // Total certificates: count projects with issued certificates
-    const totalCertificates = validData.filter((item: DashboardProject) =>
-      item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ''
+    const totalCertificates = validData.filter(
+      (item: DashboardProject) =>
+        item?.tgl_kirim_sertifikat && item.tgl_kirim_sertifikat !== ""
     ).length;
 
     // Phase distribution using normalized tahapan names
-    const tahapanCounts = validData.reduce((acc, item: DashboardProject) => {
-      const tahapanRaw = item?.tahapan || 'unknown';
+    const tahapanCounts = validData.reduce(
+      (acc, item: DashboardProject) => {
+        const tahapanRaw = item?.tahapan || "unknown";
 
-      // Normalize tahapan to display names
-      let displayName = 'Unknown';
-      const tahapanLower = tahapanRaw.toLowerCase();
+        // Normalize tahapan to display names
+        let displayName = "Unknown";
+        const tahapanLower = tahapanRaw.toLowerCase();
 
-      if (tahapanLower === 'ia' || tahapanLower.includes('initial') || tahapanLower.includes('audit')) {
-        displayName = 'Initial Audit';
-      } else if (tahapanLower.includes('surveilance1') || tahapanLower.includes('surveillance1') || tahapanLower === 'sv1') {
-        displayName = 'Surveillance 1';
-      } else if (tahapanLower.includes('surveilance2') || tahapanLower.includes('surveillance2') || tahapanLower === 'sv2') {
-        displayName = 'Surveillance 2';
-      } else if (tahapanLower.includes('surveilance3') || tahapanLower.includes('surveillance3') || tahapanLower === 'sv3') {
-        displayName = 'Surveillance 3';
-      } else if (tahapanLower.includes('surveilance4') || tahapanLower.includes('surveillance4') || tahapanLower === 'sv4') {
-        displayName = 'Surveillance 4';
-      } else if (tahapanLower.includes('surveilance5') || tahapanLower.includes('surveillance5') || tahapanLower === 'sv5') {
-        displayName = 'Surveillance 5';
-      } else if (tahapanLower.includes('recertification') || tahapanLower === 'rc') {
-        displayName = 'Recertification';
-      } else if (tahapanLower.includes('special') || tahapanLower === 'sp') {
-        displayName = 'Special Audit';
-      } else if (tahapanLower !== 'unknown') {
-        displayName = tahapanRaw;
-      }
+        if (
+          tahapanLower === "ia" ||
+          tahapanLower.includes("initial") ||
+          tahapanLower.includes("audit")
+        ) {
+          displayName = "Initial Audit";
+        } else if (
+          tahapanLower.includes("surveillance1") ||
+          tahapanLower.includes("surveillance1") ||
+          tahapanLower === "sv1"
+        ) {
+          displayName = "Surveillance 1";
+        } else if (
+          tahapanLower.includes("surveillance2") ||
+          tahapanLower.includes("surveillance2") ||
+          tahapanLower === "sv2"
+        ) {
+          displayName = "Surveillance 2";
+        } else if (
+          tahapanLower.includes("surveillance3") ||
+          tahapanLower.includes("surveillance3") ||
+          tahapanLower === "sv3"
+        ) {
+          displayName = "Surveillance 3";
+        } else if (
+          tahapanLower.includes("surveillance4") ||
+          tahapanLower.includes("surveillance4") ||
+          tahapanLower === "sv4"
+        ) {
+          displayName = "Surveillance 4";
+        } else if (
+          tahapanLower.includes("surveillance5") ||
+          tahapanLower.includes("surveillance5") ||
+          tahapanLower === "sv5"
+        ) {
+          displayName = "Surveillance 5";
+        } else if (
+          tahapanLower.includes("recertification") ||
+          tahapanLower === "rc"
+        ) {
+          displayName = "Recertification";
+        } else if (tahapanLower.includes("special") || tahapanLower === "sp") {
+          displayName = "Special Audit";
+        } else if (tahapanLower !== "unknown") {
+          displayName = tahapanRaw;
+        }
 
-      acc[displayName] = (acc[displayName] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+        acc[displayName] = (acc[displayName] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     // Recent projects based on latest activity
     const recentProjects = validData
@@ -276,21 +322,41 @@ export default function Page() {
       .map((item: DashboardProject) => {
         // Find the latest date
         const dates = [
-          { date: item?.updated_at, field: 'updated_at' },
-          { date: item?.created_at, field: 'created_at' },
-          { date: item?.tgl_kirim_sertifikat, field: 'tgl_kirim_sertifikat' },
-          { date: item?.tgl_persetujuan_draft_sertifikat, field: 'tgl_persetujuan_draft_sertifikat' },
-          { date: item?.tgl_pengiriman_draft_sertifikat, field: 'tgl_pengiriman_draft_sertifikat' },
-          { date: item?.tgl_pelaksanaan_audit, field: 'tgl_pelaksanaan_audit' },
-          { date: item?.tgl_pelaksanaan_audit_st_satu, field: 'tgl_pelaksanaan_audit_st_satu' },
-          { date: item?.tgl_pelaksanaan_audit_st_dua, field: 'tgl_pelaksanaan_audit_st_dua' },
-        ].filter(d => d?.date);
+          { date: item?.updated_at, field: "updated_at" },
+          { date: item?.created_at, field: "created_at" },
+          { date: item?.tgl_kirim_sertifikat, field: "tgl_kirim_sertifikat" },
+          {
+            date: item?.tgl_persetujuan_draft_sertifikat,
+            field: "tgl_persetujuan_draft_sertifikat",
+          },
+          {
+            date: item?.tgl_pengiriman_draft_sertifikat,
+            field: "tgl_pengiriman_draft_sertifikat",
+          },
+          { date: item?.tgl_pelaksanaan_audit, field: "tgl_pelaksanaan_audit" },
+          {
+            date: item?.tgl_pelaksanaan_audit_st_satu,
+            field: "tgl_pelaksanaan_audit_st_satu",
+          },
+          {
+            date: item?.tgl_pelaksanaan_audit_st_dua,
+            field: "tgl_pelaksanaan_audit_st_dua",
+          },
+        ].filter((d) => d?.date);
 
-        const latest = dates.reduce((latest, current) => {
-          const currentDate = new Date(current.date || 0);
-          const latestDate = new Date(latest.date || 0);
-          return currentDate.getTime() > latestDate.getTime() ? current : latest;
-        }, dates[0] || { date: item?.created_at || item?.updated_at || '0', field: 'created_at' });
+        const latest = dates.reduce(
+          (latest, current) => {
+            const currentDate = new Date(current.date || 0);
+            const latestDate = new Date(latest.date || 0);
+            return currentDate.getTime() > latestDate.getTime()
+              ? current
+              : latest;
+          },
+          dates[0] || {
+            date: item?.created_at || item?.updated_at || "0",
+            field: "created_at",
+          }
+        );
 
         return {
           ...item,
@@ -299,8 +365,12 @@ export default function Page() {
         };
       })
       .sort((a, b) => {
-        const dateA = new Date((a as DashboardProject & { latestDate?: string }).latestDate || 0);
-        const dateB = new Date((b as DashboardProject & { latestDate?: string }).latestDate || 0);
+        const dateA = new Date(
+          (a as DashboardProject & { latestDate?: string }).latestDate || 0
+        );
+        const dateB = new Date(
+          (b as DashboardProject & { latestDate?: string }).latestDate || 0
+        );
         return dateB.getTime() - dateA.getTime();
       })
       .slice(0, 5)
@@ -313,7 +383,8 @@ export default function Page() {
       totalCertificates,
       tahapanCounts,
       recentProjects,
-      completionRate: totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0
+      completionRate:
+        totalProjects > 0 ? (completedProjects / totalProjects) * 100 : 0,
     };
   }, [data]);
 
@@ -416,12 +487,18 @@ export default function Page() {
                     {dashboardStats.completionRate.toFixed(1)}%
                   </span>
                   <span className="text-sm text-muted-foreground font-medium">
-                    {dashboardStats.completedProjects}/{dashboardStats.totalProjects}
+                    {dashboardStats.completedProjects}/
+                    {dashboardStats.totalProjects}
                   </span>
                 </div>
-                <Progress value={dashboardStats.completionRate} className="h-3" />
+                <Progress
+                  value={dashboardStats.completionRate}
+                  className="h-3"
+                />
                 <div className="text-xs text-muted-foreground">
-                  {dashboardStats.totalProjects - dashboardStats.completedProjects} projects remaining
+                  {dashboardStats.totalProjects -
+                    dashboardStats.completedProjects}{" "}
+                  projects remaining
                 </div>
               </div>
             </CardContent>
@@ -444,7 +521,16 @@ export default function Page() {
                   .filter(([, count]) => count > 0)
                   .sort(([a], [b]) => {
                     // Custom sort order for phases
-                    const order = ['Initial Audit', 'Surveillance 1', 'Surveillance 2', 'Surveillance 3', 'Surveillance 4', 'Surveillance 5', 'Recertification', 'Special Audit'];
+                    const order = [
+                      "Initial Audit",
+                      "Surveillance 1",
+                      "Surveillance 2",
+                      "Surveillance 3",
+                      "Surveillance 4",
+                      "Surveillance 5",
+                      "Recertification",
+                      "Special Audit",
+                    ];
                     const indexA = order.indexOf(a);
                     const indexB = order.indexOf(b);
                     if (indexA !== -1 && indexB !== -1) return indexA - indexB;
@@ -453,14 +539,17 @@ export default function Page() {
                     return a.localeCompare(b);
                   })
                   .map(([tahapan, count]) => (
-                    <div key={tahapan} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                    <div
+                      key={tahapan}
+                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
+                    >
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 rounded-full bg-primary" />
-                        <span className="text-sm font-medium">
-                          {tahapan}
-                        </span>
+                        <span className="text-sm font-medium">{tahapan}</span>
                       </div>
-                      <Badge variant="secondary" className="font-semibold">{count}</Badge>
+                      <Badge variant="secondary" className="font-semibold">
+                        {count}
+                      </Badge>
                     </div>
                   ))}
               </div>
@@ -531,15 +620,20 @@ export default function Page() {
                 <FileText className="h-7 w-7 " />
               </div>
               <div>
-                <CardTitle className="text-2xl font-bold">Track your certificate</CardTitle>
+                <CardTitle className="text-2xl font-bold">
+                  Track your certificate
+                </CardTitle>
                 <CardDescription className="text-sm mt-2">
                   Complete overview of all projects and certification status
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-8" style={{ marginTop:'-70px' }}>
-            <AuditStatusView data={data as AllProject[]} uniqueStandards={dataStandar} />
+          <CardContent className="p-8" style={{ marginTop: "-70px" }}>
+            <AuditStatusView
+              data={data as AllProject[]}
+              uniqueStandards={dataStandar}
+            />
           </CardContent>
         </Card>
       </div>

@@ -446,7 +446,8 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
       tahapan: "Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_persetujuan_kan || "",
       catatan: field?.note_tgl_persetujuan_kan || "",
-      leadTime: field?.lead_time_tgl_persetujuan_kan_to_tgl_kirim_sertifikat || "",
+      leadTime:
+        field?.lead_time_tgl_persetujuan_kan_to_tgl_kirim_sertifikat || "",
     }),
     attachMeta({
       tahapan: "Kirim Sertifikat",
@@ -674,8 +675,11 @@ export function getlatestProgress(field: AllProject): string {
 }
 
 export function getDataTable(field: AllProject): StepRow[] | null {
+  console.log("field", field);
   const normalizedField = normalizeFieldTahapan(field);
+  console.log("normalizedField", normalizedField);
   const step = Number(normalizedField?.tahapan ?? 0);
+  console.log("step", step);
 
   if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
     if (step === 1 || step === 7) {
