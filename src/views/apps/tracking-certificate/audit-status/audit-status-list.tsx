@@ -5,7 +5,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 import DataTable from "@/components/ui/data-table";
 import { findTahapan } from "@/utils/getNormalizeTahapan";
-import { getlatestProgress, getNextStep, getDataTable } from "@/utils/getProgressAndField";
+import {
+  getlatestProgress,
+  getNextStep,
+  getDataTable,
+} from "@/utils/getProgressAndField";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -32,7 +36,25 @@ const DEFAULT_FILE_NAME = "certificate.pdf";
 const getProjectStatus = (tahapan: string) => {
   const normalizedTahapan = tahapan?.toLowerCase() || "";
 
-  if (normalizedTahapan.includes("sertifikat") || normalizedTahapan.includes("selesai")) {
+  const isSurveillance = (value?: string): boolean => {
+    if (!value) return false;
+
+    const normalized = value
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/-/g, "");
+
+    return (
+      normalized.includes("surveillance") ||
+      normalized.includes("surveillance") ||
+      /^sv\d*$/.test(normalized)
+    );
+  };
+
+  if (
+    normalizedTahapan.includes("sertifikat") ||
+    normalizedTahapan.includes("selesai")
+  ) {
     return {
       status: "Completed",
       variant: "default" as const,
@@ -43,7 +65,7 @@ const getProjectStatus = (tahapan: string) => {
       borderColor: "border-green-200",
     };
   }
-  if (normalizedTahapan.includes("survilance") || normalizedTahapan.includes("surveillance") || normalizedTahapan.startsWith("sv")) {
+  if (isSurveillance(normalizedTahapan)) {
     return {
       status: "Surveillance",
       variant: "secondary" as const,
@@ -90,17 +112,17 @@ const getProjectStatus = (tahapan: string) => {
 const getProgressPercentage = (data: AllProject, isISO = true) => {
   try {
     // Handle server-side rendering by using fallback logic
-    if (typeof window === 'undefined') {
-      const tahapan = data?.tahapan || '';
+    if (typeof window === "undefined") {
+      const tahapan = data?.tahapan || "";
       const progressMap: Record<string, number> = {
         survei: 10,
         audit1: 20,
         audit2: 35,
-        surveilance1: 50,
-        surveilance2: 65,
-        surveilance3: 80,
-        surveilance4: 90,
-        surveilance5: 95,
+        surveillance1: 50,
+        surveillance2: 65,
+        surveillance3: 80,
+        surveillance4: 90,
+        surveillance5: 95,
         survilance1: 50,
         survilance2: 65,
         survilance3: 80,
@@ -121,16 +143,16 @@ const getProgressPercentage = (data: AllProject, isISO = true) => {
 
     if (steps.length === 0) {
       // Fallback to original logic if no steps
-      const tahapan = data?.tahapan || '';
+      const tahapan = data?.tahapan || "";
       const progressMap: Record<string, number> = {
         survei: 10,
         audit1: 20,
         audit2: 35,
-        surveilance1: 50,
-        surveilance2: 65,
-        surveilance3: 80,
-        surveilance4: 90,
-        surveilance5: 95,
+        surveillance1: 50,
+        surveillance2: 65,
+        surveillance3: 80,
+        surveillance4: 90,
+        surveillance5: 95,
         survilance1: 50,
         survilance2: 65,
         survilance3: 80,
@@ -148,7 +170,9 @@ const getProgressPercentage = (data: AllProject, isISO = true) => {
     }
 
     // Count completed steps (steps that have tanggalStatus)
-    const completedSteps = steps.filter(step => step.tanggalStatus && step.tanggalStatus.trim() !== '').length;
+    const completedSteps = steps.filter(
+      (step) => step.tanggalStatus && step.tanggalStatus.trim() !== ""
+    ).length;
 
     // Calculate percentage based on completed steps
     const percentage = Math.round((completedSteps / steps.length) * 100);
@@ -157,16 +181,16 @@ const getProgressPercentage = (data: AllProject, isISO = true) => {
     return Math.min(percentage, 100);
   } catch (error) {
     // Fallback to original logic if getDataTable fails
-    const tahapan = data?.tahapan || '';
+    const tahapan = data?.tahapan || "";
     const progressMap: Record<string, number> = {
       survei: 10,
       audit1: 20,
       audit2: 35,
-      surveilance1: 50,
-      surveilance2: 65,
-      surveilance3: 80,
-      surveilance4: 90,
-      surveilance5: 95,
+      surveillance1: 50,
+      surveillance2: 65,
+      surveillance3: 80,
+      surveillance4: 90,
+      surveillance5: 95,
       survilance1: 50,
       survilance2: 65,
       survilance3: 80,
@@ -311,11 +335,11 @@ export const AuditStatusView = ({
 
   const dataTransform = useMemo(() => {
     const stat = {
-      surveilance1: "sv 1",
-      surveilance2: "sv 2",
-      surveilance3: "sv 3",
-      surveilance4: "sv 4",
-      surveilance5: "sv 5",
+      surveillance1: "sv 1",
+      surveillance2: "sv 2",
+      surveillance3: "sv 3",
+      surveillance4: "sv 4",
+      surveillance5: "sv 5",
     } as const;
 
     return data.map((item) => ({

@@ -22,14 +22,14 @@ import { dataCRMServices } from "@/services/data-crm";
 import { toast } from "sonner";
 
 export const AUDIT_STAGE_ORDER = [
-  "surveilance1",
-  "surveilance2",
+  "surveillance1",
+  "surveillance2",
   "recertification",
-  "surveilance3",
-  "surveilance4",
+  "surveillance3",
+  "surveillance4",
   "recertification2",
-  "surveilance5",
-  "surveilance6",
+  "surveillance5",
+  "surveillance6",
   "recertification3",
 ] as const;
 
@@ -224,7 +224,7 @@ export function ReminderSurveillanceProvider({
       return AUDIT_STAGE_CAPITALIZE[label];
     }
 
-    return "surveilance1";
+    return "surveillance1";
   };
 
   const resolveTahapanAuditLabel = (
