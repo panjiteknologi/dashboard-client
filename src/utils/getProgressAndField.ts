@@ -196,7 +196,7 @@ const STEP_META: Record<string, StepMeta> = {
 };
 
 function attachMeta(
-  row: Omit<StepRow, "icon" | "category" | "color">
+  row: Omit<StepRow, "icon" | "category" | "color">,
 ): StepRow {
   const { tahapan } = row;
 
@@ -446,7 +446,8 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
       tahapan: "Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
       tanggalStatus: field?.tgl_persetujuan_kan || "",
       catatan: field?.note_tgl_persetujuan_kan || "",
-      leadTime: field?.lead_time_tgl_persetujuan_kan_to_tgl_kirim_sertifikat || "",
+      leadTime:
+        field?.lead_time_tgl_persetujuan_kan_to_tgl_kirim_sertifikat || "",
     }),
     attachMeta({
       tahapan: "Kirim Sertifikat",
@@ -460,7 +461,7 @@ function getFieldAuditISO(field: AllProject): StepRow[] {
 function getFieldISPO(field: AllProject): StepRow[] {
   return [
     attachMeta({
-      tahapan: "Aplication Form or Request",
+      tahapan: "Aplication Form or Requessssst",
       tanggalStatus: field?.tgl_aplication_form || "",
       catatan: field?.note_aplication_form || "",
       leadTime: "",
@@ -542,71 +543,114 @@ function getFieldISO(field: AllProject): StepRow[] {
       tanggalStatus: field?.tgl_aplication_form || "",
       catatan: field?.note_aplication_form || "",
       leadTime:
-        field?.lead_time_tgl_aplication_form_to_tgl_review_penugasan || "",
+        field?.lead_time_tgl_aplication_form_to_tgl_review_penugasan ||
+        field?.lead_time_tgl_aplication_form_to_tgl_review_penugasan_st_dua ||
+        "",
     }),
     attachMeta({
       tahapan: "Review Penugasan",
-      tanggalStatus: field?.tgl_review_penugasan || "",
-      catatan: field?.note_tgl_review_penugasan || "",
+      tanggalStatus:
+        field?.tgl_review_penugasan || field?.tgl_review_penugasan_st_dua || "",
+      catatan:
+        field?.note_tgl_review_penugasan ||
+        field?.note_tgl_review_penugasan_st_dua ||
+        "",
       leadTime:
         field?.lead_time_tgl_review_penugasan_to_tgl_pengiriman_notif || "",
     }),
     attachMeta({
-      tahapan: "Pengiriman Notifikasi",
-      tanggalStatus: field?.tgl_pengiriman_notif || "",
-      catatan: field?.note_tgl_pengiriman_notif || "",
+      tahapan: "Kontrak",
+      tanggalStatus: field?.tgl_kontrak || "",
+      catatan: field?.note_tgl_kontrak || "",
       leadTime:
-        field?.lead_time_tgl_pengiriman_notif_to_tgl_pengiriman_audit_plan ||
-        "",
+        field?.lead_time_tgl_kontrak_to_tgl_pengiriman_audit_plan_st_dua || "",
     }),
+    //update - 21 Jan 26 engga ada ini
+    // attachMeta({
+    //   tahapan: "Pengiriman Notifikasi",
+    //   tanggalStatus: field?.tgl_pengiriman_notif || "",
+    //   catatan: field?.note_tgl_pengiriman_notif || "",
+    //   leadTime:
+    //     field?.lead_time_tgl_pengiriman_notif_to_tgl_pengiriman_audit_plan ||
+    //     "",
+    // }),
     attachMeta({
       tahapan: "Pengiriman Audit Plan",
-      tanggalStatus: field?.tgl_pengiriman_audit_plan || "",
-      catatan: field?.note_tgl_pengiriman_audit_plan || "",
+      tanggalStatus:
+        field?.tgl_pengiriman_audit_plan ||
+        field?.tgl_pengiriman_audit_plan_st_dua ||
+        "",
+      catatan:
+        field?.note_tgl_pengiriman_audit_plan ||
+        field?.note_tgl_pengiriman_audit_plan_st_dua ||
+        "",
       leadTime:
         field?.lead_time_tgl_pengiriman_audit_plan_to_tgl_pelaksanaan_audit ||
+        field?.lead_time_tgl_pengiriman_audit_plan_st_dua_to_tgl_pelaksanaan_audit_st_dua ||
         "",
     }),
     attachMeta({
       tahapan: "Pelaksanaan Audit",
-      tanggalStatus: field?.tgl_pelaksanaan_audit || "",
-      catatan: field?.note_tgl_pelaksanaan_audit || "",
+      tanggalStatus:
+        field?.tgl_pelaksanaan_audit ||
+        field?.tgl_pelaksanaan_audit_st_dua ||
+        "",
+      catatan:
+        field?.note_tgl_pelaksanaan_audit ||
+        field?.note_tgl_pelaksanaan_audit_st_dua ||
+        "",
       leadTime:
-        field?.lead_time_tgl_pelaksanaan_audit_to_tgl_penyelesaian_capa || "",
+        field?.lead_time_tgl_pelaksanaan_audit_to_tgl_penyelesaian_capa ||
+        field?.lead_time_tgl_pelaksanaan_audit_st_dua_to_tgl_penyelesaian_capa_st_dua ||
+        "",
     }),
     attachMeta({
       tahapan: "Penyelesaian CAPA",
-      tanggalStatus: field?.tgl_penyelesaian_capa || "",
-      catatan: field?.note_tgl_penyelesaian_capa || "",
+      tanggalStatus:
+        field?.tgl_penyelesaian_capa ||
+        field?.tgl_penyelesaian_capa_st_dua ||
+        "",
+      catatan:
+        field?.note_tgl_penyelesaian_capa ||
+        field?.note_tgl_penyelesaian_capa_st_dua ||
+        "",
       leadTime:
         field?.lead_time_tgl_penyelesaian_capa_to_tgl_pengiriman_draft_sertifikat ||
+        field?.lead_time_tgl_penyelesaian_capa_st_dua_to_tgl_pengiriman_draft_sertifikat ||
         "",
     }),
+    //update - 21 jan 26 ditambahin ini
+    attachMeta({
+      tahapan: "Pengiriman Draft Sertifikat",
+      tanggalStatus: field?.tgl_pengiriman_draft_sertifikat || "",
+      catatan: field?.note_tgl_pengiriman_draft_sertifikat || "",
+      leadTime:
+        field?.lead_time_tgl_pengiriman_draft_sertifikat_to_tgl_pengajuan || "",
+    }),
+    attachMeta({
+      tahapan: "Pengajuan ke " + (field?.nama_akreditasi || "KAN"),
+      tanggalStatus: field?.tgl_pengajuan || "",
+      catatan: field?.note_tgl_pengajuan || "",
+      leadTime:
+        field?.lead_time_tgl_pengajuan_to_tgl_persetujuan ||
+        field?.lead_time_tgl_pengajuan_to_tgl_persetujuan_draft_sertifikat ||
+        "",
+    }),
+
     attachMeta({
       tahapan: "Persetujuan Draft Sertifikat",
       tanggalStatus: field?.tgl_persetujuan_draft_sertifikat || "",
       catatan: field?.note_tgl_persetujuan_draft_sertifikat || "",
       leadTime:
         field?.lead_time_tgl_persetujuan_draft_sertifikat_to_tgl_pengajuan ||
+        field?.lead_time_tgl_persetujuan_draft_sertifikat_to_tgl_kirim_sertifikat ||
         "",
     }),
-    // attachMeta({
-    //   tahapan: "Pengiriman Draft Sertifikat",
-    //   tanggalStatus: field?.tgl_pengiriman_draft_sertifikat || "",
-    //   catatan: field?.note_tgl_pengiriman_draft_sertifikat || "",
-    //   leadTime:
-    //     field?.lead_time_tgl_pengiriman_draft_sertifikat_to_tgl_pengajuan || "",
-    // }),
-    // attachMeta({
-    //   tahapan: "Pengajuan ke " + (field?.nama_akreditasi || "KAN"),
-    //   tanggalStatus: field?.tgl_pengajuan || "",
-    //   catatan: field?.note_tgl_pengajuan || "",
-    //   leadTime: field?.lead_time_tgl_pengajuan_to_tgl_persetujuan || "",
-    // }),
     attachMeta({
       tahapan: "Persetujuan ke " + (field?.nama_akreditasi || "KAN"),
-      tanggalStatus: field?.tgl_persetujuan || "",
-      catatan: field?.note_tgl_persetujuan || "",
+      tanggalStatus: field?.tgl_persetujuan || field?.tgl_persetujuan_kan || "",
+      catatan:
+        field?.note_tgl_persetujuan || field?.note_tgl_persetujuan_kan || "",
       leadTime: field?.lead_time_tgl_persetujuan_to_tgl_kirim_sertifikat || "",
     }),
     attachMeta({
@@ -627,7 +671,7 @@ export function getlatestProgress(field: AllProject): string {
     .sort(
       (a, b) =>
         new Date(b.tanggalStatus).getTime() -
-        new Date(a.tanggalStatus).getTime()
+        new Date(a.tanggalStatus).getTime(),
     )[0];
 
   const latestProgressAuditISO = getFieldAuditISO(field)
@@ -635,7 +679,7 @@ export function getlatestProgress(field: AllProject): string {
     .sort(
       (a, b) =>
         new Date(b.tanggalStatus).getTime() -
-        new Date(a.tanggalStatus).getTime()
+        new Date(a.tanggalStatus).getTime(),
     )[0];
 
   const latestProgressISPO = getFieldISPO(field)
@@ -643,7 +687,7 @@ export function getlatestProgress(field: AllProject): string {
     .sort(
       (a, b) =>
         new Date(b.tanggalStatus).getTime() -
-        new Date(a.tanggalStatus).getTime()
+        new Date(a.tanggalStatus).getTime(),
     )[0];
 
   const latestProgressISO = getFieldISO(field)
@@ -651,7 +695,7 @@ export function getlatestProgress(field: AllProject): string {
     .sort(
       (a, b) =>
         new Date(b.tanggalStatus).getTime() -
-        new Date(a.tanggalStatus).getTime()
+        new Date(a.tanggalStatus).getTime(),
     )[0];
 
   if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
