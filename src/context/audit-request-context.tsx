@@ -85,10 +85,10 @@ export function AuditRequestProvider({
       const stageHit =
         stage === "all" ||
         (stage === "s1" &&
-          (stageSlugLc === "surveilance1" ||
+          (stageSlugLc === "surveillance1" ||
             stageSlugLc.includes("surveillance 1"))) ||
         (stage === "s2" &&
-          (stageSlugLc === "surveilance2" ||
+          (stageSlugLc === "surveillance2" ||
             stageSlugLc.includes("surveillance 2")));
 
       const isoHit =

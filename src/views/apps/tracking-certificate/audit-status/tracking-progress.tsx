@@ -26,7 +26,9 @@ const formatStepDate = (value?: string): string => {
 
 export const TrackingProgressView = ({ data }: TrackingProgressProps) => {
   const steps: StepRow[] = getDataTable(data) ?? [];
+  console.log("steps", steps);
 
+  console.log("data", data);
   return (
     <div className="overflow-y-auto">
       <div className="relative">
