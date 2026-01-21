@@ -718,8 +718,11 @@ export function getlatestProgress(field: AllProject): string {
 }
 
 export function getDataTable(field: AllProject): StepRow[] | null {
+  console.log("field", field);
   const normalizedField = normalizeFieldTahapan(field);
+  console.log("normalizedField", normalizedField);
   const step = Number(normalizedField?.tahapan ?? 0);
+  console.log("step", step);
 
   if (typeof window !== "undefined" && window.location?.pathname === "/ispo") {
     if (step === 1 || step === 7) {

@@ -4,12 +4,21 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import DataTable from "@/components/ui/data-table";
+<<<<<<< HEAD
 import {
   findTahapan,
   getProgressPercentage,
   getProjectStatus,
 } from "@/utils/getNormalizeTahapan";
 import { getlatestProgress, getNextStep } from "@/utils/getProgressAndField";
+=======
+import { findTahapan } from "@/utils/getNormalizeTahapan";
+import {
+  getlatestProgress,
+  getNextStep,
+  getDataTable,
+} from "@/utils/getProgressAndField";
+>>>>>>> 95a483050ec20c250dcd6c3c8eb1b973fc7c386b
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -27,6 +36,184 @@ import {
 
 const DEFAULT_FILE_NAME = "certificate.pdf";
 
+<<<<<<< HEAD
+=======
+const getProjectStatus = (tahapan: string) => {
+  const normalizedTahapan = tahapan?.toLowerCase() || "";
+
+  const isSurveillance = (value?: string): boolean => {
+    if (!value) return false;
+
+    const normalized = value
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/-/g, "");
+
+    return (
+      normalized.includes("surveillance") ||
+      normalized.includes("surveillance") ||
+      /^sv\d*$/.test(normalized)
+    );
+  };
+
+  if (
+    normalizedTahapan.includes("sertifikat") ||
+    normalizedTahapan.includes("selesai")
+  ) {
+    return {
+      status: "Completed",
+      variant: "default" as const,
+      color: "bg-green-500",
+      icon: CheckCircle,
+      textColor: "text-green-700",
+      bgColor: "bg-green-100",
+      borderColor: "border-green-200",
+    };
+  }
+  if (isSurveillance(normalizedTahapan)) {
+    return {
+      status: "Surveillance",
+      variant: "secondary" as const,
+      color: "bg-blue-500",
+      icon: Clock,
+      textColor: "text-blue-700",
+      bgColor: "bg-blue-100",
+      borderColor: "border-blue-200",
+    };
+  }
+  if (normalizedTahapan.includes("audit")) {
+    return {
+      status: "In Audit",
+      variant: "secondary" as const,
+      color: "bg-orange-500",
+      icon: AlertCircle,
+      textColor: "text-orange-700",
+      bgColor: "bg-orange-100",
+      borderColor: "border-orange-200",
+    };
+  }
+  if (normalizedTahapan.includes("survei")) {
+    return {
+      status: "In Progress",
+      variant: "outline" as const,
+      color: "bg-yellow-500",
+      icon: Clock,
+      textColor: "text-yellow-700",
+      bgColor: "bg-yellow-100",
+      borderColor: "border-yellow-200",
+    };
+  }
+  return {
+    status: "In Progress",
+    variant: "outline" as const,
+    color: "bg-gray-500",
+    icon: Clock,
+    textColor: "text-gray-700",
+    bgColor: "bg-gray-100",
+    borderColor: "border-gray-200",
+  };
+};
+
+const getProgressPercentage = (data: AllProject, isISO = true) => {
+  try {
+    // Handle server-side rendering by using fallback logic
+    if (typeof window === "undefined") {
+      const tahapan = data?.tahapan || "";
+      const progressMap: Record<string, number> = {
+        survei: 10,
+        audit1: 20,
+        audit2: 35,
+        surveillance1: 50,
+        surveillance2: 65,
+        surveillance3: 80,
+        surveillance4: 90,
+        surveillance5: 95,
+        survilance1: 50,
+        survilance2: 65,
+        survilance3: 80,
+        survilance4: 90,
+        survilance5: 95,
+        sv1: 50,
+        sv2: 65,
+        sv3: 80,
+        sv4: 90,
+        sv5: 95,
+        sertifikat: 100,
+        selesai: 100,
+      };
+      return progressMap[tahapan.toLowerCase()] || 0;
+    }
+
+    const steps = getDataTable(data) || [];
+
+    if (steps.length === 0) {
+      // Fallback to original logic if no steps
+      const tahapan = data?.tahapan || "";
+      const progressMap: Record<string, number> = {
+        survei: 10,
+        audit1: 20,
+        audit2: 35,
+        surveillance1: 50,
+        surveillance2: 65,
+        surveillance3: 80,
+        surveillance4: 90,
+        surveillance5: 95,
+        survilance1: 50,
+        survilance2: 65,
+        survilance3: 80,
+        survilance4: 90,
+        survilance5: 95,
+        sv1: 50,
+        sv2: 65,
+        sv3: 80,
+        sv4: 90,
+        sv5: 95,
+        sertifikat: 100,
+        selesai: 100,
+      };
+      return progressMap[tahapan.toLowerCase()] || 0;
+    }
+
+    // Count completed steps (steps that have tanggalStatus)
+    const completedSteps = steps.filter(
+      (step) => step.tanggalStatus && step.tanggalStatus.trim() !== ""
+    ).length;
+
+    // Calculate percentage based on completed steps
+    const percentage = Math.round((completedSteps / steps.length) * 100);
+
+    // Ensure max is 100
+    return Math.min(percentage, 100);
+  } catch (error) {
+    // Fallback to original logic if getDataTable fails
+    const tahapan = data?.tahapan || "";
+    const progressMap: Record<string, number> = {
+      survei: 10,
+      audit1: 20,
+      audit2: 35,
+      surveillance1: 50,
+      surveillance2: 65,
+      surveillance3: 80,
+      surveillance4: 90,
+      surveillance5: 95,
+      survilance1: 50,
+      survilance2: 65,
+      survilance3: 80,
+      survilance4: 90,
+      survilance5: 95,
+      sv1: 50,
+      sv2: 65,
+      sv3: 80,
+      sv4: 90,
+      sv5: 95,
+      sertifikat: 100,
+      selesai: 100,
+    };
+    return progressMap[tahapan.toLowerCase()] || 0;
+  }
+};
+
+>>>>>>> 95a483050ec20c250dcd6c3c8eb1b973fc7c386b
 const StatusBadge = ({ tahapan }: { tahapan: string }) => {
   const statusInfo = getProjectStatus(tahapan);
   const Icon = statusInfo.icon;
@@ -153,8 +340,18 @@ export const AuditStatusView = ({
   const { getFromSource } = useFileTools();
 
   const dataTransform = useMemo(() => {
+<<<<<<< HEAD
     return data.map((item) => {
       const normalized = findTahapan(item.tahapan as string);
+=======
+    const stat = {
+      surveillance1: "sv 1",
+      surveillance2: "sv 2",
+      surveillance3: "sv 3",
+      surveillance4: "sv 4",
+      surveillance5: "sv 5",
+    } as const;
+>>>>>>> 95a483050ec20c250dcd6c3c8eb1b973fc7c386b
 
       return {
         ...item,
