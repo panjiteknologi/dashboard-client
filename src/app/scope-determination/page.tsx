@@ -25,9 +25,7 @@ export default function Page() {
       menuSidebar={SidebarAppsMenu as unknown as AppSidebarTypes}
     >
       <ScopeSearchProvider>
-        <div className="space-y-4">
-          <ScopeDeterminationView />
-        </div>
+        <ScopeDeterminationView />
       </ScopeSearchProvider>
     </DashboardLayout>
   );

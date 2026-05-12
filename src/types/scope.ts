@@ -1,3 +1,10 @@
+export type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+};
+
+export type ChatPhase = 'idle' | 'asking' | 'complete';
+
 export type ScopeLibraryItem = {
   id: string;
   code?: string;
@@ -48,6 +55,8 @@ export type ScopeDeterminationResponse = {
   raw_ai_response?: string;
 };
 
+export type { ConversationRecord } from '@/hooks/use-chat-history';
+
 export type ScopeCTX = {
   query: string;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
@@ -71,12 +80,29 @@ export type ScopeCTX = {
   pageSize: number;
   highlight: (text: string, q: string) => React.ReactNode;
   exportCsv: (rows: ScopeROW[]) => void;
-  // AI Scope Determination
+  // AI Scope Determination (direct / quick-chip mode)
   aiResponse: ScopeDeterminationResponse | null;
   isLoadingAI: boolean;
   aiError: string | null;
   determinateScope: (query: string) => Promise<void>;
   resetAI: () => void;
+  // Chat mode
+  chatMessages: ChatMessage[];
+  chatPhase: ChatPhase;
+  isChatLoading: boolean;
+  chatError: string | null;
+  chatScopeData: ScopeDeterminationResponse | null;
+  chatKeywords: string | null;
+  sendChatMessage: (content: string) => Promise<void>;
+  editChatMessage: (idx: number, newContent: string) => Promise<void>;
+  resendChatMessage: (idx: number) => Promise<void>;
+  resetChat: () => void;
+  resetAll: () => void;
+  // Chat History
+  chatHistory: import('@/hooks/use-chat-history').ConversationRecord[];
+  activeConvId: string | null;
+  loadConversation: (id: string) => void;
+  deleteConversation: (id: string) => void;
   // Language Selection
   selectedLang: 'IDN' | 'EN';
   setSelectedLang: React.Dispatch<React.SetStateAction<'IDN' | 'EN'>>;
