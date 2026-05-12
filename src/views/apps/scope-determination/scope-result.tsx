@@ -15,6 +15,7 @@ import {
   Copy,
   RefreshCw,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 import { ScopePagination } from "./scope-pagination";
@@ -65,7 +66,7 @@ const ScopeResultCards = ({
   selectedLang: "IDN" | "EN";
   highlight: (text: string, q: string) => React.ReactNode;
 }) => {
-  const [showSummary, setShowSummary] = useState(true);
+  const [showSummary, setShowSummary] = useState(false);
   const [activeResultId, setActiveResultId] = useState<string | null>(null);
   const [activeChildCode, setActiveChildCode] = useState<string | null>(null);
   const [activeChildLinkId, setActiveChildLinkId] = useState<string | null>(null);
@@ -73,6 +74,11 @@ const ScopeResultCards = ({
   const [showAllResults, setShowAllResults] = useState(false);
 
   const highlightQuery = response.corrected_query || response.query || "";
+
+  // Open summary by default on desktop
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) setShowSummary(true);
+  }, []);
 
   useEffect(() => {
     if (pendingScrollTo && showSummary) {
@@ -175,16 +181,17 @@ const ScopeResultCards = ({
     return null;
   };
 
-  const renderExplanationText = (text: string) => {
+  const renderExplanationText = (text: string, keyPrefix: string) => {
     if (!text) return null;
     const lines = text.split("\n");
     let currentStandard = "";
     return lines.map((line, idx) => {
+      const ek = `${keyPrefix}-${idx}`;
       const numberedHeaderMatch = line.match(/^\*\*(\d+\.\s+(.+?))\*\*\s*\((\d+)%\)/);
       if (numberedHeaderMatch) {
         currentStandard = numberedHeaderMatch[2].trim();
         return (
-          <div key={idx} className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700" data-standard={currentStandard}>
+          <div key={ek} className="mt-4 mb-2 pb-2 border-b border-gray-200 dark:border-gray-700" data-standard={currentStandard}>
             <div className="flex items-center justify-between">
               <h4 className="text-base font-bold text-blue-900 dark:text-blue-100">{numberedHeaderMatch[1]}</h4>
               <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-semibold rounded">
@@ -196,18 +203,18 @@ const ScopeResultCards = ({
       }
       const boldMatch = line.match(/^\*\*(.+?)\*\*/);
       if (boldMatch) {
-        return <p key={idx} className="font-bold text-lg text-gray-900 dark:text-gray-100 mt-4 mb-2">{boldMatch[1]}</p>;
+        return <p key={ek} className="font-bold text-lg text-gray-900 dark:text-gray-100 mt-4 mb-2">{boldMatch[1]}</p>;
       }
       if (line.startsWith("IAF:")) {
         return (
-          <div key={idx} className="mt-3 mb-2 pl-3 border-l-4 border-blue-400 dark:border-blue-600">
+          <div key={ek} className="mt-3 mb-2 pl-3 border-l-4 border-blue-400 dark:border-blue-600">
             <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{highlight(line, highlightQuery)}</p>
           </div>
         );
       }
       if (line.startsWith("NACE Code")) {
         return (
-          <div key={idx} className="mt-2 pl-6">
+          <div key={ek} className="mt-2 pl-6">
             <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{highlight(line, highlightQuery)}</p>
           </div>
         );
@@ -216,7 +223,7 @@ const ScopeResultCards = ({
       if (naceChildMatch) {
         const codes = naceChildMatch[1].split(",").map((c) => c.trim());
         return (
-          <div key={idx} className="mb-3 pl-6">
+          <div key={ek} className="mb-3 pl-6">
             <p className="text-sm text-gray-700 dark:text-gray-300">
               <span className="font-medium">NACE Child: </span>
               {codes.map((code, codeIdx) => {
@@ -225,7 +232,7 @@ const ScopeResultCards = ({
                   const linkId = `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(/[^a-zA-Z0-9-_]/g, "-");
                   const uniqueChildLinkId = `child-link-${result.standar || result.scope_key}-${result.iaf_code}-${result.nace?.code ?? "N/A"}-${result.nace_child.code}`.replace(/[^a-zA-Z0-9-_]/g, "-");
                   return (
-                    <span key={codeIdx}>
+                    <span key={`${ek}-code-${codeIdx}`}>
                       <button onClick={() => scrollToResult(linkId, code, uniqueChildLinkId)} className="inline-flex items-center px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60 font-medium text-xs transition-colors">
                         {code}
                       </button>
@@ -233,14 +240,14 @@ const ScopeResultCards = ({
                     </span>
                   );
                 }
-                return <span key={codeIdx}>{code}{codeIdx < codes.length - 1 && ", "}</span>;
+                return <span key={`${ek}-code-${codeIdx}`}>{code}{codeIdx < codes.length - 1 && ", "}</span>;
               })}
             </p>
           </div>
         );
       }
       if (line.trim()) {
-        return <p key={idx} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-1">{highlight(line, highlightQuery)}</p>;
+        return <p key={ek} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-1">{highlight(line, highlightQuery)}</p>;
       }
       return null;
     });
@@ -273,8 +280,55 @@ const ScopeResultCards = ({
 
   if (!response.hasil_pencarian?.length) {
     return (
-      <div className="p-4 text-center text-sm text-muted-foreground">
-        {selectedLang === "IDN" ? "Tidak ditemukan scope yang cocok." : "No matching scopes found."}
+      <div className="mt-4 space-y-4">
+        {/* Not Found Alert */}
+        <div className="rounded-lg border-2 border-red-400 bg-red-50 dark:bg-red-950/30 dark:border-red-600 p-5">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-6 w-6 text-red-500 dark:text-red-400 mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <p className="text-base font-bold text-red-700 dark:text-red-300">
+                {selectedLang === "IDN"
+                  ? "Scope Tidak Tersedia di PT TSI"
+                  : "Scope Not Available at PT TSI"}
+              </p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {selectedLang === "IDN"
+                  ? "PT TSI tidak memiliki akreditasi untuk ruang lingkup yang Anda cari. Berikut penjelasan dari sistem:"
+                  : "PT TSI does not hold accreditation for the scope you searched. See the system explanation below:"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Explanation for not found */}
+        {response.penjelasan && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/10 dark:border-amber-700 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm font-semibold text-amber-900 dark:text-amber-100">
+                {selectedLang === "IDN" ? "Penjelasan" : "Explanation"}
+              </span>
+            </div>
+            <div className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed">
+              {renderExplanationText(response.penjelasan, "nf-penjelasan")}
+            </div>
+          </div>
+        )}
+
+        {/* Saran / contact info */}
+        {response.saran && (
+          <div className="rounded-lg border border-purple-200 bg-purple-50 dark:bg-purple-900/10 dark:border-purple-700 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              <span className="text-sm font-semibold text-purple-900 dark:text-purple-100">
+                {selectedLang === "IDN" ? "Saran" : "Suggestion"}
+              </span>
+            </div>
+            <div className="text-sm text-purple-800 dark:text-purple-200 leading-relaxed">
+              {renderExplanationText(response.saran, "nf-saran")}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -368,77 +422,167 @@ const ScopeResultCards = ({
         </div>
 
         {/* Result cards */}
-        <div className="lg:col-span-2">
-          <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
-            <AccordionItem value="item-1" className="border-b-0" style={{ background: "white", padding: "5px", borderRadius: "10px" }}>
-              <AccordionTrigger style={{ textDecoration: "none", cursor: "pointer" }}>
-                <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800 dark:text-green-200">
-                    Top Recommendations ({filteredResults.length})
-                  </span>
+        <div className="lg:col-span-2 space-y-3">
+          {filteredResults.map((result, index) => {
+            const resultId = `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(/[^a-zA-Z0-9-_]/g, "-");
+            const isActive = activeResultId === resultId;
+            const displayScore = (result as ResultWithScore).calculatedScore || result.relevance_score || 0;
+            const scoreColor =
+              displayScore >= 85 ? "bg-green-500" :
+              displayScore >= 70 ? "bg-blue-500" :
+              displayScore >= 55 ? "bg-amber-500" : "bg-gray-400";
+            const scoreBg =
+              displayScore >= 85 ? "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800" :
+              displayScore >= 70 ? "bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800" :
+              displayScore >= 55 ? "bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-800" :
+                                   "bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700";
+            const scoreLabel =
+              displayScore >= 85 ? (selectedLang === "IDN" ? "Sangat Relevan" : "Highly Relevant") :
+              displayScore >= 70 ? (selectedLang === "IDN" ? "Relevan" : "Relevant") :
+              displayScore >= 55 ? (selectedLang === "IDN" ? "Cukup Relevan" : "Moderate") :
+                                   (selectedLang === "IDN" ? "Kurang Relevan" : "Low Relevance");
+
+            return (
+              <div
+                key={`result-${index}-${result.scope_key}-${result.nace_child?.code || "no-code"}`}
+                id={resultId}
+                onClick={() => {
+                  setActiveResultId(resultId);
+                  const childCode = result.nace_child?.code || null;
+                  setActiveChildCode(childCode);
+                  if (childCode) {
+                    const uniqueChildLinkId = `child-link-${result.standar || result.scope_key}-${result.iaf_code}-${result.nace?.code ?? "N/A"}-${childCode}`.replace(/[^a-zA-Z0-9-_]/g, "-");
+                    setActiveChildLinkId(uniqueChildLinkId);
+                  } else {
+                    setActiveChildLinkId(null);
+                  }
+                }}
+                className={`rounded-xl border-2 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md ${
+                  isActive ? "border-blue-500 shadow-lg shadow-blue-500/20" : "border-gray-200 dark:border-gray-700"
+                }`}
+              >
+                {/* ── Card Header ── */}
+                <div className={`flex flex-wrap items-center gap-2 px-3 sm:px-4 py-2.5 ${scoreBg} border-b border-inherit`}>
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white/80 dark:bg-black/20 border border-current flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
+                      {index + 1}
+                    </span>
+                    <span className="font-bold text-sm text-gray-900 dark:text-gray-100 truncate">
+                      {highlight(result.standar || result.scope_key, highlightQuery)}
+                    </span>
+                    {index === 0 && (
+                      <span className="flex-shrink-0 text-xs font-semibold px-1.5 py-0.5 rounded-full bg-yellow-400 text-yellow-900">
+                        ★ Best
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <div className={`w-2 h-2 rounded-full ${scoreColor}`} />
+                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                      {Math.round(displayScore)}%
+                    </span>
+                    <span className="text-xs text-gray-400 hidden xs:inline">·</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 hidden sm:inline">{scoreLabel}</span>
+                  </div>
                 </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-3 pt-4">
-                  {filteredResults.map((result, index) => {
-                    const resultId = `result-${result.scope_key}-${result.nace?.code}-${result.nace_child?.code}`.replace(/[^a-zA-Z0-9-_]/g, "-");
-                    const isActive = activeResultId === resultId;
-                    const displayScore = (result as ResultWithScore).calculatedScore || result.relevance_score || 0;
-                    return (
-                      <div
-                        key={`result-${index}-${result.scope_key}-${result.nace_child?.code || "no-code"}`}
-                        id={resultId}
-                        onClick={() => {
-                          setActiveResultId(resultId);
-                          const childCode = result.nace_child?.code || null;
-                          setActiveChildCode(childCode);
-                          if (childCode) {
-                            const uniqueChildLinkId = `child-link-${result.standar || result.scope_key}-${result.iaf_code}-${result.nace?.code ?? "N/A"}-${childCode}`.replace(/[^a-zA-Z0-9-_]/g, "-");
-                            setActiveChildLinkId(uniqueChildLinkId);
-                          } else {
-                            setActiveChildLinkId(null);
-                          }
-                        }}
-                        className={`rounded-lg p-3 bg-white dark:bg-gray-800 transition-all duration-300 cursor-pointer hover:shadow-md ${isActive ? "border-2 border-blue-500 shadow-lg shadow-blue-500/20" : "border border-gray-200 dark:border-gray-700"}`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="secondary">{highlight(result.scope_key, highlightQuery)}</Badge>
-                            <Badge variant={displayScore >= 80 ? "default" : displayScore >= 60 ? "secondary" : "outline"} className="text-xs">
-                              {Math.round(displayScore)}% relevansi
-                            </Badge>
-                            {displayScore >= 80 && <Badge variant="default" className="text-xs bg-green-500">⭐ Top Match</Badge>}
-                          </div>
-                          {index < 3 && <Badge variant="outline" className="text-xs text-yellow-600">#{index + 1}</Badge>}
-                        </div>
-                        <h5 className="font-medium text-sm mb-1">{highlight(result.standar || result.scope_key, highlightQuery)}</h5>
-                        {result.iaf_code && <p className="text-xs text-gray-600 dark:text-gray-400 mb-1"><strong>IAF:</strong> {highlight(result.iaf_code, highlightQuery)}</p>}
-                        {result.nace && <p className="text-xs text-gray-600 dark:text-gray-400 mb-1"><strong>NACE {result.nace.code}:</strong> {highlight(result.nace.description || "", highlightQuery)}</p>}
-                        {result.nace_child && <p className="text-xs text-gray-600 dark:text-gray-400 mb-2"><strong>NACE Child {result.nace_child.code}:</strong> {highlight(result.nace_child.title || "", highlightQuery)}</p>}
-                        {result.nace_child_details?.length > 0 && (
-                          <div className="mt-2 space-y-2">
-                            {result.nace_child_details.map((detail, idx) => {
-                              const isActiveChild = isActive && activeChildCode === result.nace_child?.code;
-                              return (
-                                <div key={`detail-${idx}-${detail.code}`} className={`p-2 rounded transition-all duration-300 ${isActiveChild ? "bg-blue-100 dark:bg-blue-900/60 border-2 border-blue-500 shadow-md" : "bg-blue-50 dark:bg-blue-900/20 border-2 border-transparent"}`}>
-                                  <p className="text-xs font-medium text-blue-900 dark:text-blue-100 mb-1"><strong>Code {detail.code}:</strong> {highlight(detail.title, highlightQuery)}</p>
-                                  <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">{highlight(detail.description, highlightQuery)}</p>
-                                  <Button size="sm" variant="outline" onClick={scrollToSummary} className="mt-2 w-full lg:hidden text-xs">
-                                    <ChevronUp className="h-3 w-3 mr-1" /> Kembali ke Summary
-                                  </Button>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
+
+                {/* ── IAF & NACE Info ── */}
+                <div className="bg-white dark:bg-gray-900 px-3 sm:px-4 py-3 space-y-2">
+                  {result.iaf_code && (
+                    <div className="flex items-start gap-2">
+                      <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 w-12 sm:w-16 pt-0.5">IAF</span>
+                      <span className="text-sm text-gray-800 dark:text-gray-200 font-medium break-words min-w-0">
+                        {highlight(result.iaf_code, highlightQuery)}
+                      </span>
+                    </div>
+                  )}
+                  {result.nace?.code && (
+                    <div className="flex items-start gap-2">
+                      <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 w-12 sm:w-16 pt-0.5">NACE</span>
+                      <div className="flex items-start gap-2 flex-wrap min-w-0">
+                        <span className="flex-shrink-0 px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold font-mono">
+                          {result.nace.code}
+                        </span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 break-words">
+                          {highlight(result.nace.description || "", highlightQuery)}
+                        </span>
                       </div>
-                    );
-                  })}
+                    </div>
+                  )}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+
+                {/* ── NACE Child Details Table ── */}
+                {result.nace_child_details?.length > 0 && (
+                  <div className="border-t border-gray-100 dark:border-gray-800">
+                    <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800/60 flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        {selectedLang === "IDN" ? "Sub-Aktivitas" : "Sub-Activities"}
+                      </span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 font-semibold">
+                        {result.nace_child_details.length}
+                      </span>
+                    </div>
+
+                    {/* Mobile: list */}
+                    <div className="divide-y divide-gray-100 dark:divide-gray-800 lg:hidden">
+                      {result.nace_child_details.map((detail, idx) => (
+                        <div key={`detail-m-${idx}-${detail.code}`} className="px-3 sm:px-4 py-3 bg-white dark:bg-gray-900">
+                          <div className="flex items-start gap-2 mb-1 flex-wrap">
+                            <span className="flex-shrink-0 px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold font-mono">
+                              {detail.code}
+                            </span>
+                            <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 break-words min-w-0">
+                              {highlight(detail.title, highlightQuery)}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed break-words">
+                            {highlight(detail.description, highlightQuery)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Desktop: table */}
+                    <div className="hidden lg:block overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-100 dark:border-gray-800">
+                            <th className="px-4 py-2 text-left text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 w-20">Kode</th>
+                            <th className="px-4 py-2 text-left text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 w-52">Aktivitas</th>
+                            <th className="px-4 py-2 text-left text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Deskripsi</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50 dark:divide-gray-800/60 bg-white dark:bg-gray-900">
+                          {result.nace_child_details.map((detail, idx) => (
+                            <tr
+                              key={`detail-d-${idx}-${detail.code}`}
+                              className="hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors"
+                            >
+                              <td className="px-4 py-2.5 align-top">
+                                <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold font-mono whitespace-nowrap">
+                                  {detail.code}
+                                </span>
+                              </td>
+                              <td className="px-4 py-2.5 align-top">
+                                <span className="text-xs font-semibold text-gray-800 dark:text-gray-200 leading-snug">
+                                  {highlight(detail.title, highlightQuery)}
+                                </span>
+                              </td>
+                              <td className="px-4 py-2.5 align-top">
+                                <span className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                  {highlight(detail.description, highlightQuery)}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -452,7 +596,7 @@ const ScopeResultCards = ({
               Back <ChevronUp className="h-4 w-4" />
             </Button>
           </div>
-          <div className="space-y-1">{renderExplanationText(response.penjelasan)}</div>
+          <div className="space-y-1">{renderExplanationText(response.penjelasan, "exp-penjelasan")}</div>
         </div>
       )}
 
@@ -463,7 +607,7 @@ const ScopeResultCards = ({
             <Lightbulb className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             <span className="text-base font-semibold text-purple-900 dark:text-purple-100">Disclaimer</span>
           </div>
-          <div className="space-y-1">{renderExplanationText(response.saran)}</div>
+          <div className="space-y-1">{renderExplanationText(response.saran, "exp-saran")}</div>
         </div>
       )}
     </div>
@@ -472,25 +616,184 @@ const ScopeResultCards = ({
 
 // ─── Chat Message Bubble ───────────────────────────────────────────────────────
 const renderInline = (text: string) => {
-  const parts = text.split(/(\*\*[^*]+\*\*|_[^_]+_)/g);
+  const parts = text.split(/(\*\*[^*]+\*\*|_[^_]+_|`[^`]+`)/g);
   return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) return <strong key={i}>{part.slice(2, -2)}</strong>;
-    if (part.startsWith("_") && part.endsWith("_")) return <em key={i}>{part.slice(1, -1)}</em>;
+    if (part.startsWith("**") && part.endsWith("**"))
+      return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+    if (part.startsWith("_") && part.endsWith("_"))
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    if (part.startsWith("`") && part.endsWith("`"))
+      return <code key={i} className="px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs font-mono">{part.slice(1, -1)}</code>;
     return <span key={i}>{part}</span>;
   });
 };
 
+const parseTableRow = (line: string): string[] =>
+  line.split("|").slice(1, -1).map((c) => c.trim());
+
+const isSeparatorRow = (line: string): boolean =>
+  /^\|[\s\-:|]+\|$/.test(line.trim());
+
+const renderTable = (tableLines: string[], key: string) => {
+  const headerCells = parseTableRow(tableLines[0]);
+  const dataLines = tableLines.slice(isSeparatorRow(tableLines[1] ?? "") ? 2 : 1);
+
+  return (
+    <div key={key} className="my-3 overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 text-sm">
+      <table className="w-full">
+        <thead className="bg-blue-50 dark:bg-blue-900/30">
+          <tr>
+            {headerCells.map((h, i) => (
+              <th key={i} className="px-3 py-2 text-left text-xs font-bold text-blue-900 dark:text-blue-100 border-b border-gray-200 dark:border-gray-700 whitespace-nowrap">
+                {renderInline(h)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+          {dataLines.map((row, ri) => (
+            <tr key={ri} className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors">
+              {parseTableRow(row).map((cell, ci) => (
+                <td key={ci} className="px-3 py-2 text-xs text-gray-700 dark:text-gray-300 align-top leading-relaxed">
+                  {renderInline(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const renderMessageContent = (content: string) => {
   const lines = content.split("\n");
-  return lines.map((line, idx) => {
-    if (!line.trim()) return <br key={idx} />;
-    if (line.trim() === "---") return <hr key={idx} className="my-2 border-gray-200 dark:border-gray-600" />;
-    return (
-      <p key={idx} className="leading-relaxed mb-0.5">
-        {renderInline(line)}
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+  let k = 0; // single counter — guaranteed unique across all element types
+
+  const nextKey = () => `mc-${k++}`;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // ─ Markdown table ─
+    if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i]);
+        i++;
+      }
+      if (tableLines.length >= 1) {
+        elements.push(renderTable(tableLines, nextKey()));
+      }
+      continue;
+    }
+
+    // ─ Horizontal rule ─
+    if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+      elements.push(<hr key={nextKey()} className="my-3 border-gray-200 dark:border-gray-700" />);
+      i++; continue;
+    }
+
+    // ─ Empty line ─
+    if (!trimmed) {
+      elements.push(<div key={nextKey()} className="h-1.5" />);
+      i++; continue;
+    }
+
+    // ─ Heading (## or ###) ─
+    const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      const cls = level === 1
+        ? "text-base font-bold text-gray-900 dark:text-gray-100 mt-3 mb-1"
+        : level === 2
+        ? "text-sm font-bold text-gray-800 dark:text-gray-200 mt-2 mb-1"
+        : "text-xs font-bold text-gray-700 dark:text-gray-300 mt-2 mb-0.5";
+      elements.push(<p key={nextKey()} className={cls}>{renderInline(headingMatch[2])}</p>);
+      i++; continue;
+    }
+
+    // ─ Bold-only line acting as heading ─
+    const boldLineMatch = trimmed.match(/^\*\*(.+?)\*\*\s*:?\s*$/);
+    if (boldLineMatch) {
+      elements.push(
+        <p key={nextKey()} className="text-sm font-bold text-gray-900 dark:text-gray-100 mt-3 mb-1">
+          {boldLineMatch[1]}
+        </p>
+      );
+      i++; continue;
+    }
+
+    // ─ Bullet list (•, -, *) ─
+    const bulletMatch = trimmed.match(/^([•\-\*])\s+(.+)$/);
+    if (bulletMatch) {
+      const listItems: string[] = [];
+      while (i < lines.length && /^([•\-\*])\s+/.test(lines[i].trim())) {
+        listItems.push(lines[i].trim().replace(/^[•\-\*]\s+/, ""));
+        i++;
+      }
+      const ulKey = nextKey();
+      elements.push(
+        <ul key={ulKey} className="my-1.5 space-y-1 pl-4">
+          {listItems.map((item, li) => (
+            <li key={`${ulKey}-${li}`} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400 dark:bg-blue-500 flex-shrink-0" />
+              <span>{renderInline(item)}</span>
+            </li>
+          ))}
+        </ul>
+      );
+      continue;
+    }
+
+    // ─ Numbered list ─
+    const numberedMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
+    if (numberedMatch) {
+      const listItems: { num: string; text: string }[] = [];
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+        const m = lines[i].trim().match(/^(\d+)\.\s+(.+)$/);
+        if (m) listItems.push({ num: m[1], text: m[2] });
+        i++;
+      }
+      const olKey = nextKey();
+      elements.push(
+        <ol key={olKey} className="my-1.5 space-y-1 pl-2">
+          {listItems.map((item, li) => (
+            <li key={`${olKey}-${li}`} className="flex items-start gap-2.5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center justify-center mt-0.5">
+                {item.num}
+              </span>
+              <span>{renderInline(item.text)}</span>
+            </li>
+          ))}
+        </ol>
+      );
+      continue;
+    }
+
+    // ─ Italic note line (_text_) ─
+    if (trimmed.startsWith("_") && trimmed.endsWith("_")) {
+      elements.push(
+        <p key={nextKey()} className="text-xs text-gray-500 dark:text-gray-400 italic leading-relaxed mt-1">
+          {renderInline(trimmed)}
+        </p>
+      );
+      i++; continue;
+    }
+
+    // ─ Default paragraph ─
+    elements.push(
+      <p key={nextKey()} className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+        {renderInline(trimmed)}
       </p>
     );
-  });
+    i++;
+  }
+
+  return elements;
 };
 
 // ─── Question Card (Claude-style) — exported for bottom-sheet use ─────────────
@@ -591,7 +894,7 @@ export const QuestionCard = ({
       </div>
 
       {/* Option rows */}
-      <div className="divide-y divide-blue-100 dark:divide-blue-800/50">
+      <div className="divide-y divide-blue-100 dark:divide-blue-800/50 overflow-y-auto max-h-[260px]">
         {mainOptions.map((option, idx) => (
           <button
             key={idx}
@@ -730,7 +1033,7 @@ const UserBubble = ({
 
   return (
     <div className="flex justify-end mb-4">
-      <div className="max-w-[80%]">
+      <div className="max-w-[85%] sm:max-w-[80%] min-w-0">
         {/* Action bar — visible on hover */}
         <div className="flex justify-end gap-0.5 mb-1 transition-opacity duration-150">
           <button
@@ -778,15 +1081,15 @@ const AIBubble = ({ message }: { message: ChatMessage }) => {
   };
 
   return (
-    <div className="flex items-start gap-3 mb-4">
+    <div className="flex items-start gap-2 sm:gap-3 mb-4">
       <img
         src="/images/tsi-logo.png"
         alt="TSI"
-        className="w-8 h-8 rounded-full object-contain flex-shrink-0 mt-1 border border-gray-200 bg-white p-0.5"
+        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-contain flex-shrink-0 mt-1 border border-gray-200 bg-white p-0.5"
       />
-      <div className="flex-1">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm px-4 py-3 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div className="text-sm text-gray-800 dark:text-gray-200">
+      <div className="flex-1 min-w-0">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm px-3 sm:px-4 py-3 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+          <div className="text-sm text-gray-800 dark:text-gray-200 break-words">
             {renderMessageContent(message.content)}
           </div>
         </div>
@@ -917,7 +1220,7 @@ export const ScopeResult = () => {
 
         {/* ── Direct mode results (quick chips) ── */}
         {isDirectMode && (
-          <div className="mb-6 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+          <div className="mb-6 p-3 sm:p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 overflow-hidden">
             <div className="flex items-center gap-2 mb-4 flex-wrap">
               <Bot className="h-5 w-5 text-blue-600" />
               <h3 className="font-semibold text-blue-900 dark:text-blue-100">Scope Determination</h3>

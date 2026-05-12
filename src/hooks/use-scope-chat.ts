@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { ChatMessage, ChatPhase, ScopeDeterminationResponse } from '@/types/scope';
 
 interface UseScopeChatResult {
@@ -13,6 +13,7 @@ interface UseScopeChatResult {
   resendChatMessage: (idx: number, selectedLang?: 'IDN' | 'EN') => Promise<void>;
   loadMessages: (messages: ChatMessage[], keywords: string | null) => void;
   resetChat: () => void;
+  stopChat: () => void;
 }
 
 export const useScopeChat = (): UseScopeChatResult => {
@@ -22,9 +23,14 @@ export const useScopeChat = (): UseScopeChatResult => {
   const [chatError, setChatError] = useState<string | null>(null);
   const [chatScopeData, setChatScopeData] = useState<ScopeDeterminationResponse | null>(null);
   const [chatKeywords, setChatKeywords] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const callAPI = useCallback(
     async (messagesToSend: ChatMessage[], selectedLang: 'IDN' | 'EN') => {
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       setIsChatLoading(true);
       setChatError(null);
       try {
@@ -32,6 +38,7 @@ export const useScopeChat = (): UseScopeChatResult => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: messagesToSend }),
+          signal: controller.signal,
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: 'Unknown error' }));
@@ -44,10 +51,9 @@ export const useScopeChat = (): UseScopeChatResult => {
         if (data.phase === 'complete') {
           setChatScopeData(data.scope_data || null);
           setChatKeywords(data.keywords_used || null);
-        } else {
-          // Keep existing keywords if already found (follow-up conversation)
         }
       } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         setChatError(err instanceof Error ? err.message : 'Unexpected error');
       } finally {
         setIsChatLoading(false);
@@ -102,7 +108,15 @@ export const useScopeChat = (): UseScopeChatResult => {
     setChatError(null);
   }, []);
 
+  const stopChat = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsChatLoading(false);
+  }, []);
+
   const resetChat = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
     setChatMessages([]);
     setChatPhase('idle');
     setIsChatLoading(false);
@@ -123,5 +137,6 @@ export const useScopeChat = (): UseScopeChatResult => {
     resendChatMessage,
     loadMessages,
     resetChat,
+    stopChat,
   };
 };
