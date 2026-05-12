@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { X, Send, RotateCcw } from "lucide-react";
+import { X, Send, Square } from "lucide-react";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 
 export const ScopeHeader = () => {
@@ -17,6 +17,7 @@ export const ScopeHeader = () => {
     chatMessages,
     chatKeywords,
     sendChatMessage,
+    stopChat,
     resetAll,
     selectedLang,
   } = useScopeDeterminationContext();
@@ -112,16 +113,16 @@ export const ScopeHeader = () => {
               aria-label="Chat input"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-              {/* Reset button (when chat is active) */}
-              {isChatActive && (
+              {/* Stop button (when loading) */}
+              {isLoading && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={handleReset}
-                  title={selectedLang === "IDN" ? "Mulai ulang" : "Start over"}
-                  className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground"
+                  onClick={stopChat}
+                  title={selectedLang === "IDN" ? "Hentikan" : "Stop"}
+                  className="cursor-pointer h-8 w-8 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
                 >
-                  <RotateCcw className="h-4 w-4" />
+                  <Square className="h-4 w-4 fill-current" />
                 </Button>
               )}
 

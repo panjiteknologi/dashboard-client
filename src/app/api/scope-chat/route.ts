@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import scopeTSI from '@/lib/scope_tsi.json';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -15,26 +16,14 @@ type HasilPencarian = {
   nace_child_details: NaceChildDetail[];
   relevance_score: number;
 };
-type ScopeData = { hasil_pencarian: HasilPencarian[]; query: string };
+type ScopeData = {
+  hasil_pencarian: HasilPencarian[];
+  query: string;
+  penjelasan?: string;
+  saran?: string;
+};
 
-// Detect language from user messages — Indonesian markers
-function detectLang(messages: ChatMessage[]): 'IDN' | 'EN' {
-  const userText = messages
-    .filter((m) => m.role === 'user')
-    .map((m) => m.content)
-    .join(' ')
-    .toLowerCase();
-
-  const idnMarkers = [
-    'saya', 'kami', 'perusahaan', 'bisnis', 'usaha', 'bergerak', 'produk', 'jasa',
-    'apa', 'yang', 'dan', 'atau', 'untuk', 'dengan', 'adalah', 'ini', 'itu',
-    'di', 'ke', 'dari', 'pada', 'tidak', 'bisa', 'mau', 'ada', 'sudah', 'akan',
-    'bagaimana', 'mengapa', 'berapa', 'kapan', 'apakah',
-  ];
-
-  const matchCount = idnMarkers.filter((w) => userText.includes(w)).length;
-  return matchCount >= 2 ? 'IDN' : 'EN';
-}
+const TSI_STANDARDS = Object.keys(scopeTSI.scope_reference);
 
 async function callAI(
   systemPrompt: string,
@@ -43,7 +32,7 @@ async function callAI(
 ): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const apiUrl = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-  const model = process.env.OPENROUTER_MODEL || 'openai/gpt-oss-120b';
+  const model = process.env.OPENROUTER_FAST_MODEL || 'openai/gpt-4o-mini';
 
   if (!apiKey) throw new Error('OPENROUTER_API_KEY is missing');
 
@@ -77,9 +66,51 @@ async function callAI(
 
 function formatScopeMessage(scopeData: ScopeData | null, isIDN: boolean): string {
   if (!scopeData || !scopeData.hasil_pencarian?.length) {
-    return isIDN
-      ? '❌ Maaf, saya tidak menemukan scope sertifikasi yang cocok. Coba deskripsikan aktivitas bisnis Anda dengan lebih spesifik.'
-      : '❌ Sorry, I could not find matching certification scopes. Please describe your business activities more specifically.';
+    const standardList = TSI_STANDARDS.map((s) => `• **${s}**`).join('\n');
+
+    if (isIDN) {
+      const aiExplanation = scopeData?.penjelasan
+        ? `\n\n${scopeData.penjelasan.split('\n')[0]}`
+        : '';
+      return [
+        `⚠️ **Scope Belum Tersedia di PT TSI**`,
+        ``,
+        `Berdasarkan informasi yang Anda berikan, saat ini **PT TSI belum memiliki akreditasi** untuk ruang lingkup sertifikasi tersebut.${aiExplanation}`,
+        ``,
+        `---`,
+        `📋 **Standar yang tersedia di PT TSI saat ini:**`,
+        standardList,
+        ``,
+        `---`,
+        `💡 **Langkah yang dapat Anda lakukan:**`,
+        `1. Periksa apakah aktivitas bisnis Anda masuk dalam salah satu standar di atas`,
+        `2. Coba deskripsikan ulang dengan kata kunci yang berbeda`,
+        `3. Hubungi tim PT TSI secara langsung untuk konsultasi lebih lanjut`,
+        ``,
+        `📌 _Ruang lingkup akreditasi PT TSI dapat berkembang seiring waktu. Untuk informasi terkini, silakan konfirmasi langsung ke PT TSI._`,
+      ].join('\n');
+    } else {
+      const aiExplanation = scopeData?.penjelasan
+        ? `\n\n${scopeData.penjelasan.split('\n')[0]}`
+        : '';
+      return [
+        `⚠️ **Scope Not Yet Available at PT TSI**`,
+        ``,
+        `Based on the information you provided, **PT TSI does not currently hold accreditation** for that certification scope.${aiExplanation}`,
+        ``,
+        `---`,
+        `📋 **Standards currently available at PT TSI:**`,
+        standardList,
+        ``,
+        `---`,
+        `💡 **Suggested next steps:**`,
+        `1. Check if your business activities fall under one of the standards listed above`,
+        `2. Try rephrasing your description with different keywords`,
+        `3. Contact PT TSI directly for a consultation`,
+        ``,
+        `📌 _PT TSI's accreditation scope may expand over time. Please confirm directly with PT TSI for the latest information._`,
+      ].join('\n');
+    }
   }
 
   const [primary, ...rest] = scopeData.hasil_pencarian;
@@ -130,10 +161,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY is missing' }, { status: 500 });
     }
 
-    // Auto-detect language from user messages
-    const detectedLang = detectLang(messages);
-    const isIDN = detectedLang === 'IDN';
-
     const userMsgCount = messages.filter((m) => m.role === 'user').length;
     const mustConclude = userMsgCount >= 2;
 
@@ -141,70 +168,63 @@ export async function POST(request: NextRequest) {
       (m) => m.role === 'assistant' && m.content.includes('NACE') && m.content.includes('IAF')
     );
 
-    const systemPrompt = isIDN
-      ? `Kamu adalah Konsultan Ruang Lingkup Sertifikasi dari PT TSI (TSI Sertifikasi Internasional). Tugasmu membantu pengguna menentukan scope sertifikasi ISO yang tepat. Deteksi bahasa dari input user dan SELALU balas dalam bahasa yang sama.
+    const tsiStandardList = TSI_STANDARDS.join(', ');
 
-INSTRUKSI:
-1. Pada pesan pertama user, ajukan TEPAT 1-2 pertanyaan klarifikasi singkat. Untuk setiap pertanyaan, WAJIB sertakan pilihan jawaban bernomor seperti contoh:
+    const systemPrompt = `You are a Certification Scope Consultant from PT TSI (TSI Sertifikasi Internasional), a certification body in Indonesia.
+Your job is to help users identify the correct certification scope, ONLY from standards that PT TSI holds accreditation for.
 
+⚠️ PT TSI AVAILABLE STANDARDS:
+${tsiStandardList}
+
+ABSOLUTE RESTRICTIONS:
+- NEVER recommend or mention any standard not in the list above
+- NEVER fabricate standards (e.g. ISO 50001, ISO 31000, ISO 13485) if not in the list
+- If asked about an unlisted standard, clearly state PT TSI does not hold that accreditation
+
+LANGUAGE RULE:
+- Automatically detect the language the user is writing in (Indonesian or English or other)
+- Respond entirely in that same language
+- When you output KEYWORDS/SUMMARY tags, you MUST also output a LANG tag: LANG:IDN (for Indonesian) or LANG:EN (for English/other)
+
+CONVERSATION FLOW:
+1. On the user's first message, ask EXACTLY 1-2 short clarifying questions. For each question, provide numbered answer choices (5-7 options, last one always "Lainnya (jelaskan)" / "Other (describe)"):
+
+   Example (Indonesian):
    Apa produk/jasa utama perusahaan Anda?
    1. Makanan & Minuman
-   2. Tekstil & Pakaian
-   3. Konstruksi & Bangunan
-   4. Teknologi Informasi & Software
-   5. Manufaktur Logam & Mesin
+   2. Konstruksi & Bangunan
+   3. Teknologi Informasi & Software
+   4. Manufaktur Logam & Mesin
+   5. Pertanian & Perkebunan
    6. Lainnya (jelaskan)
 
-   ATURAN PILIHAN:
-   - Selalu sertakan 5-7 pilihan relevan berdasarkan konteks percakapan
-   - Pilihan terakhir selalu "Lainnya (jelaskan)" atau "Lainnya (ketik jawaban)"
-   - Format WAJIB: angka titik spasi teks (contoh: "1. Makanan & Minuman")
+   CHOICE RULES:
+   - Always provide 5-7 relevant options based on the context
+   - Last option is always "Other (describe)" in the user's language
+   - Format: number dot space text
 
-2. Setelah mendapat cukup informasi, tulis ringkasan singkat, lalu di baris terakhir:
-   KEYWORDS:<keyword1>,<keyword2>,<keyword3>
-   SUMMARY:<deskripsi lengkap aktivitas bisnis dalam 1-2 kalimat>
-
-3. Jika sudah 2 putaran tanya-jawab, WAJIB simpulkan sekarang.
-${mustConclude && !hasShownResults ? '\n⚠️ WAJIB: Tulis KEYWORDS: dan SUMMARY: sekarang.' : ''}
-${hasShownResults ? `
-4. Hasil scope sudah ditampilkan. Lanjutkan percakapan secara natural:
-   - Jawab pertanyaan konfirmasi atau klarifikasi tentang scope yang ditemukan
-   - Jika user ingin mencari scope yang berbeda, output KEYWORDS: dan SUMMARY: baru
-   - Jangan tampilkan pilihan bernomor untuk follow-up, cukup jawab langsung` : ''}`
-      : `You are a Certification Scope Consultant from PT TSI. Help users find the right ISO certification scope. Detect the language from the user's input and ALWAYS reply in the same language.
-
-INSTRUCTIONS:
-1. On first message, ask EXACTLY 1-2 short clarifying questions. For each question, ALWAYS provide numbered answer choices:
-
-   What is your company's main product or service?
-   1. Food & Beverage
-   2. Textile & Apparel
-   3. Construction & Building
-   4. Information Technology & Software
-   5. Metal Manufacturing & Machinery
-   6. Other (please describe)
-
-   RULES FOR CHOICES:
-   - Always provide 5-7 relevant options based on conversation context
-   - Last option is always "Other (please describe)"
-   - Format REQUIRED: number dot space text
-
-2. After sufficient info, write a brief summary, then on the last lines:
+2. After gathering enough information, write a brief summary, then output on separate lines:
    KEYWORDS:<keyword1>,<keyword2>,<keyword3>
    SUMMARY:<complete business description in 1-2 sentences>
+   LANG:IDN
 
-3. If already 2 Q&A rounds, MUST conclude now.
-${mustConclude && !hasShownResults ? '\n⚠️ MANDATORY: Write KEYWORDS: and SUMMARY: now.' : ''}
+3. If already 2 Q&A rounds, MUST conclude with KEYWORDS/SUMMARY/LANG now.
+${mustConclude && !hasShownResults ? '\n⚠️ MANDATORY: Output KEYWORDS, SUMMARY, and LANG right now.' : ''}
 ${hasShownResults ? `
-4. Scope results have been shown. Continue the conversation naturally:
+4. Scope results have already been shown. Continue the conversation naturally:
    - Answer confirmation or clarification questions about the found scope
-   - If the user wants a different scope, output new KEYWORDS: and SUMMARY:
-   - Do not show numbered choices for follow-up, just answer directly` : ''}`;
+   - If user wants a different scope, output new KEYWORDS/SUMMARY/LANG
+   - Do NOT show numbered choices for follow-ups, just answer directly` : ''}`;
 
     const aiText = await callAI(systemPrompt, messages);
 
     const keywordsMatch = aiText.match(/KEYWORDS:([^\n\r]+)/i);
     const summaryMatch = aiText.match(/SUMMARY:([^\n\r]+)/i);
+    const langMatch = aiText.match(/LANG:(IDN|EN)/i);
+
+    // AI-detected language; default to IDN (PT TSI's primary market)
+    const responseLang = (langMatch?.[1]?.toUpperCase() as 'IDN' | 'EN') ?? 'IDN';
+    const isIDN = responseLang === 'IDN';
 
     if (keywordsMatch || summaryMatch) {
       const keywords = keywordsMatch
@@ -215,6 +235,7 @@ ${hasShownResults ? `
       const conversationMessage = aiText
         .replace(/KEYWORDS:[^\n\r]*/gi, '')
         .replace(/SUMMARY:[^\n\r]*/gi, '')
+        .replace(/LANG:[^\n\r]*/gi, '')
         .trim();
 
       const origin = new URL(request.url).origin;
@@ -223,11 +244,11 @@ ${hasShownResults ? `
         const scopeRes = await fetch(`${origin}/api/scope-determination`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: searchQuery, selectedLang: detectedLang }),
+          body: JSON.stringify({ query: searchQuery, selectedLang: responseLang }),
         });
         if (scopeRes.ok) scopeData = await scopeRes.json();
       } catch {
-        // scope search failed
+        // scope search failed — proceed without scope data
       }
 
       const scopeMessage = formatScopeMessage(scopeData, isIDN);

@@ -147,6 +147,7 @@ export const ScopeSearchProvider = ({
     resendChatMessage: resendChatMessageHook,
     loadMessages,
     resetChat,
+    stopChat,
   } = useScopeChat();
 
   // Chat history (localStorage)
@@ -444,6 +445,7 @@ export const ScopeSearchProvider = ({
     editChatMessage,
     resendChatMessage,
     resetChat,
+    stopChat,
     resetAll,
     // Chat History
     chatHistory,
