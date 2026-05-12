@@ -1,48 +1,48 @@
 export const AUDIT_STAGE_ORDER = [
-  "surveilance1",
-  "surveilance2",
+  "surveillance1",
+  "surveillance2",
   "recertification",
-  "surveilance3",
-  "surveilance4",
+  "surveillance3",
+  "surveillance4",
   "recertification2",
-  "surveilance5",
-  "surveilance6",
+  "surveillance5",
+  "surveillance6",
   "recertification3",
 ] as const;
 
 export const AuditStageCapitalize = [
-  "Surveilance 1",
-  "Surveilance 2",
+  "Surveillance 1",
+  "Surveillance 2",
   "Recertification",
-  "Surveilance 3",
-  "Surveilance 4",
+  "Surveillance 3",
+  "Surveillance 4",
   "Recertification 2",
-  "Surveilance 5",
-  "Surveilance 6",
+  "Surveillance 5",
+  "Surveillance 6",
   "Recertification 3",
 ] as const;
 
 export const AUDIT_STAGE_LABELS: Record<AuditStageApi, string> = {
-  surveilance1: "Surveilance 1",
-  surveilance2: "Surveilance 2",
+  surveillance1: "Surveillance 1",
+  surveillance2: "Surveillance 2",
   recertification: "Recertification",
-  surveilance3: "Surveilance 3",
-  surveilance4: "Surveilance 4",
+  surveillance3: "Surveillance 3",
+  surveillance4: "Surveillance 4",
   recertification2: "Recertification 2",
-  surveilance5: "Surveilance 5",
-  surveilance6: "Surveilance 6",
+  surveillance5: "Surveillance 5",
+  surveillance6: "Surveillance 6",
   recertification3: "Recertification 3",
 };
 
 export const AUDIT_STAGE_CAPITALIZE: Record<string, AuditStageApi> = {
-  "Surveillance 1": "surveilance1",
-  "Surveillance 2": "surveilance2",
+  "Surveillance 1": "surveillance1",
+  "Surveillance 2": "surveillance2",
   Recertification: "recertification",
-  "Surveillance 3": "surveilance3",
-  "Surveillance 4": "surveilance4",
+  "Surveillance 3": "surveillance3",
+  "Surveillance 4": "surveillance4",
   "Recertification 2": "recertification2",
-  "Surveillance 5": "surveilance5",
-  "Surveillance 6": "surveilance6",
+  "Surveillance 5": "surveillance5",
+  "Surveillance 6": "surveillance6",
   "Recertification 3": "recertification3",
 };
 
@@ -58,13 +58,12 @@ export const normalizeSurveillanceStage = (
   if (s.includes("recertification 2")) return "recertification2";
   if (s.includes("recertification")) return "recertification";
 
-  if (s.includes("6")) return "surveilance6";
-  if (s.includes("5")) return "surveilance5";
-  if (s.includes("4")) return "surveilance4";
-  if (s.includes("3")) return "surveilance3";
-  if (s.includes("2")) return "surveilance2";
-  if (s.includes("1")) return "surveilance1";
-
+  if (s.includes("6")) return "surveillance6";
+  if (s.includes("5")) return "surveillance5";
+  if (s.includes("4")) return "surveillance4";
+  if (s.includes("3")) return "surveillance3";
+  if (s.includes("2")) return "surveillance2";
+  if (s.includes("1")) return "surveillance1";
   return undefined;
 };
 
@@ -145,17 +144,17 @@ export interface AuditRequestCtx {
 
 export const getStageLabelAuditRequest = (stage: AuditStageApi) => {
   switch (stage) {
-    case "surveilance1":
-      return "Surveillance 1";
-    case "surveilance2":
-      return "Surveillance 2";
-    case "surveilance3":
+    case "surveillance1":
+      return "Surlaeillance 1";
+    case "surveillance2":
+      return "Surlveillance 2";
+    case "surveillance3":
       return "Surveillance 3";
-    case "surveilance4":
-      return "Surveillance 4";
-    case "surveilance5":
+    case "surveillance4":
+      return "Surlveillance 4";
+    case "surveillance5":
       return "Surveillance 5";
-    case "surveilance6":
+    case "surveillance6":
       return "Surveillance 6";
     case "recertification":
       return "Recertification 1";

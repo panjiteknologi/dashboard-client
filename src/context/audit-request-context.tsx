@@ -50,7 +50,7 @@ export function AuditRequestProvider({
   const isoOptions = useMemo(() => {
     const s = new Set<string>();
     (data ?? []).forEach((c) =>
-      c.standards?.forEach((i) => i && s.add(i as string))
+      c.standards?.forEach((i) => i && s.add(i as string)),
     );
     return Array.from(s);
   }, [data]);
@@ -70,7 +70,7 @@ export function AuditRequestProvider({
 
       const searchText =
         `${nomorSertifikat} ${partnerName} ${siteAddress} ${note} ${isoStandardNames.join(
-          " "
+          " ",
         )}`.toLowerCase();
 
       const queryHit = !q || searchText.includes(qlc);
@@ -85,10 +85,10 @@ export function AuditRequestProvider({
       const stageHit =
         stage === "all" ||
         (stage === "s1" &&
-          (stageSlugLc === "surveilance1" ||
+          (stageSlugLc === "surveillance1" ||
             stageSlugLc.includes("surveillance 1"))) ||
         (stage === "s2" &&
-          (stageSlugLc === "surveilance2" ||
+          (stageSlugLc === "surveillance2" ||
             stageSlugLc.includes("surveillance 2")));
 
       const isoHit =
@@ -188,10 +188,10 @@ export function AuditRequestProvider({
       setIsSubmitting(true);
 
       const res = await dataAuditRequestServices.deleteDataAuditRequest(
-        selectedRequest.id
+        selectedRequest.id,
       );
 
-      // console.log("✅ Berhasil menghapus data ini", res);
+      // ("✅ Berhasil menghapus data ini", res);
 
       toast.success("Berhasil menghapus data", {
         description: `Data pada sertifikat ${

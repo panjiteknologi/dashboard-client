@@ -4,185 +4,28 @@
 
 import React, { useCallback, useMemo, useState } from "react";
 import DataTable from "@/components/ui/data-table";
-import { findTahapan } from "@/utils/getNormalizeTahapan";
-import { getlatestProgress, getNextStep, getDataTable } from "@/utils/getProgressAndField";
+import {
+  findTahapan,
+  getProgressPercentage,
+  getProjectStatus,
+} from "@/utils/getNormalizeTahapan";
+import { getlatestProgress, getNextStep } from "@/utils/getProgressAndField";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { AllProject, StandardTypes } from "@/types/projects";
-// import { cx } from "@/utils";
-// import { THEME } from "@/constant";
 import { TrackingProgressView } from "./tracking-progress";
 import { AuditCertificateCard } from "./audit-status-certificate";
 import {
-  CheckCircle,
-  Clock,
-  AlertCircle,
   FileText,
   Calendar,
   TrendingUp,
   Building,
   User,
-  // Award
+  Clock,
 } from "lucide-react";
 
 const DEFAULT_FILE_NAME = "certificate.pdf";
-
-const getProjectStatus = (tahapan: string) => {
-  const normalizedTahapan = tahapan?.toLowerCase() || "";
-
-  if (normalizedTahapan.includes("sertifikat") || normalizedTahapan.includes("selesai")) {
-    return {
-      status: "Completed",
-      variant: "default" as const,
-      color: "bg-green-500",
-      icon: CheckCircle,
-      textColor: "text-green-700",
-      bgColor: "bg-green-100",
-      borderColor: "border-green-200",
-    };
-  }
-  if (normalizedTahapan.includes("survilance") || normalizedTahapan.includes("surveillance") || normalizedTahapan.startsWith("sv")) {
-    return {
-      status: "Surveillance",
-      variant: "secondary" as const,
-      color: "bg-blue-500",
-      icon: Clock,
-      textColor: "text-blue-700",
-      bgColor: "bg-blue-100",
-      borderColor: "border-blue-200",
-    };
-  }
-  if (normalizedTahapan.includes("audit")) {
-    return {
-      status: "In Audit",
-      variant: "secondary" as const,
-      color: "bg-orange-500",
-      icon: AlertCircle,
-      textColor: "text-orange-700",
-      bgColor: "bg-orange-100",
-      borderColor: "border-orange-200",
-    };
-  }
-  if (normalizedTahapan.includes("survei")) {
-    return {
-      status: "In Progress",
-      variant: "outline" as const,
-      color: "bg-yellow-500",
-      icon: Clock,
-      textColor: "text-yellow-700",
-      bgColor: "bg-yellow-100",
-      borderColor: "border-yellow-200",
-    };
-  }
-  return {
-    status: "In Progress",
-    variant: "outline" as const,
-    color: "bg-gray-500",
-    icon: Clock,
-    textColor: "text-gray-700",
-    bgColor: "bg-gray-100",
-    borderColor: "border-gray-200",
-  };
-};
-
-const getProgressPercentage = (data: AllProject, isISO = true) => {
-  try {
-    // Handle server-side rendering by using fallback logic
-    if (typeof window === 'undefined') {
-      const tahapan = data?.tahapan || '';
-      const progressMap: Record<string, number> = {
-        survei: 10,
-        audit1: 20,
-        audit2: 35,
-        surveilance1: 50,
-        surveilance2: 65,
-        surveilance3: 80,
-        surveilance4: 90,
-        surveilance5: 95,
-        survilance1: 50,
-        survilance2: 65,
-        survilance3: 80,
-        survilance4: 90,
-        survilance5: 95,
-        sv1: 50,
-        sv2: 65,
-        sv3: 80,
-        sv4: 90,
-        sv5: 95,
-        sertifikat: 100,
-        selesai: 100,
-      };
-      return progressMap[tahapan.toLowerCase()] || 0;
-    }
-
-    const steps = getDataTable(data) || [];
-
-    if (steps.length === 0) {
-      // Fallback to original logic if no steps
-      const tahapan = data?.tahapan || '';
-      const progressMap: Record<string, number> = {
-        survei: 10,
-        audit1: 20,
-        audit2: 35,
-        surveilance1: 50,
-        surveilance2: 65,
-        surveilance3: 80,
-        surveilance4: 90,
-        surveilance5: 95,
-        survilance1: 50,
-        survilance2: 65,
-        survilance3: 80,
-        survilance4: 90,
-        survilance5: 95,
-        sv1: 50,
-        sv2: 65,
-        sv3: 80,
-        sv4: 90,
-        sv5: 95,
-        sertifikat: 100,
-        selesai: 100,
-      };
-      return progressMap[tahapan.toLowerCase()] || 0;
-    }
-
-    // Count completed steps (steps that have tanggalStatus)
-    const completedSteps = steps.filter(step => step.tanggalStatus && step.tanggalStatus.trim() !== '').length;
-
-    // Calculate percentage based on completed steps
-    const percentage = Math.round((completedSteps / steps.length) * 100);
-
-    // Ensure max is 100
-    return Math.min(percentage, 100);
-  } catch (error) {
-    // Fallback to original logic if getDataTable fails
-    const tahapan = data?.tahapan || '';
-    const progressMap: Record<string, number> = {
-      survei: 10,
-      audit1: 20,
-      audit2: 35,
-      surveilance1: 50,
-      surveilance2: 65,
-      surveilance3: 80,
-      surveilance4: 90,
-      surveilance5: 95,
-      survilance1: 50,
-      survilance2: 65,
-      survilance3: 80,
-      survilance4: 90,
-      survilance5: 95,
-      sv1: 50,
-      sv2: 65,
-      sv3: 80,
-      sv4: 90,
-      sv5: 95,
-      sertifikat: 100,
-      selesai: 100,
-    };
-    return progressMap[tahapan.toLowerCase()] || 0;
-  }
-};
 
 const StatusBadge = ({ tahapan }: { tahapan: string }) => {
   const statusInfo = getProjectStatus(tahapan);
@@ -220,7 +63,7 @@ const useFileTools = () => {
             : "bin";
       return `certificate.${ext}`;
     },
-    []
+    [],
   );
 
   const detectMimeAndExtFromBase64 = (src: string) => {
@@ -281,7 +124,7 @@ const useFileTools = () => {
       const name = `certificate.${ext}`;
       return { objectUrl, name };
     },
-    [filenameFromHeadersOrUrl]
+    [filenameFromHeadersOrUrl],
   );
 
   return { getFromSource };
@@ -310,18 +153,14 @@ export const AuditStatusView = ({
   const { getFromSource } = useFileTools();
 
   const dataTransform = useMemo(() => {
-    const stat = {
-      surveilance1: "sv 1",
-      surveilance2: "sv 2",
-      surveilance3: "sv 3",
-      surveilance4: "sv 4",
-      surveilance5: "sv 5",
-    } as const;
+    return data.map((item) => {
+      const normalized = findTahapan(item.tahapan as string);
 
-    return data.map((item) => ({
-      ...item,
-      sv: stat[item?.tahapan as keyof typeof stat] ?? item?.tahapan,
-    }));
+      return {
+        ...item,
+        sv: normalized?.nama_tahapan ?? item.tahapan,
+      };
+    });
   }, [data]);
 
   const columns = useMemo<ColumnDef<AllProject>[]>(
@@ -367,7 +206,7 @@ export const AuditStatusView = ({
         filterFn: (row, columnId, filterValue) => {
           const values: string[] = row?.getValue(columnId);
           return values?.some((v) =>
-            v.toLowerCase().includes(filterValue.toLowerCase())
+            v.toLowerCase().includes(filterValue.toLowerCase()),
           );
         },
       },
@@ -430,26 +269,26 @@ export const AuditStatusView = ({
           );
         },
       },
-      // {
-      //   header: "Lead Time",
-      //   accessorKey: "lead_time_finish",
-      //   cell: ({ row }) => (
-      //     <div className="flex items-center gap-2">
-      //       <Clock className="h-3.5 w-3.5 text-blue-600" />
-      //       <span className="text-sm font-medium text-blue-900">
-      //         {row?.original?.lead_time_finish ?? "-"}
-      //       </span>
-      //     </div>
-      //   ),
-      // },
+      {
+        header: "Lead Time",
+        accessorKey: "lead_time_finish",
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Clock className="h-3.5 w-3.5 text-blue-600" />
+            <span className="text-sm font-medium text-blue-900">
+              {row?.original?.lead_time_finish ?? "-"}
+            </span>
+          </div>
+        ),
+      },
     ],
-    []
+    [],
   );
 
   const customGlobalFilter = (
     row: any,
     columnId: string,
-    filterValue: string
+    filterValue: string,
   ) => {
     const filter = filterValue.toLowerCase();
     const flatString = Object.values(row?.original)
@@ -486,7 +325,7 @@ export const AuditStatusView = ({
         setViewingIdx(null);
       }
     },
-    [getFromSource]
+    [getFromSource],
   );
 
   const downloadCertificate = useCallback(
@@ -531,7 +370,7 @@ export const AuditStatusView = ({
         setDownloadingIdx(null);
       }
     },
-    [getFromSource]
+    [getFromSource],
   );
 
   return (
