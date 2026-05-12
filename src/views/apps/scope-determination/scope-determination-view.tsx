@@ -42,20 +42,20 @@ const QuestionBottomSheet = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ease-out will-change-transform ${
+      className={`transition-all duration-300 ease-out will-change-transform flex-shrink-0 ${
         visible
-          ? "opacity-100 translate-y-0 max-h-[480px]"
-          : "opacity-0 translate-y-6 max-h-0 overflow-hidden"
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-6 max-h-0 overflow-hidden pointer-events-none"
       }`}
     >
-      <div className="px-4 pb-3">
+      <div className="px-4 pb-3 max-h-[420px] overflow-y-auto">
         <div className="max-w-4xl mx-auto w-full border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md overflow-hidden">
-        <QuestionCard
-          blocks={blocks}
-          onSubmit={(answer) => sendChatMessage(answer)}
-          disabled={isChatLoading}
-          selectedLang={selectedLang}
-        />
+          <QuestionCard
+            blocks={blocks}
+            onSubmit={(answer) => sendChatMessage(answer)}
+            disabled={isChatLoading}
+            selectedLang={selectedLang}
+          />
         </div>
       </div>
     </div>
@@ -64,7 +64,7 @@ const QuestionBottomSheet = () => {
 
 // ─── Main View ────────────────────────────────────────────────────────────────
 export const ScopeDeterminationView = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const {
     chatHistory,
     activeConvId,
@@ -74,30 +74,62 @@ export const ScopeDeterminationView = () => {
     selectedLang,
   } = useScopeDeterminationContext();
 
+  // Default open on desktop, closed on mobile
+  useEffect(() => {
+    if (window.innerWidth >= 1024) setSidebarOpen(true);
+  }, []);
+
+  const sidebarProps = {
+    history: chatHistory,
+    activeId: activeConvId,
+    onSelect: (id: string) => {
+      loadConversation(id);
+      if (window.innerWidth < 1024) setSidebarOpen(false);
+    },
+    onNew: () => {
+      resetAll();
+      if (window.innerWidth < 1024) setSidebarOpen(false);
+    },
+    onDelete: (id: string) => deleteConversation(id),
+    onClose: () => setSidebarOpen(false),
+    selectedLang,
+  };
+
   return (
     <div className="flex flex-col h-screen">
-      {/* Top area: sidebar + main content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar — in flow, pushes main content */}
+      <div className="flex flex-1 overflow-hidden relative">
+
+        {/* ── Mobile backdrop ── */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* ── Sidebar mobile: fixed overlay ── */}
         <div
-          className={`flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200 dark:border-gray-700 ${
+          className={`lg:hidden fixed top-0 left-0 h-full w-72 z-40 transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="w-72 h-full">
+            <ScopeSidebar {...sidebarProps} />
+          </div>
+        </div>
+
+        {/* ── Sidebar desktop: in-flow, pushes content ── */}
+        <div
+          className={`hidden lg:block flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden border-r border-gray-200 dark:border-gray-700 ${
             sidebarOpen ? "w-72" : "w-0"
           }`}
         >
           <div className="w-72 h-full">
-            <ScopeSidebar
-              history={chatHistory}
-              activeId={activeConvId}
-              onSelect={(id) => loadConversation(id)}
-              onNew={() => resetAll()}
-              onDelete={(id) => deleteConversation(id)}
-              onClose={() => setSidebarOpen(false)}
-              selectedLang={selectedLang}
-            />
+            <ScopeSidebar {...sidebarProps} />
           </div>
         </div>
 
-        {/* Main content — fills remaining space */}
+        {/* ── Main content ── */}
         <div className="flex-1 flex flex-col min-w-0" style={{ background: 'linear-gradient(to bottom, #ffffff 0%, #e0f2fe 60%, #bfdbfe 100%)' }}>
           <div className="flex-1 overflow-y-auto">
             <ScopeResult />
@@ -107,7 +139,7 @@ export const ScopeDeterminationView = () => {
         </div>
       </div>
 
-      {/* Toggle tab — fixed at right edge of sidebar */}
+      {/* ── Toggle tab ── */}
       <button
         onClick={() => setSidebarOpen((o) => !o)}
         style={{ left: sidebarOpen ? "288px" : "0px" }}
@@ -116,14 +148,20 @@ export const ScopeDeterminationView = () => {
             ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
             : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
         }`}
-        title={selectedLang === "IDN" ? "Riwayat percakapan" : "Conversation history"}
+        title={
+          sidebarOpen
+            ? (selectedLang === "IDN" ? "Tutup riwayat" : "Close history")
+            : (selectedLang === "IDN" ? "Buka riwayat" : "Open history")
+        }
       >
-        <PanelLeft className="h-3.5 w-3.5" />
+        <PanelLeft className={`h-3.5 w-3.5 transition-transform duration-300 ${sidebarOpen ? "rotate-180" : ""}`} />
         <span
           className="text-[8px] font-bold tracking-widest"
           style={{ writingMode: "vertical-rl" }}
         >
-          {selectedLang === "IDN" ? "RIWAYAT" : "HISTORY"}
+          {sidebarOpen
+            ? (selectedLang === "IDN" ? "TUTUP" : "CLOSE")
+            : (selectedLang === "IDN" ? "RIWAYAT" : "HISTORY")}
         </span>
       </button>
     </div>
