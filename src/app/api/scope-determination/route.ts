@@ -41,7 +41,7 @@ type AITSIResponse = {
 async function callGLM(messages: { role: string; content: string }[], options?: { json?: boolean; maxTokens?: number }) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const apiUrl = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-  const model = process.env.OPENROUTER_MODEL || 'openai/gpt-4o-mini';
+  const model = process.env.OPENROUTER_MODEL || 'openai/gpt-oss-120b';
 
   if (!apiKey) throw new Error('OPENROUTER_API_KEY is missing');
 
