@@ -98,6 +98,7 @@ export type ScopeCTX = {
   resendChatMessage: (idx: number) => Promise<void>;
   resetChat: () => void;
   resetAll: () => void;
+  stopChat: () => void;
   // Chat History
   chatHistory: import('@/hooks/use-chat-history').ConversationRecord[];
   activeConvId: string | null;
