@@ -13,6 +13,8 @@ import { useScopeListQuery } from "@/hooks/use-scope-list";
 import { useScopeLibraryQuery } from "@/hooks/use-scope-library";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useScopeDetermination } from "@/hooks/use-scope-determination";
+import { useScopeChat } from "@/hooks/use-scope-chat";
+import { useChatHistory } from "@/hooks/use-chat-history";
 import { ScopeCTX, ScopeItem, ScopeROW } from "@/types/scope";
 
 const ScopeSearchContext = createContext<ScopeCTX | null>(null);
@@ -119,7 +121,7 @@ export const ScopeSearchProvider = ({
 
   const { data: listResp, isLoading: isLoadingChips } = useScopeListQuery();
 
-  // AI Scope Determination
+  // AI Scope Determination (direct / quick-chip mode)
   const {
     response: aiResponse,
     isLoading: isLoadingAI,
@@ -128,10 +130,83 @@ export const ScopeSearchProvider = ({
     reset: resetAI
   } = useScopeDetermination();
 
-  // Wrapper function to pass selectedLang
   const determinateScope = useCallback(async (query: string) => {
     await determinateScopeHook(query, selectedLang);
   }, [selectedLang, determinateScopeHook]);
+
+  // Chat mode
+  const {
+    chatMessages,
+    chatPhase,
+    isChatLoading,
+    chatError,
+    chatScopeData,
+    chatKeywords,
+    sendChatMessage: sendChatMessageHook,
+    editChatMessage: editChatMessageHook,
+    resendChatMessage: resendChatMessageHook,
+    loadMessages,
+    resetChat,
+  } = useScopeChat();
+
+  // Chat history (localStorage)
+  const { history: chatHistory, upsert: upsertHistory, remove: removeHistory } = useChatHistory();
+  const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const activeConvIdRef = useRef<string | null>(null);
+  useEffect(() => { activeConvIdRef.current = activeConvId; }, [activeConvId]);
+
+  // Auto-save after every AI response (debounced)
+  useEffect(() => {
+    if (chatMessages.length === 0) return;
+    const timer = setTimeout(() => {
+      const id = upsertHistory(chatMessages, chatKeywords, selectedLang, activeConvIdRef.current);
+      if (!activeConvIdRef.current) {
+        setActiveConvId(id);
+        activeConvIdRef.current = id;
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatMessages, chatKeywords]);
+
+  const loadConversation = useCallback((id: string) => {
+    const rec = chatHistory.find((c) => c.id === id);
+    if (!rec) return;
+    resetAI();
+    loadMessages(rec.messages, rec.keywords);
+    setActiveConvId(id);
+    activeConvIdRef.current = id;
+    if (rec.lang) setSelectedLang(rec.lang);
+  }, [chatHistory, resetAI, loadMessages, setSelectedLang]);
+
+  const deleteConversation = useCallback((id: string) => {
+    removeHistory(id);
+    if (activeConvIdRef.current === id) {
+      resetAI();
+      resetChat();
+      setActiveConvId(null);
+      activeConvIdRef.current = null;
+    }
+  }, [removeHistory, resetAI, resetChat]);
+
+  const sendChatMessage = useCallback(async (content: string) => {
+    await sendChatMessageHook(content, selectedLang);
+  }, [selectedLang, sendChatMessageHook]);
+
+  const editChatMessage = useCallback(async (idx: number, newContent: string) => {
+    await editChatMessageHook(idx, newContent, selectedLang);
+  }, [selectedLang, editChatMessageHook]);
+
+  const resendChatMessage = useCallback(async (idx: number) => {
+    await resendChatMessageHook(idx, selectedLang);
+  }, [selectedLang, resendChatMessageHook]);
+
+  const resetAll = useCallback(() => {
+    resetAI();
+    resetChat();
+    setActiveConvId(null);
+    activeConvIdRef.current = null;
+  }, [resetAI, resetChat]);
 
   const rawList = useMemo<unknown[]>(
     () =>
@@ -352,12 +427,29 @@ export const ScopeSearchProvider = ({
     pageSize,
     highlight,
     exportCsv: exportCsvImpl,
-    // AI Scope Determination
+    // AI Scope Determination (direct / quick-chip mode)
     aiResponse,
     isLoadingAI,
     aiError,
     determinateScope,
     resetAI,
+    // Chat mode
+    chatMessages,
+    chatPhase,
+    isChatLoading,
+    chatError,
+    chatScopeData,
+    chatKeywords,
+    sendChatMessage,
+    editChatMessage,
+    resendChatMessage,
+    resetChat,
+    resetAll,
+    // Chat History
+    chatHistory,
+    activeConvId,
+    loadConversation,
+    deleteConversation,
     // Language Selection
     selectedLang,
     setSelectedLang,
@@ -368,10 +460,7 @@ export const ScopeSearchProvider = ({
   }, [debounced]);
 
   useEffect(() => {
-    // Reset AI response when language changes
-    if (aiResponse) {
-      resetAI();
-    }
+    resetAll();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLang]);
 
