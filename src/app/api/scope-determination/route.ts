@@ -75,6 +75,28 @@ function validateInTSI(standard: string, iafCode: number | string, naceCode: str
   return true;
 }
 
+const NACE_BASED_STANDARDS = ['ISO 9001', 'ISO 14001', 'ISO 45001'];
+
+// Find all NACE-based standards that have the given IAF code + NACE code combination
+function findNACEBasedMatches(iafCode: number | string, naceCode: string): string[] {
+  const ref = scopeTSI.scope_reference as Record<string, unknown>;
+  const iafNum = typeof iafCode === 'number' ? iafCode : parseInt(String(iafCode), 10);
+  const matching: string[] = [];
+  for (const std of NACE_BASED_STANDARDS) {
+    const entries = ref[std];
+    if (!Array.isArray(entries)) continue;
+    for (const scope of entries as Array<{ iaf_code: number; nace_codes: string[] }>) {
+      if (scope.iaf_code === iafNum) {
+        if (scope.nace_codes.some(p => naceCodeMatches(naceCode, p))) {
+          matching.push(std);
+          break;
+        }
+      }
+    }
+  }
+  return matching;
+}
+
 // --- Build compact TSI context with NACE codes inline ---
 function buildCompactTSIContext(): string {
   type ScopeRef = Record<string, unknown>;
@@ -313,9 +335,27 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
     }
 
     // --- Code-level validation against scope_tsi.json ---
-    const validatedResults: AIMatchedScope[] = aiResult.results
-      .filter(r => r.relevance_score >= 50)
-      .filter(r => validateInTSI(r.standard, r.iaf_code, r.nace_code));
+    // For NACE-based standards: if AI picked the wrong standard for a given IAF+NACE pair,
+    // find the correct standard(s) from the catalog as a cross-standard fallback.
+    const validatedResults: AIMatchedScope[] = [];
+    for (const r of aiResult.results.filter(r => r.relevance_score >= 50)) {
+      if (NACE_BASED_STANDARDS.includes(r.standard)) {
+        if (validateInTSI(r.standard, r.iaf_code, r.nace_code)) {
+          validatedResults.push(r);
+        } else {
+          const fallbackStds = findNACEBasedMatches(r.iaf_code, r.nace_code);
+          for (const std of fallbackStds) {
+            if (!validatedResults.some(v => v.standard === std && v.iaf_code === r.iaf_code && v.nace_code === r.nace_code)) {
+              validatedResults.push({ ...r, standard: std });
+            }
+          }
+        }
+      } else {
+        if (validateInTSI(r.standard, r.iaf_code, r.nace_code)) {
+          validatedResults.push(r);
+        }
+      }
+    }
 
     // AI suggested scopes but none passed TSI validation
     if (validatedResults.length === 0) {
