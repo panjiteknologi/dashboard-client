@@ -1,29 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import scopeTSI from '@/lib/scope_tsi.json';
+import { TSI_STANDARDS } from '@/lib/scope-formatter';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
 };
-
-type NaceChildDetail = { code: string; title: string; description: string };
-type HasilPencarian = {
-  scope_key: string;
-  standar?: string;
-  iaf_code: string;
-  nace: { code: string; description: string };
-  nace_child: { code: string; title: string };
-  nace_child_details: NaceChildDetail[];
-  relevance_score: number;
-};
-type ScopeData = {
-  hasil_pencarian: HasilPencarian[];
-  query: string;
-  penjelasan?: string;
-  saran?: string;
-};
-
-const TSI_STANDARDS = Object.keys(scopeTSI.scope_reference);
 
 async function callAI(
   systemPrompt: string,
@@ -62,91 +43,6 @@ async function callAI(
 
   const data = await res.json();
   return (data.choices?.[0]?.message?.content as string)?.trim() || '';
-}
-
-function formatScopeMessage(scopeData: ScopeData | null, isIDN: boolean): string {
-  if (!scopeData || !scopeData.hasil_pencarian?.length) {
-    const standardList = TSI_STANDARDS.map((s) => `• **${s}**`).join('\n');
-
-    if (isIDN) {
-      const aiExplanation = scopeData?.penjelasan
-        ? `\n\n${scopeData.penjelasan.split('\n')[0]}`
-        : '';
-      return [
-        `⚠️ **Scope Belum Tersedia di PT TSI**`,
-        ``,
-        `Berdasarkan informasi yang Anda berikan, saat ini **PT TSI belum memiliki akreditasi** untuk ruang lingkup sertifikasi tersebut.${aiExplanation}`,
-        ``,
-        `---`,
-        `📋 **Standar yang tersedia di PT TSI saat ini:**`,
-        standardList,
-        ``,
-        `---`,
-        `💡 **Langkah yang dapat Anda lakukan:**`,
-        `1. Periksa apakah aktivitas bisnis Anda masuk dalam salah satu standar di atas`,
-        `2. Coba deskripsikan ulang dengan kata kunci yang berbeda`,
-        `3. Hubungi tim PT TSI secara langsung untuk konsultasi lebih lanjut`,
-        ``,
-        `📌 _Ruang lingkup akreditasi PT TSI dapat berkembang seiring waktu. Untuk informasi terkini, silakan konfirmasi langsung ke PT TSI._`,
-      ].join('\n');
-    } else {
-      const aiExplanation = scopeData?.penjelasan
-        ? `\n\n${scopeData.penjelasan.split('\n')[0]}`
-        : '';
-      return [
-        `⚠️ **Scope Not Yet Available at PT TSI**`,
-        ``,
-        `Based on the information you provided, **PT TSI does not currently hold accreditation** for that certification scope.${aiExplanation}`,
-        ``,
-        `---`,
-        `📋 **Standards currently available at PT TSI:**`,
-        standardList,
-        ``,
-        `---`,
-        `💡 **Suggested next steps:**`,
-        `1. Check if your business activities fall under one of the standards listed above`,
-        `2. Try rephrasing your description with different keywords`,
-        `3. Contact PT TSI directly for a consultation`,
-        ``,
-        `📌 _PT TSI's accreditation scope may expand over time. Please confirm directly with PT TSI for the latest information._`,
-      ].join('\n');
-    }
-  }
-
-  const [primary, ...rest] = scopeData.hasil_pencarian;
-  const alternatives = rest.slice(0, 2);
-  const lines: string[] = [];
-
-  lines.push(isIDN ? '✅ **Rekomendasi Scope Sertifikasi:**\n' : '✅ **Recommended Certification Scope:**\n');
-  lines.push(`**${primary.standar || primary.scope_key}**`);
-  lines.push(`📋 IAF Code: ${primary.iaf_code}`);
-  lines.push(`🔢 NACE ${primary.nace.code}: ${primary.nace.description}`);
-  lines.push(`🔸 NACE Child ${primary.nace_child.code}: ${primary.nace_child.title}`);
-
-  if (primary.nace_child_details?.length) {
-    lines.push(isIDN ? '\nAktivitas yang tercakup:' : '\nCovered activities:');
-    primary.nace_child_details.slice(0, 3).forEach((d) => {
-      lines.push(`• **${d.code}** — ${d.title}`);
-    });
-  }
-
-  if (alternatives.length > 0) {
-    lines.push('');
-    lines.push(isIDN ? '---\n💡 **Alternatif yang relevan:**' : '---\n💡 **Relevant alternatives:**');
-    alternatives.forEach((r) => {
-      lines.push(`• **${r.standar || r.scope_key}** — NACE ${r.nace.code}, IAF ${r.iaf_code}`);
-    });
-  }
-
-  lines.push('');
-  lines.push('---');
-  lines.push(
-    isIDN
-      ? `📌 _Data dari database ruang lingkup sertifikasi PT TSI, mengacu pada standar **IAF** dan klasifikasi **NACE**. Penetapan final memerlukan verifikasi auditor._`
-      : `📌 _Data from PT TSI's certification scope database, referencing **IAF** and **NACE** standards. Final determination requires auditor verification._`
-  );
-
-  return lines.join('\n');
 }
 
 export async function POST(request: NextRequest) {
@@ -212,13 +108,34 @@ CONVERSATION FLOW:
    - Last option is always "Other (describe)" in the user's language
    - Format: number dot space text
 
-2. After gathering enough business activity information, determine internally which PT TSI standard(s) might apply, write a brief summary, then output on separate lines:
+2. After gathering enough business activity information, write a WELL-FORMATTED response using this exact structure:
+
+   **[Judul singkat tentang industri mereka]**
+
+   Paragraf 1 (2-3 kalimat): Jelaskan bidang usaha pengguna dan mengapa sertifikasi penting untuk industri mereka.
+
+   **Sertifikasi yang relevan:**
+   • **[Nama Standar 1]** — [1 kalimat alasan mengapa relevan]
+   • **[Nama Standar 2]** — [1 kalimat alasan mengapa relevan]
+   • (tambahkan jika ada yang relevan)
+
+   Kalimat penutup singkat yang mengalir ke hasil pencarian scope. (contoh: "Berikut hasil pencarian scope sertifikasi yang tersedia di PT TSI untuk bisnis Anda:")
+
+   THEN immediately after (no blank line), output:
    KEYWORDS:<keyword1>,<keyword2>,<keyword3>
    SUMMARY:<complete business description in 1-2 sentences>
    LANG:IDN
 
-3. If already 2 Q&A rounds, MUST conclude with KEYWORDS/SUMMARY/LANG now.
-${mustConclude && !hasShownResults ? '\n⚠️ MANDATORY: Output KEYWORDS, SUMMARY, and LANG right now.' : ''}
+   FORMATTING RULES:
+   - Use **bold** for standard names (ISO 9001, HACCP, etc.) and section headers
+   - Use bullet points (•) for listing standards
+   - Keep each bullet concise — max 1 sentence
+   - The closing sentence must naturally lead into the scope results shown below it
+   - Only mention standards from the PT TSI available list above
+   - Adapt language (IDN/EN) to match user's language
+
+3. If already 2 Q&A rounds, MUST conclude with explanation + KEYWORDS/SUMMARY/LANG now.
+${mustConclude && !hasShownResults ? '\n⚠️ MANDATORY: Write formatted explanation then output KEYWORDS, SUMMARY, and LANG right now.' : ''}
 ${hasShownResults ? `
 4. Scope results have already been shown. Continue the conversation naturally:
    - Answer confirmation or clarification questions about the found scope
@@ -231,9 +148,7 @@ ${hasShownResults ? `
     const summaryMatch = aiText.match(/SUMMARY:([^\n\r]+)/i);
     const langMatch = aiText.match(/LANG:(IDN|EN)/i);
 
-    // AI-detected language; default to IDN (PT TSI's primary market)
     const responseLang = (langMatch?.[1]?.toUpperCase() as 'IDN' | 'EN') ?? 'IDN';
-    const isIDN = responseLang === 'IDN';
 
     if (keywordsMatch || summaryMatch) {
       const keywords = keywordsMatch
@@ -247,34 +162,16 @@ ${hasShownResults ? `
         .replace(/LANG:[^\n\r]*/gi, '')
         .trim();
 
-      const origin = new URL(request.url).origin;
-      let scopeData: ScopeData | null = null;
-      try {
-        const scopeRes = await fetch(`${origin}/api/scope-determination`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: searchQuery, selectedLang: responseLang }),
-        });
-        if (scopeRes.ok) scopeData = await scopeRes.json();
-      } catch {
-        // scope search failed — proceed without scope data
-      }
-
-      const scopeMessage = formatScopeMessage(scopeData, isIDN);
-      const followUp = isIDN
-        ? '\n\nApakah scope di atas sudah sesuai? Silakan tanyakan jika ada yang ingin dikonfirmasi.'
-        : '\n\nDoes the scope above look right? Feel free to ask if you need any clarification.';
-      const finalMessage = (conversationMessage ? `${conversationMessage}\n\n${scopeMessage}` : scopeMessage) + followUp;
-
+      // Return AI text immediately + scope search info — frontend will fetch scope separately
       return NextResponse.json({
         phase: 'asking',
-        message: finalMessage,
+        chat_message: conversationMessage,
+        scope_query: { query: searchQuery, lang: responseLang },
         keywords_used: keywords,
-        scope_data: null,
       });
     }
 
-    return NextResponse.json({ phase: 'asking', message: aiText });
+    return NextResponse.json({ phase: 'asking', chat_message: aiText });
   } catch (error) {
     console.error('Scope Chat API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
