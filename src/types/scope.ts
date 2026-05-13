@@ -1,6 +1,7 @@
 export type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
+  scope_message?: string;
 };
 
 export type ChatPhase = 'idle' | 'asking' | 'complete';
@@ -90,6 +91,7 @@ export type ScopeCTX = {
   chatMessages: ChatMessage[];
   chatPhase: ChatPhase;
   isChatLoading: boolean;
+  isScopeLoading: boolean;
   chatError: string | null;
   chatScopeData: ScopeDeterminationResponse | null;
   chatKeywords: string | null;
