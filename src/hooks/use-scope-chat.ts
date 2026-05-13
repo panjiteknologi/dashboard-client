@@ -1,10 +1,12 @@
 import { useState, useCallback, useRef } from 'react';
 import { ChatMessage, ChatPhase, ScopeDeterminationResponse } from '@/types/scope';
+import { formatScopeMessage, ScopeData } from '@/lib/scope-formatter';
 
 interface UseScopeChatResult {
   chatMessages: ChatMessage[];
   chatPhase: ChatPhase;
   isChatLoading: boolean;
+  isScopeLoading: boolean;
   chatError: string | null;
   chatScopeData: ScopeDeterminationResponse | null;
   chatKeywords: string | null;
@@ -20,6 +22,7 @@ export const useScopeChat = (): UseScopeChatResult => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatPhase, setChatPhase] = useState<ChatPhase>('idle');
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isScopeLoading, setIsScopeLoading] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
   const [chatScopeData, setChatScopeData] = useState<ScopeDeterminationResponse | null>(null);
   const [chatKeywords, setChatKeywords] = useState<string | null>(null);
@@ -33,30 +36,75 @@ export const useScopeChat = (): UseScopeChatResult => {
 
       setIsChatLoading(true);
       setChatError(null);
+
       try {
+        // ── Phase 1: get AI conversational response ──────────────────────────
         const res = await fetch('/api/scope-chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ messages: messagesToSend }),
           signal: controller.signal,
         });
+
         if (!res.ok) {
           const err = await res.json().catch(() => ({ error: 'Unknown error' }));
           throw new Error(err.error || `HTTP ${res.status}`);
         }
+
         const data = await res.json();
-        const assistantMessage: ChatMessage = { role: 'assistant', content: data.message || '' };
+        const chatText: string = data.chat_message ?? data.message ?? '';
+
+        // Show AI text immediately
+        const assistantMessage: ChatMessage = { role: 'assistant', content: chatText };
         setChatMessages((prev) => [...prev, assistantMessage]);
-        setChatPhase(data.phase === 'complete' ? 'complete' : 'asking');
-        if (data.phase === 'complete') {
-          setChatScopeData(data.scope_data || null);
-          setChatKeywords(data.keywords_used || null);
+        setChatPhase('asking');
+        setIsChatLoading(false);
+
+        // ── Phase 2: fetch scope determination if needed ─────────────────────
+        if (data.scope_query) {
+          const { query, lang } = data.scope_query as { query: string; lang: 'IDN' | 'EN' };
+          const isIDN = lang === 'IDN';
+          const followUp = isIDN
+            ? '\n\n---\n💬 Apakah scope sertifikasi di atas sesuai dengan bisnis Anda? Jika ada pertanyaan atau ingin mencari scope lain, silakan tanyakan.'
+            : '\n\n---\n💬 Does the certification scope above match your business? Feel free to ask if you have questions or want to search for a different scope.';
+
+          setIsScopeLoading(true);
+          try {
+            const scopeRes = await fetch('/api/scope-determination', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query, selectedLang: lang }),
+              signal: controller.signal,
+            });
+
+            const scopeData: ScopeData | null = scopeRes.ok ? await scopeRes.json() : null;
+            const scopeMsg = formatScopeMessage(scopeData, isIDN) + followUp;
+
+            // Append scope_message to the last assistant message
+            setChatMessages((prev) => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last?.role === 'assistant') {
+                updated[updated.length - 1] = { ...last, scope_message: scopeMsg };
+              }
+              return updated;
+            });
+
+            if (data.keywords_used) setChatKeywords(data.keywords_used);
+          } catch (err) {
+            if (err instanceof Error && err.name === 'AbortError') return;
+            // Scope fetch failed — show without scope result, not a fatal error
+          } finally {
+            setIsScopeLoading(false);
+          }
+        } else if (data.keywords_used) {
+          setChatKeywords(data.keywords_used);
         }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') return;
         setChatError(err instanceof Error ? err.message : 'Unexpected error');
-      } finally {
         setIsChatLoading(false);
+        setIsScopeLoading(false);
       }
     },
     []
@@ -73,7 +121,6 @@ export const useScopeChat = (): UseScopeChatResult => {
     [chatMessages, callAPI]
   );
 
-  // Edit message at idx: replace it with new content, drop everything after, re-ask
   const editChatMessage = useCallback(
     async (idx: number, newContent: string, selectedLang: 'IDN' | 'EN' = 'IDN') => {
       if (!newContent.trim()) return;
@@ -87,7 +134,6 @@ export const useScopeChat = (): UseScopeChatResult => {
     [chatMessages, callAPI]
   );
 
-  // Resend message at idx: keep everything up to and including it, drop AI reply after, re-ask
   const resendChatMessage = useCallback(
     async (idx: number, selectedLang: 'IDN' | 'EN' = 'IDN') => {
       const updatedMessages = chatMessages.slice(0, idx + 1);
@@ -105,6 +151,7 @@ export const useScopeChat = (): UseScopeChatResult => {
     setChatKeywords(keywords);
     setChatScopeData(null);
     setIsChatLoading(false);
+    setIsScopeLoading(false);
     setChatError(null);
   }, []);
 
@@ -112,6 +159,7 @@ export const useScopeChat = (): UseScopeChatResult => {
     abortRef.current?.abort();
     abortRef.current = null;
     setIsChatLoading(false);
+    setIsScopeLoading(false);
   }, []);
 
   const resetChat = useCallback(() => {
@@ -120,6 +168,7 @@ export const useScopeChat = (): UseScopeChatResult => {
     setChatMessages([]);
     setChatPhase('idle');
     setIsChatLoading(false);
+    setIsScopeLoading(false);
     setChatError(null);
     setChatScopeData(null);
     setChatKeywords(null);
@@ -129,6 +178,7 @@ export const useScopeChat = (): UseScopeChatResult => {
     chatMessages,
     chatPhase,
     isChatLoading,
+    isScopeLoading,
     chatError,
     chatScopeData,
     chatKeywords,

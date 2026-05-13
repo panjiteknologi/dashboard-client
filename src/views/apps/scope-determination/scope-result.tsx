@@ -1071,11 +1071,70 @@ const UserBubble = ({
   );
 };
 
-const AIBubble = ({ message }: { message: ChatMessage }) => {
+const AIBubble = ({ message, isLatest }: { message: ChatMessage; isLatest: boolean }) => {
+  const fullText = message.content;
+  const hasScopeMsg = !!message.scope_message;
+
+  const [shownLen, setShownLen] = useState(!isLatest ? fullText.length : 0);
+  // For historical messages show scope immediately; for latest, wait until typewriter + scope arrives
+  const [scopeMounted, setScopeMounted] = useState(!isLatest && hasScopeMsg);
+  const [scopeVisible, setScopeVisible] = useState(!isLatest && hasScopeMsg);
   const [copied, setCopied] = useState(false);
 
+  // Typewriter animation — only for the latest message, runs once on mount
+  useEffect(() => {
+    if (!isLatest) return;
+
+    if (fullText.length === 0) {
+      if (hasScopeMsg) {
+        setScopeMounted(true);
+        requestAnimationFrame(() => requestAnimationFrame(() => setScopeVisible(true)));
+      }
+      return;
+    }
+
+    let current = 0;
+    const id = setInterval(() => {
+      current += 15;
+      if (current >= fullText.length) {
+        current = fullText.length;
+        clearInterval(id);
+        if (hasScopeMsg) {
+          setTimeout(() => {
+            setScopeMounted(true);
+            requestAnimationFrame(() => requestAnimationFrame(() => setScopeVisible(true)));
+          }, 200);
+        }
+      }
+      setShownLen(current);
+    }, 20);
+
+    return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // If this bubble is no longer the latest (new message arrived), show everything immediately
+  useEffect(() => {
+    if (!isLatest) {
+      setShownLen(fullText.length);
+      setScopeMounted(true);
+      setScopeVisible(true);
+    }
+  }, [isLatest, fullText.length]);
+
+  // scope_message arrives dynamically (phase 2 fetch completes) — trigger fade-in
+  useEffect(() => {
+    if (!message.scope_message || scopeMounted) return;
+    setScopeMounted(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => setScopeVisible(true)));
+  }, [message.scope_message, scopeMounted]);
+
+  const isTyping = isLatest && shownLen < fullText.length;
+  const displayedText = fullText.slice(0, shownLen);
+
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(message.content);
+    const text = [message.content, message.scope_message].filter(Boolean).join('\n\n');
+    await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -1089,11 +1148,28 @@ const AIBubble = ({ message }: { message: ChatMessage }) => {
       />
       <div className="flex-1 min-w-0">
         <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm px-3 sm:px-4 py-3 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+          {/* Conversational text with typewriter */}
           <div className="text-sm text-gray-800 dark:text-gray-200 break-words">
-            {renderMessageContent(message.content)}
+            {displayedText && renderMessageContent(displayedText)}
+            {isTyping && (
+              <span className="inline-block w-0.5 h-[14px] bg-gray-500 ml-0.5 animate-pulse align-middle" />
+            )}
           </div>
+
+          {/* Scope result — fades in after typewriter completes */}
+          {message.scope_message && scopeMounted && (
+            <div
+              className="border-t border-gray-100 dark:border-gray-700 mt-3 pt-3 transition-opacity duration-500"
+              style={{ opacity: scopeVisible ? 1 : 0 }}
+            >
+              <div className="text-sm text-gray-800 dark:text-gray-200 break-words">
+                {renderMessageContent(message.scope_message)}
+              </div>
+            </div>
+          )}
         </div>
-        {/* Action bar below bubble */}
+
+        {/* Action bar */}
         <div className="flex items-center gap-0.5 mt-1 transition-opacity duration-150">
           <button
             onClick={handleCopy}
@@ -1147,6 +1223,7 @@ export const ScopeResult = () => {
     chatMessages,
     chatPhase,
     isChatLoading,
+    isScopeLoading,
     chatError,
     chatKeywords,
     editChatMessage,
@@ -1253,6 +1330,8 @@ export const ScopeResult = () => {
                   <p className="text-xs text-muted-foreground">
                     {isChatLoading
                       ? selectedLang === "IDN" ? "Sedang menganalisis..." : "Analyzing..."
+                      : isScopeLoading
+                      ? selectedLang === "IDN" ? "Mencari scope..." : "Searching scope..."
                       : chatKeywords
                       ? selectedLang === "IDN" ? "✅ Scope ditemukan" : "✅ Scope found"
                       : selectedLang === "IDN" ? "Online" : "Online"}
@@ -1295,12 +1374,44 @@ export const ScopeResult = () => {
                     disabled={isChatLoading}
                   />
                 ) : (
-                  <AIBubble key={idx} message={msg} />
+                  <AIBubble key={idx} message={msg} isLatest={idx === chatMessages.length - 1} />
                 )
               )}
 
-              {/* Typing indicator */}
+              {/* AI response loading */}
               {isChatLoading && <TypingIndicator />}
+
+              {/* Scope search loading (phase 2) — prominent card */}
+              {isScopeLoading && !isChatLoading && (
+                <div className="flex items-start gap-2 sm:gap-3 mb-4 ml-0">
+                  <img
+                    src="/images/tsi-logo.png"
+                    alt="TSI"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-contain flex-shrink-0 mt-1 border border-gray-200 bg-white p-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1 flex-shrink-0">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                          <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                          <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                            {selectedLang === 'IDN' ? '🔍 Sedang mencari scope sertifikasi di PT TSI...' : '🔍 Searching certification scope at PT TSI...'}
+                          </p>
+                          <p className="text-xs text-blue-500 dark:text-blue-400 mt-0.5">
+                            {selectedLang === 'IDN'
+                              ? 'Harap tunggu, sistem sedang mencocokkan bisnis Anda dengan database akreditasi TSI.'
+                              : 'Please wait, the system is matching your business with the TSI accreditation database.'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div ref={bottomRef} />
