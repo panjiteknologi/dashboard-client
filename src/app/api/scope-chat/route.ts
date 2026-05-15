@@ -270,16 +270,19 @@ function buildKeywordResults(keywords: string, query: string, isIDN: boolean): F
   };
 }
 
-function buildFastScopeResults(aiText: string, query: string, isIDN: boolean): FastScopeResult | null {
+function buildFastScopeResults(aiText: string, query: string, isIDN: boolean, explicitCodes?: Set<number>): FastScopeResult | null {
   const ref = scopeTSI.scope_reference as Record<string, unknown>;
   const results: FastGroupedResult[] = [];
 
-  // Extract numeric IAF codes from AI response (e.g., "IAF 12", "IAF12")
-  const iafCodes = new Set<number>();
-  for (const m of aiText.matchAll(/IAF\s*(\d+)/gi)) {
-    const n = parseInt(m[1], 10);
-    if (!isNaN(n)) iafCodes.add(n);
-  }
+  // Use only explicit IAFCODES tag values when provided (avoids picking up codes from tables/lists in AI text)
+  const iafCodes: Set<number> = explicitCodes ?? (() => {
+    const s = new Set<number>();
+    for (const m of aiText.matchAll(/IAF\s*(\d+)/gi)) {
+      const n = parseInt(m[1], 10);
+      if (!isNaN(n)) s.add(n);
+    }
+    return s;
+  })();
 
   // Match each IAF code against NACE-based standards in scope_tsi.json
   for (const iafCode of iafCodes) {
@@ -393,6 +396,148 @@ function buildCompactCatalogForPrompt(): string {
   return lines.join('\n');
 }
 
+function hasQuestionBlock(text: string): boolean {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  for (let i = 0; i < lines.length - 1; i++) {
+    if (/^1\.\s+.+/.test(lines[i]) && /^2\.\s+.+/.test(lines[i + 1])) return true;
+  }
+  return false;
+}
+
+// Detect if user message describes a business specifically enough to trigger intake.
+// General questions ("apa itu ISO?", "saya punya usaha") go to AI first for conversational response.
+function isScopeQuery(text: string): boolean {
+  // Exclude general/info questions that don't describe a business
+  const isGeneralQuestion = /^\s*(apa|what|how|bagaimana|kenapa|why|siapa|who|kapan|when|berapa|mana|where)\b/i.test(text);
+  if (isGeneralQuestion) return false;
+
+  const hasBusinessActivity = /\b(pabrik|perusahaan|industri|industry|produk|layanan|service|jasa|nace|iaf|ea[\s-]?code|haccp|ispo|iscc|tentukan|determine|ruang.?lingkup|bergerak|bidang|manufaktur|produksi|pengolahan|pertanian|konstruksi|perdagangan|distribusi|repair|perbaikan|servis)\b/i.test(text);
+  const hasScopeRequest = /\b(scope|sertifikasi|certif|iso\s*\d)\b/i.test(text) && !/^\s*(apa|what|apakah|is\s+it|does)\b/i.test(text);
+  // "usaha" or "bisnis" only qualifies with enough context (5+ words)
+  const hasGenericWithContext = /\b(usaha|bisnis)\b/i.test(text) && text.trim().split(/\s+/).length >= 5;
+
+  return hasBusinessActivity || hasScopeRequest || hasGenericWithContext;
+}
+
+// Check if intake/clarifying questions have already been shown in this conversation.
+// Detects any previous assistant message that contained numbered-option question blocks.
+function intakeAlreadyShown(messages: ChatMessage[]): boolean {
+  return messages.some(m => m.role === 'assistant' && hasQuestionBlock(m.content));
+}
+
+async function generateIntakeQuestions(userQuery: string, isIDN: boolean): Promise<string> {
+  const intakePrompt = isIDN
+    ? `Kamu adalah asisten untuk menentukan scope sertifikasi ISO.
+
+Pengguna baru saja mendeskripsikan bisnis mereka:
+"${userQuery}"
+
+Tugasmu: buat formulir intake singkat (2-4 pertanyaan saja) untuk mengumpulkan informasi yang BELUM disebutkan user. Skip pertanyaan yang sudah terjawab dalam deskripsi di atas.
+
+Pertanyaan standar yang perlu dicakup (hanya tanyakan jika BELUM disebutkan user):
+- Standar sertifikasi yang diinginkan — gunakan pilihan ini persis:
+  1. ISO 9001 (Mutu)
+  2. ISO 14001 (Lingkungan)
+  3. ISO 45001 (K3)
+  4. Integrasi ISO 9001 + ISO 14001 + ISO 45001
+  5. Lainnya
+- Apakah ada aktivitas lain di luar yang sudah disebutkan
+- Jumlah lokasi (satu lokasi / multi-site)
+- Apakah ada aktivitas yang dikecualikan dari scope
+
+Format WAJIB untuk setiap pertanyaan — satu pertanyaan per blok, dipisahkan baris kosong:
+[Teks pertanyaan]
+1. [Pilihan A]
+2. [Pilihan B]
+3. [Pilihan C jika perlu]
+4. Lainnya (jika perlu)
+
+Tulis intro 1 kalimat sebelum pertanyaan pertama. Jangan tambahkan penjelasan lain.`
+    : `You are an assistant for ISO certification scope determination.
+
+The user just described their business:
+"${userQuery}"
+
+Your task: create a short intake form (2-4 questions only) to collect information NOT yet mentioned by the user. Skip questions already answered in the description above.
+
+Standard questions to cover (only ask if NOT already provided):
+- Desired certification standard — use exactly these options:
+  1. ISO 9001 (Quality)
+  2. ISO 14001 (Environment)
+  3. ISO 45001 (OHS)
+  4. Integrated ISO 9001 + ISO 14001 + ISO 45001
+  5. Other
+- Whether there are additional activities beyond what was mentioned
+- Number of locations (single site / multi-site)
+- Whether any activities are excluded from scope
+
+REQUIRED format for each question — one question per block, separated by blank lines:
+[Question text]
+1. [Option A]
+2. [Option B]
+3. [Option C if needed]
+4. Other (if needed)
+
+Write a 1-sentence intro before the first question. No other explanations.`;
+
+  try {
+    const text = await callAI(intakePrompt, [], 600);
+    // Strip any leaked tags just in case
+    const clean = text
+      .replace(/IAFCODES:[^\n\r]*/gi, '')
+      .replace(/KEYWORDS:[^\n\r]*/gi, '')
+      .replace(/SUMMARY:[^\n\r]*/gi, '')
+      .replace(/LANG:[^\n\r]*/gi, '')
+      .trim();
+    return clean;
+  } catch {
+    // Fallback to static template if AI call fails
+    if (isIDN) {
+      return [
+        'Untuk menentukan scope yang tepat, mohon jawab beberapa pertanyaan berikut:',
+        'Standar sertifikasi apa yang Anda inginkan?',
+        '1. ISO 9001 (Mutu)',
+        '2. ISO 14001 (Lingkungan)',
+        '3. ISO 45001 (K3)',
+        '4. Integrasi ISO 9001 + ISO 14001 + ISO 45001',
+        '',
+        'Apakah ada aktivitas lain yang perlu dicakup dalam scope?',
+        '1. Tidak ada, hanya yang sudah disebutkan',
+        '2. Ya, ada aktivitas tambahan (tulis di kolom lainnya)',
+        '',
+        'Sertifikasi ini untuk berapa lokasi?',
+        '1. Satu lokasi saja',
+        '2. Multi-site (lebih dari satu lokasi)',
+        '',
+        'Apakah ada aktivitas yang akan dikecualikan dari scope?',
+        '1. Tidak ada exclusion',
+        '2. Ya, ada yang dikecualikan (tulis di kolom lainnya)',
+      ].join('\n');
+    } else {
+      return [
+        'To determine the right scope, please answer a few questions:',
+        'What certification standard do you want?',
+        '1. ISO 9001 (Quality)',
+        '2. ISO 14001 (Environment)',
+        '3. ISO 45001 (OHS)',
+        '4. Integrated ISO 9001 + ISO 14001 + ISO 45001',
+        '',
+        'Are there any other activities to include in scope?',
+        '1. No, only what was mentioned',
+        '2. Yes, additional activities (write in the other field)',
+        '',
+        'How many locations for this certification?',
+        '1. Single site only',
+        '2. Multi-site (more than one location)',
+        '',
+        'Are there any activities to be excluded from scope?',
+        '1. No exclusions',
+        '2. Yes, there are exclusions (write in the other field)',
+      ].join('\n');
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { messages }: { messages: ChatMessage[] } = await request.json();
@@ -403,6 +548,15 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY is missing' }, { status: 500 });
+    }
+
+    // Server-side enforcement: show intake form before any scope search
+    // This is 100% reliable — does not depend on AI following prompt instructions
+    const lastUserMsg = messages[messages.length - 1]?.content ?? '';
+    const isIDN = /\b(saya|apa|ini|itu|dan|yang|untuk|dengan|di|ke|dari|ada|tidak|bisa|mau|ingin|tolong|mohon|punya|usaha|bisnis|perusahaan|pabrik|servis|jasa|layanan|tentukan|bidang|bergerak)\b/i.test(lastUserMsg);
+    if (isScopeQuery(lastUserMsg) && !intakeAlreadyShown(messages)) {
+      const intakeText = await generateIntakeQuestions(lastUserMsg, isIDN);
+      return NextResponse.json({ phase: 'asking', chat_message: intakeText });
     }
 
     const hasShownResults = messages.some(
@@ -434,22 +588,22 @@ ${compactCatalog}
 5. If the user asks which standards cover a specific NACE code or industry, search across ALL standards and list every match
 
 ## HOW TO HANDLE BUSINESS DESCRIPTIONS
-This is the MOST IMPORTANT rule set:
 
-**When the user describes any business activity or industry:**
-- NEVER immediately say "PT TSI does not have that scope" — you are NOT the final judge of scope coverage
-- Your job is to UNDERSTAND the business, then pass it to the scope-determination engine which will do the real check
-- NACE codes cover a very wide range. Many businesses that seem niche actually fall under broader categories:
-  - Manufacturing of any product → could be NACE 31, 32, 33 (IAF 23 "Manufacturing NEC")
-  - Any production process → could be NACE 10-33
-  - Any service activity → could be NACE 69-82 (IAF 35 "Other services")
-- If you are unsure which NACE fits, ask ONE short clarifying question to better understand the activity, then trigger the search
+**The intake form is always shown by the system before you are called.** By the time the user's answers reach you, they have confirmed:
+1. Which certification standard(s) they want
+2. Whether there are additional activities beyond what they described
+3. How many locations
+4. Whether there are any exclusions
 
-**Decision flow:**
-1. User describes business → Try to map it to a NACE category in the scope data
-2. If you can map it (even broadly) → Briefly explain your thinking, then output KEYWORDS/SUMMARY to trigger the real search
-3. If genuinely unclear (e.g. very vague) → Ask ONE targeted question, then on next message output KEYWORDS/SUMMARY
-4. NEVER skip step 2 or 3 — always end by triggering the scope search
+**Your job after receiving intake answers:**
+- Read all the user's answers and the original business description from the conversation history
+- Map the business activity to the most specific IAF code(s) — choose 1-3, not a broad list
+- NEVER say "PT TSI does not have that scope" — you are not the final judge
+- NACE codes are broad: repair/maintenance of metal products → NACE 33.1 (IAF 17); general services → NACE 69-82 (IAF 35); manufacturing → NACE 10-33 (IAF 14/23)
+- Output your explanation then KEYWORDS/SUMMARY immediately
+
+**If user asks a general or follow-up question:**
+- Answer naturally; only output KEYWORDS/SUMMARY if they want a new scope search
 
 ## RESPONSE FORMAT
 - Use natural language, not overly rigid bullet points
@@ -473,13 +627,14 @@ When the user wants to see the full product/standard list:
 → Write [CATALOG] anywhere in your response. The system will automatically replace it with the complete formatted catalog from the database.
 
 When the user describes their business/industry (which is most of the time):
-→ In your explanation text, ALWAYS write the IAF code number explicitly using the format "IAF X" (e.g., "IAF 14", "IAF 28") for every NACE-based standard you recommend. This is REQUIRED for the automatic scope database lookup — without it the system cannot show scope results.
+→ In your explanation text, write the 1-3 MOST RELEVANT IAF code numbers explicitly using the format "IAF X". Do NOT list all possible codes — choose only the primary/best match(es).
 → After your explanation, ALWAYS append these tags at the very end of your message:
-IAFCODES:<comma-separated IAF numbers you mentioned, e.g. 14,28>
+IAFCODES:<only the 1-3 most relevant IAF numbers, e.g. 17 or 17,23>
 KEYWORDS:<keyword1>,<keyword2>,<keyword3>
 SUMMARY:<1-2 sentence description of the user's business activity in detail>
 LANG:IDN
 
+IMPORTANT: The IAFCODES tag is the ONLY source used for scope lookup. A broad list of codes will return irrelevant results. Be precise — pick the best fitting IAF code(s) for the specific business.
 (Use LANG:EN if the user wrote in English)
 ${hasShownResults ? `\nContext: Scope results have already been shown. Continue the conversation naturally. If the user wants a different scope, output new IAFCODES/KEYWORDS/SUMMARY/LANG tags.` : ''}`;
 
@@ -498,7 +653,9 @@ ${hasShownResults ? `\nContext: Scope results have already been shown. Continue 
     const keywordsMatch = aiText.match(/KEYWORDS:([^\n\r]+)/i);
     const summaryMatch = aiText.match(/SUMMARY:([^\n\r]+)/i);
 
-    if (keywordsMatch || summaryMatch) {
+    // If AI included a confirmation/clarifying question (numbered list), skip scope search
+    // regardless of whether KEYWORDS/SUMMARY tags are also present.
+    if ((keywordsMatch || summaryMatch) && !hasQuestionBlock(aiText)) {
       const keywords = keywordsMatch
         ? keywordsMatch[1].trim().split(',').map((k) => k.trim()).filter(Boolean).join(' ')
         : '';
@@ -513,8 +670,14 @@ ${hasShownResults ? `\nContext: Scope results have already been shown. Continue 
 
       const isIDN = responseLang === 'IDN';
 
-      // Fast path: extract IAF codes from text (catches both in-text mentions and IAFCODES tag)
-      let fastResults = buildFastScopeResults(aiText, searchQuery, isIDN);
+      // Extract explicit IAFCODES tag — use only these, not all IAF mentions in free text
+      const iafcodesMatch = aiText.match(/IAFCODES:([^\n\r]+)/i);
+      const explicitCodes = iafcodesMatch
+        ? new Set(iafcodesMatch[1].split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n)))
+        : undefined;
+
+      // Fast path: use explicit codes from IAFCODES tag (avoids picking up codes from tables/explanations)
+      let fastResults = buildFastScopeResults(aiText, searchQuery, isIDN, explicitCodes);
 
       // Keyword fallback: if no IAF codes found, do instant keyword lookup (no AI call)
       if (!fastResults) {
@@ -531,7 +694,14 @@ ${hasShownResults ? `\nContext: Scope results have already been shown. Continue 
       });
     }
 
-    return NextResponse.json({ phase: 'asking', chat_message: aiText });
+    // Strip any leaked backend tags before sending to client
+    const cleanText = aiText
+      .replace(/IAFCODES:[^\n\r]*/gi, '')
+      .replace(/KEYWORDS:[^\n\r]*/gi, '')
+      .replace(/SUMMARY:[^\n\r]*/gi, '')
+      .replace(/LANG:[^\n\r]*/gi, '')
+      .trim();
+    return NextResponse.json({ phase: 'asking', chat_message: cleanText });
   } catch (error) {
     console.error('Scope Chat API Error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

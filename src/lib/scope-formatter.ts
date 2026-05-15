@@ -66,7 +66,7 @@ export function formatScopeMessage(scopeData: ScopeData | null, isIDN: boolean):
   }
 
   const lines: string[] = [];
-  lines.push(isIDN ? '✅ **Rekomendasi Scope Sertifikasi:**\n' : '✅ **Recommended Certification Scope:**\n');
+  lines.push(isIDN ? '✅ **Rekomendasi Scope Sertifikasi Yang Tersedia di PT TSI SERTIFIKASI INTERNASIONAL :**\n' : '✅ **Recommended Scope of Certification Available at PT TSI SERTIFIKASI INTERNASIONAL :**\n');
 
   // Group by IAF code: each IAF entry may apply to multiple standards (ISO 9001, 14001, 45001)
   type Group = {
