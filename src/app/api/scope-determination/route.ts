@@ -172,7 +172,7 @@ async function callAI(
   const body: Record<string, unknown> = {
     model,
     messages,
-    temperature: 0.1,
+    temperature: 0,
     max_tokens: options?.maxTokens ?? 5000,
   };
   if (options?.json) body.response_format = { type: 'json_object' };
