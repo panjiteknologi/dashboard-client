@@ -862,8 +862,12 @@ export const QuestionCard = ({
       setCurrentIdx(currentIdx + 1);
     } else {
       const parts = collected.filter(Boolean);
-      if (parts.length > 0)
-        onSubmit(parts.length === 1 ? parts[0] : parts.map((a, i) => `${i + 1}. ${a}`).join("\n"));
+      const answer = parts.length === 0
+        ? (selectedLang === "IDN" ? "Lewati" : "Skip")
+        : parts.length === 1
+          ? parts[0]
+          : parts.map((a, i) => `${i + 1}. ${a}`).join("\n");
+      onSubmit(answer);
     }
   };
 
