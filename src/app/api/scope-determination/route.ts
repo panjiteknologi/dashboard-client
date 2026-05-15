@@ -115,6 +115,35 @@ function findNACEOnlyMatches(naceCode: string): Array<{ standard: string; iaf_co
   return matching;
 }
 
+// --- Lookup actual scope name and NACE codes from scope_tsi.json ---
+function lookupTSIEntry(standard: string, iafCode: number | string): {
+  iaf_scope: string;
+  nace_codes: string[];
+} | null {
+  const ref = scopeTSI.scope_reference as Record<string, unknown>;
+  if (!(standard in ref)) return null;
+  const entry = ref[standard];
+
+  if (Array.isArray(entry)) {
+    const iafNum = typeof iafCode === 'number' ? iafCode : parseInt(String(iafCode), 10);
+    const match = (entry as Array<{ iaf_code: number; scope: string; nace_codes: string[] }>)
+      .find(s => s.iaf_code === iafNum);
+    if (match) return { iaf_scope: match.scope, nace_codes: match.nace_codes };
+  } else {
+    const e = entry as { description?: string; scopes?: Array<{ scope: string; code?: string }> };
+    if (e.scopes && e.scopes.length > 0) {
+      const codeStr = String(iafCode);
+      const match = e.scopes.find(s => s.code === codeStr || s.scope === codeStr);
+      if (match) return { iaf_scope: match.scope, nace_codes: [match.code ?? match.scope] };
+      // fallback: return first scope if no match (for general standards)
+      return { iaf_scope: e.scopes[0].scope, nace_codes: [e.scopes[0].code ?? e.scopes[0].scope] };
+    }
+    // Description-only standards (ISO 27001, etc.)
+    if (e.description) return { iaf_scope: e.description, nace_codes: ['—'] };
+  }
+  return null;
+}
+
 // --- Build compact TSI context with NACE codes inline ---
 function buildCompactTSIContext(): string {
   type ScopeRef = Record<string, unknown>;
@@ -406,19 +435,33 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
     }
 
     // --- Map validated results to GroupedResult format ---
-    const groupedResults: GroupedResult[] = validatedResults.map(r => ({
-      scope_key: r.standard,
-      standar: r.standard,
-      iaf_code: `${r.iaf_code} - ${r.iaf_scope}`,
-      nace: { code: r.nace_code, description: r.nace_description },
-      nace_child: { code: r.nace_code, title: r.nace_child_title },
-      nace_child_details: (r.nace_child_details || []).map(d => ({
-        code: d.code,
-        title: d.title,
-        description: d.description,
-      })),
-      relevance_score: r.relevance_score,
-    }));
+    // Always use scope name and NACE codes from scope_tsi.json — AI is only used for relevance scoring and descriptions
+    const groupedResults: GroupedResult[] = validatedResults.map(r => {
+      const tsiEntry = lookupTSIEntry(r.standard, r.iaf_code);
+      const iafScope = tsiEntry?.iaf_scope ?? r.iaf_scope;
+      const tsiNaceCodes = tsiEntry?.nace_codes ?? [r.nace_code];
+
+      // Use the primary NACE code from AI (already validated against JSON), description from AI
+      // Show all NACE codes from JSON in the child details for full context
+      const naceChildDetails: NaceChildDetail[] = [
+        // AI-generated sub-activity details (kept for context)
+        ...(r.nace_child_details || []).map(d => ({ code: d.code, title: d.title, description: d.description })),
+        // All NACE codes from scope_tsi.json for this IAF entry (as reference)
+        ...tsiNaceCodes
+          .filter(nc => nc !== r.nace_code && !r.nace_child_details?.some(d => d.code.startsWith(nc)))
+          .map(nc => ({ code: nc, title: `NACE ${nc}`, description: `Termasuk dalam scope ${iafScope} (IAF ${r.iaf_code})` })),
+      ];
+
+      return {
+        scope_key: r.standard,
+        standar: r.standard,
+        iaf_code: `${r.iaf_code} - ${iafScope}`,
+        nace: { code: r.nace_code, description: r.nace_description },
+        nace_child: { code: r.nace_code, title: r.nace_child_title || iafScope },
+        nace_child_details: naceChildDetails,
+        relevance_score: r.relevance_score,
+      };
+    });
 
     groupedResults.sort((a, b) => b.relevance_score - a.relevance_score);
 
@@ -450,8 +493,12 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
     Object.values(explanationGroups).forEach((group, idx) => {
       penjelasan += `**${idx + 1}. ${group.standar}** (${group.max_score}%)\n\n`;
       Array.from(group.iaf_items.values()).forEach(iafItem => {
+        // Parse IAF number from "28 - Construction" format
+        const iafNum = parseInt(iafItem.iaf_code.split(' - ')[0], 10);
+        const tsiEntry = lookupTSIEntry(group.standar, iafNum);
+        const allNaceCodes = tsiEntry?.nace_codes ?? Array.from(iafItem.nace_codes);
         penjelasan += `IAF: ${iafItem.iaf_code}\n`;
-        penjelasan += `NACE Codes: ${Array.from(iafItem.nace_codes).sort().join(', ')}\n\n`;
+        penjelasan += `NACE Codes: ${allNaceCodes.join(', ')}\n\n`;
       });
     });
     penjelasan += isIndonesian
