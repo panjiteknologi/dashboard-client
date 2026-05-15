@@ -60,14 +60,29 @@ export const useScopeChat = (): UseScopeChatResult => {
         setChatPhase('asking');
         setIsChatLoading(false);
 
-        // ── Phase 2: fetch scope determination if needed ─────────────────────
-        if (data.scope_query) {
-          const { query, lang } = data.scope_query as { query: string; lang: 'IDN' | 'EN' };
-          const isIDN = lang === 'IDN';
-          const followUp = isIDN
-            ? '\n\n---\n💬 Apakah scope sertifikasi di atas sesuai dengan bisnis Anda? Jika ada pertanyaan atau ingin mencari scope lain, silakan tanyakan.'
-            : '\n\n---\n💬 Does the certification scope above match your business? Feel free to ask if you have questions or want to search for a different scope.';
+        // ── Phase 2: attach scope results ────────────────────────────────────
+        const lang: 'IDN' | 'EN' = data.scope_query?.lang ?? 'IDN';
+        const isIDN = lang === 'IDN';
+        const followUp = isIDN
+          ? '\n\n---\n💬 Apakah scope sertifikasi di atas sesuai dengan bisnis Anda? Jika ada pertanyaan atau ingin mencari scope lain, silakan tanyakan.'
+          : '\n\n---\n💬 Does the certification scope above match your business? Feel free to ask if you have questions or want to search for a different scope.';
 
+        if (data.scope_results?.hasil_pencarian?.length > 0) {
+          // Fast path: IAF codes extracted from AI text — results already available, no second API call
+          const scopeMsg = formatScopeMessage(data.scope_results as ScopeData, isIDN) + followUp;
+          setChatMessages((prev) => {
+            const updated = [...prev];
+            const last = updated[updated.length - 1];
+            if (last?.role === 'assistant') {
+              updated[updated.length - 1] = { ...last, scope_message: scopeMsg, scope_data: data.scope_results };
+            }
+            return updated;
+          });
+          if (data.keywords_used) setChatKeywords(data.keywords_used);
+
+        } else if (data.scope_query) {
+          // Slow path: no IAF codes extracted — call scope-determination API
+          const { query } = data.scope_query as { query: string; lang: 'IDN' | 'EN' };
           setIsScopeLoading(true);
           try {
             const scopeRes = await fetch('/api/scope-determination', {
@@ -80,12 +95,11 @@ export const useScopeChat = (): UseScopeChatResult => {
             const scopeData: ScopeData | null = scopeRes.ok ? await scopeRes.json() : null;
             const scopeMsg = formatScopeMessage(scopeData, isIDN) + followUp;
 
-            // Append scope_message to the last assistant message
             setChatMessages((prev) => {
               const updated = [...prev];
               const last = updated[updated.length - 1];
               if (last?.role === 'assistant') {
-                updated[updated.length - 1] = { ...last, scope_message: scopeMsg };
+                updated[updated.length - 1] = { ...last, scope_message: scopeMsg, scope_data: scopeData as ScopeDeterminationResponse | null };
               }
               return updated;
             });
@@ -93,10 +107,10 @@ export const useScopeChat = (): UseScopeChatResult => {
             if (data.keywords_used) setChatKeywords(data.keywords_used);
           } catch (err) {
             if (err instanceof Error && err.name === 'AbortError') return;
-            // Scope fetch failed — show without scope result, not a fatal error
           } finally {
             setIsScopeLoading(false);
           }
+
         } else if (data.keywords_used) {
           setChatKeywords(data.keywords_used);
         }
