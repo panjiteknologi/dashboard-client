@@ -93,18 +93,19 @@ export const useScopeChat = (): UseScopeChatResult => {
             });
 
             const scopeData: ScopeData | null = scopeRes.ok ? await scopeRes.json() : null;
-            const scopeMsg = formatScopeMessage(scopeData, isIDN) + followUp;
 
-            setChatMessages((prev) => {
-              const updated = [...prev];
-              const last = updated[updated.length - 1];
-              if (last?.role === 'assistant') {
-                updated[updated.length - 1] = { ...last, scope_message: scopeMsg, scope_data: scopeData as ScopeDeterminationResponse | null };
-              }
-              return updated;
-            });
-
-            if (data.keywords_used) setChatKeywords(data.keywords_used);
+            if (scopeData?.hasil_pencarian?.length) {
+              const scopeMsg = formatScopeMessage(scopeData, isIDN) + followUp;
+              setChatMessages((prev) => {
+                const updated = [...prev];
+                const last = updated[updated.length - 1];
+                if (last?.role === 'assistant') {
+                  updated[updated.length - 1] = { ...last, scope_message: scopeMsg, scope_data: scopeData as ScopeDeterminationResponse | null };
+                }
+                return updated;
+              });
+              if (data.keywords_used) setChatKeywords(data.keywords_used);
+            }
           } catch (err) {
             if (err instanceof Error && err.name === 'AbortError') return;
           } finally {
