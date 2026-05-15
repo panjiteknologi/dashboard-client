@@ -97,6 +97,24 @@ function findNACEBasedMatches(iafCode: number | string, naceCode: string): strin
   return matching;
 }
 
+// Tier-3 fallback: find correct standard+IAF by NACE code alone (ignores AI-provided IAF)
+function findNACEOnlyMatches(naceCode: string): Array<{ standard: string; iaf_code: number; iaf_scope: string }> {
+  const ref = scopeTSI.scope_reference as Record<string, unknown>;
+  const matching: Array<{ standard: string; iaf_code: number; iaf_scope: string }> = [];
+  for (const std of NACE_BASED_STANDARDS) {
+    const entries = ref[std];
+    if (!Array.isArray(entries)) continue;
+    for (const scope of entries as Array<{ iaf_code: number; scope: string; nace_codes: string[] }>) {
+      if (scope.nace_codes.some(p => naceCodeMatches(naceCode, p))) {
+        if (!matching.some(m => m.standard === std && m.iaf_code === scope.iaf_code)) {
+          matching.push({ standard: std, iaf_code: scope.iaf_code, iaf_scope: scope.scope });
+        }
+      }
+    }
+  }
+  return matching;
+}
+
 // --- Build compact TSI context with NACE codes inline ---
 function buildCompactTSIContext(): string {
   type ScopeRef = Record<string, unknown>;
@@ -335,18 +353,32 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
     }
 
     // --- Code-level validation against scope_tsi.json ---
-    // For NACE-based standards: if AI picked the wrong standard for a given IAF+NACE pair,
-    // find the correct standard(s) from the catalog as a cross-standard fallback.
+    // Tier 1: direct match (standard + IAF + NACE all correct)
+    // Tier 2: cross-standard fallback (same IAF+NACE, AI picked wrong standard)
+    // Tier 3: NACE-only fallback (AI's IAF wrong too — find correct standard+IAF from NACE alone)
     const validatedResults: AIMatchedScope[] = [];
     for (const r of aiResult.results.filter(r => r.relevance_score >= 50)) {
       if (NACE_BASED_STANDARDS.includes(r.standard)) {
         if (validateInTSI(r.standard, r.iaf_code, r.nace_code)) {
+          // Tier 1
           validatedResults.push(r);
         } else {
+          // Tier 2: cross-standard by IAF+NACE
           const fallbackStds = findNACEBasedMatches(r.iaf_code, r.nace_code);
+          let tier2Added = false;
           for (const std of fallbackStds) {
             if (!validatedResults.some(v => v.standard === std && v.iaf_code === r.iaf_code && v.nace_code === r.nace_code)) {
               validatedResults.push({ ...r, standard: std });
+              tier2Added = true;
+            }
+          }
+          if (!tier2Added) {
+            // Tier 3: NACE-only — ignore AI's IAF, find correct standard+IAF from NACE alone
+            const naceMatches = findNACEOnlyMatches(r.nace_code);
+            for (const match of naceMatches) {
+              if (!validatedResults.some(v => v.standard === match.standard && v.nace_code === r.nace_code)) {
+                validatedResults.push({ ...r, standard: match.standard, iaf_code: match.iaf_code, iaf_scope: match.iaf_scope });
+              }
             }
           }
         }
