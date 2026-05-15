@@ -22,7 +22,10 @@
       "Bash(python -c \"import json; f=open\\('D:/PROJECT/dashboard-client/src/lib/scope_en.json'\\); json.load\\(f\\); print\\('scope_en.json OK'\\)\")",
       "Bash(python -c \"import json; f=open\\('D:/PROJECT/dashboard-client/src/lib/scope_id.json'\\); json.load\\(f\\); print\\('scope_id.json OK'\\)\")",
       "Bash(Get-ChildItem *)",
-      "Bash(xargs grep -l \"confirm\\\\|feedback\\\\|selection\")"
+      "Bash(xargs grep -l \"confirm\\\\|feedback\\\\|selection\")",
+      "Bash(python -c \"import sys,json; models=json.load\\(sys.stdin\\).get\\('data',[]\\); matches=[m['id'] for m in models if 'gpt' in m['id'].lower\\(\\) and 'oss' in m['id'].lower\\(\\)]; print\\('gpt-oss matches:', matches[:10]\\); all_gpt=[m['id'] for m in models if 'openai' in m['id'].lower\\(\\)]; print\\('all openai models:', all_gpt[:20]\\)\")",
+      "Bash(Select-String -Pattern \"gpt-oss|gpt-4o\")",
+      "Bash(Select-Object -First 20)"
     ],
     "deny": [],
     "ask": []
