@@ -11,6 +11,8 @@ export type ScopeData = {
     nace_child: { code: string; title: string };
     nace_child_details: Array<{ code: string; title: string; description: string }>;
     relevance_score: number;
+    scope_sentence_en?: string;
+    scope_sentence_id?: string;
   }>;
   query: string;
   penjelasan?: string;
@@ -63,30 +65,73 @@ export function formatScopeMessage(scopeData: ScopeData | null, isIDN: boolean):
     }
   }
 
-  const [primary, ...rest] = scopeData.hasil_pencarian;
-  const alternatives = rest.slice(0, 2);
   const lines: string[] = [];
-
   lines.push(isIDN ? '✅ **Rekomendasi Scope Sertifikasi:**\n' : '✅ **Recommended Certification Scope:**\n');
-  lines.push(`**${primary.standar || primary.scope_key}**`);
-  lines.push(`📋 IAF Code: ${primary.iaf_code}`);
-  lines.push(`🔢 NACE ${primary.nace.code}: ${primary.nace.description}`);
-  lines.push(`🔸 NACE Child ${primary.nace_child.code}: ${primary.nace_child.title}`);
 
-  if (primary.nace_child_details?.length) {
-    lines.push(isIDN ? '\nAktivitas yang tercakup:' : '\nCovered activities:');
-    primary.nace_child_details.slice(0, 3).forEach((d) => {
-      lines.push(`• **${d.code}** — ${d.title}`);
-    });
+  // Group by IAF code: each IAF entry may apply to multiple standards (ISO 9001, 14001, 45001)
+  type Group = {
+    iaf_code: string;
+    nace: { code: string; description: string };
+    nace_child: { code: string; title: string };
+    nace_child_details: Array<{ code: string; title: string; description: string }>;
+    standards: string[];
+    relevance_score: number;
+    scope_sentence_en?: string;
+    scope_sentence_id?: string;
+  };
+  const groupMap = new Map<string, Group>();
+
+  for (const r of scopeData.hasil_pencarian) {
+    const key = r.iaf_code;
+    if (!groupMap.has(key)) {
+      groupMap.set(key, {
+        iaf_code: r.iaf_code,
+        nace: r.nace,
+        nace_child: r.nace_child,
+        nace_child_details: r.nace_child_details ?? [],
+        standards: [],
+        relevance_score: r.relevance_score,
+        scope_sentence_en: r.scope_sentence_en,
+        scope_sentence_id: r.scope_sentence_id,
+      });
+    }
+    const g = groupMap.get(key)!;
+    const stdName = r.standar || r.scope_key;
+    if (!g.standards.includes(stdName)) g.standards.push(stdName);
+    if (r.relevance_score > g.relevance_score) g.relevance_score = r.relevance_score;
+    if (!g.scope_sentence_en && r.scope_sentence_en) g.scope_sentence_en = r.scope_sentence_en;
+    if (!g.scope_sentence_id && r.scope_sentence_id) g.scope_sentence_id = r.scope_sentence_id;
   }
 
-  if (alternatives.length > 0) {
-    lines.push('');
-    lines.push(isIDN ? '---\n💡 **Alternatif yang relevan:**' : '---\n💡 **Relevant alternatives:**');
-    alternatives.forEach((r) => {
-      lines.push(`• **${r.standar || r.scope_key}** — NACE ${r.nace.code}, IAF ${r.iaf_code}`);
-    });
-  }
+  const groups = Array.from(groupMap.values()).sort((a, b) => b.relevance_score - a.relevance_score);
+
+  groups.forEach((g, idx) => {
+    if (idx > 0) lines.push('');
+    lines.push(`**${idx + 1}. ${g.standards.join(' · ')}**`);
+    lines.push(`📋 IAF: ${g.iaf_code}`);
+    lines.push(`🔢 NACE ${g.nace.code}: ${g.nace.description}`);
+    if (g.nace_child.title && g.nace_child.title !== g.nace.description) {
+      lines.push(`🔸 ${g.nace_child.title}`);
+    }
+    if (g.nace_child_details?.length) {
+      lines.push(isIDN ? '\nAktivitas yang tercakup:' : '\nCovered activities:');
+      g.nace_child_details.slice(0, 3).forEach((d) => {
+        lines.push(`• **${d.code}** — ${d.title}`);
+      });
+    }
+    if (g.scope_sentence_en || g.scope_sentence_id) {
+      lines.push('');
+      if (g.scope_sentence_en) {
+        lines.push(`📝 **KALIMAT SCOPE (Bahasa Inggris):**`);
+        lines.push(`_${g.scope_sentence_en}_`);
+      }
+      if (g.scope_sentence_id) {
+        lines.push('');
+        lines.push(`📝 **KALIMAT SCOPE (Bahasa Indonesia):**`);
+        lines.push(`_${g.scope_sentence_id}_`);
+      }
+    }
+  });
 
   lines.push('');
   lines.push('---');

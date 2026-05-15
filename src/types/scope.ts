@@ -2,6 +2,7 @@ export type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
   scope_message?: string;
+  scope_data?: ScopeDeterminationResponse | null;
 };
 
 export type ChatPhase = 'idle' | 'asking' | 'complete';
@@ -47,6 +48,8 @@ export type ScopeDeterminationResponse = {
       description: string;
     }>;
     relevance_score: number;
+    scope_sentence_en?: string;
+    scope_sentence_id?: string;
   }>;
   penjelasan: string;
   saran: string;

@@ -11,6 +11,8 @@ type GroupedResult = {
   nace_child: { code: string; title: string };
   nace_child_details: NaceChildDetail[];
   relevance_score: number;
+  scope_sentence_en?: string;
+  scope_sentence_id?: string;
 };
 type AIMatchedScope = {
   standard: string;
@@ -21,6 +23,8 @@ type AIMatchedScope = {
   nace_child_title: string;
   nace_child_details: NaceChildDetail[];
   relevance_score: number;
+  scope_sentence_en?: string;
+  scope_sentence_id?: string;
 };
 type AITSIResponse = {
   found_in_tsi: boolean;
@@ -144,6 +148,37 @@ function lookupTSIEntry(standard: string, iafCode: number | string): {
   return null;
 }
 
+// --- Fallback scope sentence generator (used when AI omits the field) ---
+function fallbackScopeSentence(naceDesc: string, iafScope: string, isID: boolean): string {
+  const cleaned = naceDesc.replace(/\.$/, '').trim();
+  if (!isID) return cleaned;
+
+  const lc = cleaned.toLowerCase();
+  const swap = (en: string, id: string) => lc.startsWith(en) ? id + lc.slice(en.length) : null;
+
+  return (
+    swap('manufacture of', 'Produksi') ??
+    swap('manufacturing of', 'Produksi') ??
+    swap('production of', 'Produksi') ??
+    swap('processing of', 'Pengolahan') ??
+    swap('construction of', 'Konstruksi') ??
+    swap('wholesale of', 'Perdagangan besar') ??
+    swap('retail sale of', 'Perdagangan eceran') ??
+    swap('activities of', 'Kegiatan') ??
+    swap('supply of', 'Penyediaan') ??
+    swap('provision of', 'Penyediaan layanan') ??
+    swap('service of', 'Layanan') ??
+    swap('services of', 'Layanan') ??
+    swap('management of', 'Pengelolaan') ??
+    swap('development of', 'Pengembangan') ??
+    swap('design of', 'Desain') ??
+    swap('design and', 'Desain dan') ??
+    swap('repair of', 'Perbaikan') ??
+    swap('installation of', 'Instalasi') ??
+    `Kegiatan ${iafScope.toLowerCase()}`
+  );
+}
+
 // --- Build compact TSI context with NACE codes inline ---
 function buildCompactTSIContext(): string {
   type ScopeRef = Record<string, unknown>;
@@ -194,32 +229,65 @@ async function callAI(
 ) {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const apiUrl = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-  const model = process.env.OPENROUTER_MODEL || 'nvidia/llama-3.3-nemotron-super-49b-v1:free';
 
   if (!apiKey) throw new Error('OPENROUTER_API_KEY is missing');
 
-  const body: Record<string, unknown> = {
-    model,
-    messages,
-    temperature: 0,
-    max_tokens: options?.maxTokens ?? 5000,
+  const models = [
+    process.env.OPENROUTER_MODEL || 'nvidia/llama-3.3-nemotron-super-49b-v1:free',
+    process.env.OPENROUTER_FALLBACK_MODEL || 'openai/gpt-oss-120b:free',
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'deepseek/deepseek-r1:free',
+    'qwen/qwen3-235b-a22b:free',
+    'google/gemma-3-27b-it:free',
+    'mistralai/mistral-small-3.2-24b-instruct:free',
+  ];
+
+  const doRequest = async (model: string) => {
+    const body: Record<string, unknown> = {
+      model,
+      messages,
+      temperature: 0,
+      max_tokens: options?.maxTokens ?? 5000,
+    };
+    if (options?.json) body.response_format = { type: 'json_object' };
+
+    return fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://tsicertification.co.id',
+        'X-Title': 'TSI Scope Determination',
+      },
+      body: JSON.stringify(body),
+    });
   };
-  if (options?.json) body.response_format = { type: 'json_object' };
 
-  const res = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://tsicertification.co.id',
-      'X-Title': 'TSI Scope Determination',
-    },
-    body: JSON.stringify(body),
-  });
+  let lastError = '';
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    try {
+      const res = await doRequest(model);
+      if (res.ok) {
+        if (i > 0) console.info(`[scope-determination] Using fallback model #${i}: ${model}`);
+        const data = await res.json();
+        return (data.choices?.[0]?.message?.content as string)?.trim() || '';
+      }
+      const errBody = await res.text().catch(() => '');
+      lastError = `${res.status}: ${errBody.slice(0, 200)}`;
+      // 400 = malformed request (our fault), 401 = bad API key — no point retrying
+      if (res.status === 400 || res.status === 401) {
+        throw new Error(`OpenRouter API error ${res.status}: ${errBody}`);
+      }
+      console.warn(`[scope-determination] Model ${model} failed (${res.status}), trying next...`);
+    } catch (err) {
+      if (err instanceof Error && (err.message.startsWith('OpenRouter API error 400') || err.message.startsWith('OpenRouter API error 401'))) throw err;
+      lastError = err instanceof Error ? err.message : String(err);
+      console.warn(`[scope-determination] Model ${model} threw error, trying next:`, lastError);
+    }
+  }
 
-  if (!res.ok) throw new Error(`OpenRouter API error ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return (data.choices?.[0]?.message?.content as string)?.trim() || '';
+  throw new Error(`All models exhausted (last error: ${lastError}). Please try again later.`);
 }
 
 export async function POST(request: NextRequest) {
@@ -271,6 +339,16 @@ For General Standards (ISO 27001, ISO 37001, etc.):
 
 SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = exclude
 
+**STEP 3 — SCOPE SENTENCE (REQUIRED for every result):**
+For each matched result you MUST include scope_sentence_en and scope_sentence_id. Never omit them.
+- scope_sentence_en: 1 line in English — activity verb + specific product/service + example in parentheses
+  Format: "Manufacture of [specific product] (e.g., [example])"
+  Examples: "Manufacture of hair care products (e.g., shampoo)", "Construction of residential buildings (e.g., houses, apartments)"
+- scope_sentence_id: same in Indonesian
+  Format: "Produksi [produk spesifik] (mis., [contoh])"
+  Examples: "Produksi produk perawatan rambut (mis., sampo)", "Konstruksi bangunan hunian (mis., rumah, apartemen)"
+- Use the user's query to make it specific — mention the actual product/service they described
+
 **CASE 2 — Query does NOT match any PT TSI scope:**
 - Set "found_in_tsi": false, results: []
 - Explain in ${language} why it does not match
@@ -279,7 +357,7 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
 - ONLY use standard names exactly as listed in the catalog (e.g. "ISO 9001", "ISO 22000:2018")
 - ONLY use IAF codes listed under that standard in the catalog
 - For scope-coded standards, ONLY use codes/names exactly as listed
-- Write penjelasan and saran in ${language}
+- Write penjelasan, saran, scope_sentence_en, scope_sentence_id in the appropriate language
 
 ## OUTPUT (valid JSON only, no markdown):
 {
@@ -297,7 +375,9 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
         { "code": "41.10", "title": "Development of building projects", "description": "Development and sale of residential and commercial building projects." },
         { "code": "41.20", "title": "Construction of residential and non-residential buildings", "description": "General contracting for construction of houses, offices, factories, and public buildings." }
       ],
-      "relevance_score": 92
+      "relevance_score": 92,
+      "scope_sentence_en": "Construction of residential and commercial buildings (e.g., houses, offices)",
+      "scope_sentence_id": "Konstruksi bangunan hunian dan komersial (mis., rumah, kantor)"
     }
   ],
   "penjelasan": "Explanation in ${language}",
@@ -460,6 +540,8 @@ SCORING: 90-100 = exact match | 70-89 = strong | 50-69 = moderate | below 50 = e
         nace_child: { code: r.nace_code, title: r.nace_child_title || iafScope },
         nace_child_details: naceChildDetails,
         relevance_score: r.relevance_score,
+        scope_sentence_en: r.scope_sentence_en || fallbackScopeSentence(r.nace_description, iafScope, false),
+        scope_sentence_id: r.scope_sentence_id || fallbackScopeSentence(r.nace_description, iafScope, true),
       };
     });
 

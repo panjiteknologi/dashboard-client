@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Check,
   AlertCircle,
+  FileText,
 } from "lucide-react";
 import { useScopeDeterminationContext } from "@/context/scope-determination-context";
 import { ScopePagination } from "./scope-pagination";
@@ -43,6 +44,8 @@ interface HasilPencarian {
   nace_child?: { code?: string; title?: string };
   relevance_score?: number;
   nace_child_details: NaceChildDetail[];
+  scope_sentence_en?: string;
+  scope_sentence_id?: string;
 }
 
 interface ResultWithScore extends HasilPencarian {
@@ -55,6 +58,7 @@ interface NaceInfo {
 }
 
 type Summary = Record<string, Record<string, Record<string, NaceInfo>>>;
+
 
 // ─── Scope Result Cards (reusable) ────────────────────────────────────────────
 const ScopeResultCards = ({
@@ -511,6 +515,38 @@ const ScopeResultCards = ({
                   )}
                 </div>
 
+                {/* ── Kalimat Scope ── */}
+                {(result.scope_sentence_en || result.scope_sentence_id) && (
+                  <div className="border-t border-gray-100 dark:border-gray-800 px-3 sm:px-4 py-3 bg-green-50/50 dark:bg-green-950/10 space-y-2.5">
+                    {result.scope_sentence_en && (
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <FileText className="h-3 w-3 text-green-600 dark:text-green-400" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400">
+                            Kalimat Scope (Bahasa Inggris)
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-800 dark:text-gray-200 italic pl-4 border-l-2 border-green-300 dark:border-green-700">
+                          {result.scope_sentence_en}
+                        </p>
+                      </div>
+                    )}
+                    {result.scope_sentence_id && (
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <FileText className="h-3 w-3 text-green-600 dark:text-green-400" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-green-700 dark:text-green-400">
+                            Kalimat Scope (Bahasa Indonesia)
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-800 dark:text-gray-200 italic pl-4 border-l-2 border-green-300 dark:border-green-700">
+                          {result.scope_sentence_id}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* ── NACE Child Details Table ── */}
                 {result.nace_child_details?.length > 0 && (
                   <div className="border-t border-gray-100 dark:border-gray-800">
@@ -610,6 +646,7 @@ const ScopeResultCards = ({
           <div className="space-y-1">{renderExplanationText(response.saran, "exp-saran")}</div>
         </div>
       )}
+
     </div>
   );
 };
@@ -1075,7 +1112,7 @@ const UserBubble = ({
   );
 };
 
-const AIBubble = ({ message, isLatest }: { message: ChatMessage; isLatest: boolean }) => {
+const AIBubble = ({ message, isLatest, selectedLang }: { message: ChatMessage; isLatest: boolean; selectedLang: 'IDN' | 'EN' }) => {
   const fullText = message.content;
   const hasScopeMsg = !!message.scope_message;
 
@@ -1378,7 +1415,7 @@ export const ScopeResult = () => {
                     disabled={isChatLoading}
                   />
                 ) : (
-                  <AIBubble key={idx} message={msg} isLatest={idx === chatMessages.length - 1} />
+                  <AIBubble key={idx} message={msg} isLatest={idx === chatMessages.length - 1} selectedLang={selectedLang} />
                 )
               )}
 
