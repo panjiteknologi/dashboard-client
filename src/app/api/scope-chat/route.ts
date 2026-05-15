@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TSI_STANDARDS } from '@/lib/scope-formatter';
+import scopeTSI from '@/lib/scope_tsi.json';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -9,7 +9,7 @@ type ChatMessage = {
 async function callAI(
   systemPrompt: string,
   messages: ChatMessage[],
-  maxTokens = 700
+  maxTokens = 1200
 ): Promise<string> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const apiUrl = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
@@ -31,7 +31,7 @@ async function callAI(
         { role: 'system', content: systemPrompt },
         ...messages.map((m) => ({ role: m.role, content: m.content })),
       ],
-      temperature: 0.3,
+      temperature: 0.4,
       max_tokens: maxTokens,
     }),
   });
@@ -43,6 +43,31 @@ async function callAI(
 
   const data = await res.json();
   return (data.choices?.[0]?.message?.content as string)?.trim() || '';
+}
+
+function buildTSICatalog(): string {
+  type ScopeRef = Record<string, unknown>;
+  const ref = scopeTSI.scope_reference as ScopeRef;
+  const lines: string[] = [];
+
+  for (const [std, entry] of Object.entries(ref)) {
+    if (Array.isArray(entry)) {
+      const scopes = entry as Array<{ iaf_code: number; scope: string; nace_codes: string[] }>;
+      lines.push(`\n**${std}** (NACE-based, multi-industry):`);
+      scopes.forEach(s => lines.push(`  IAF ${s.iaf_code}: ${s.scope} — NACE: ${s.nace_codes.join(', ')}`));
+    } else {
+      const e = entry as { description?: string; scopes?: Array<{ scope: string; code?: string }> };
+      lines.push(`\n**${std}**:`);
+      if (e.description) lines.push(`  ${e.description}`);
+      if (e.scopes && e.scopes.length > 0) {
+        e.scopes.forEach(s => lines.push(`  • ${s.scope}${s.code ? ` (code: ${s.code})` : ''}`));
+      } else {
+        lines.push(`  (Berlaku universal untuk semua organisasi)`);
+      }
+    }
+  }
+
+  return lines.join('\n');
 }
 
 export async function POST(request: NextRequest) {
@@ -57,90 +82,64 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'OPENROUTER_API_KEY is missing' }, { status: 500 });
     }
 
-    const userMsgCount = messages.filter((m) => m.role === 'user').length;
-    const mustConclude = userMsgCount >= 2;
-
     const hasShownResults = messages.some(
       (m) => m.role === 'assistant' && m.content.includes('NACE') && m.content.includes('IAF')
     );
 
-    const tsiStandardList = TSI_STANDARDS.join(', ');
+    const tsiCatalog = buildTSICatalog();
 
-    const systemPrompt = `You are a Certification Scope Consultant from PT TSI (TSI Sertifikasi Internasional), a certification body in Indonesia.
-Your job is to help users identify the correct certification scope, ONLY from standards that PT TSI holds accreditation for.
+    const systemPrompt = `Kamu adalah AI Assistant milik PT TSI (TSI Sertifikasi Internasional), lembaga sertifikasi di Indonesia.
 
-⚠️ PT TSI AVAILABLE STANDARDS:
-${tsiStandardList}
+Kamu adalah AI yang GENERATIF dan FLEKSIBEL. Kamu BOLEH menjawab pertanyaan apapun dari user — baik tentang sertifikasi, bisnis, pengetahuan umum, maupun topik lainnya. Jawab secara alami seperti asisten AI cerdas.
 
-ABSOLUTE RESTRICTIONS:
-- NEVER recommend or mention any standard not in the list above
-- NEVER fabricate standards (e.g. ISO 50001, ISO 31000, ISO 13485) if not in the list
-- If asked about an unlisted standard, clearly state PT TSI does not hold that accreditation
+## KATALOG PRODUK/STANDAR PT TSI:
+${tsiCatalog}
 
-LANGUAGE RULE:
-- Automatically detect the language the user is writing in (Indonesian or English or other)
-- Respond entirely in that same language
-- When you output KEYWORDS/SUMMARY tags, you MUST also output a LANG tag: LANG:IDN (for Indonesian) or LANG:EN (for English/other)
+---
 
-CONVERSATION FLOW:
-⛔ NEVER open with "which certification do you want?" — users often don't know which standard fits them. That's why they use this tool.
+## CARA MENGAMBIL KEPUTUSAN:
 
-1. On the user's FIRST message, ask about their BUSINESS ACTIVITIES only:
-   - What products do they manufacture or sell?
-   - What services do they provide?
-   - What industry or sector are they in?
-   - What is their main production process or operational activity?
+### Jika user bertanya tentang produk/standar/scope PT TSI:
+→ Jawab LANGSUNG dari katalog di atas. Tampilkan daftar, jelaskan standar, bandingkan scope — sesuai kebutuhan user. JANGAN tanya balik.
 
-   Ask EXACTLY 1-2 short clarifying questions about business activities. For each question, provide numbered answer choices (5-7 options, last one always "Lainnya (jelaskan)" / "Other (describe)"):
+### Jika user mendeskripsikan bisnis/industri mereka:
+→ Langsung analisis dan cari scope yang sesuai. JANGAN tanya-tanya lagi jika sudah cukup informasi.
+→ Jika benar-benar tidak jelas, boleh tanya SATU pertanyaan singkat saja.
+→ Setelah tahu scope-nya, output KEYWORDS dan SUMMARY di akhir pesan (lihat format di bawah).
 
-   Example (Indonesian):
-   Apa produk atau jasa utama dari perusahaan Anda?
-   1. Produk Makanan & Minuman
-   2. Jasa Konstruksi & Bangunan
-   3. Layanan Teknologi Informasi & Software
-   4. Produk Manufaktur (logam, mesin, elektronik)
-   5. Produk Pertanian & Perkebunan
-   6. Lainnya (jelaskan)
+### Jika user bertanya hal umum di luar sertifikasi:
+→ Jawab secara natural dan helpful, layaknya chat AI biasa. Kamu boleh menjawab.
 
-   CHOICE RULES:
-   - Options must be about business activities/products/sectors — NOT about certifications or standards
-   - Always provide 5-7 relevant options based on the context
-   - Last option is always "Other (describe)" in the user's language
-   - Format: number dot space text
+### Jika user minta tampilkan/daftar/list produk TSI atau standar yang dimiliki:
+→ Tampilkan katalog lengkap dari data di atas. LANGSUNG tampilkan, jangan tanya balik.
 
-2. After gathering enough business activity information, write a WELL-FORMATTED response using this exact structure:
+---
 
-   **[Judul singkat tentang industri mereka]**
+## FORMAT TRIGGER PENCARIAN SCOPE:
+Gunakan format ini DI AKHIR pesanmu ketika kamu sudah tahu bisnis/industri user dan ingin memicu pencarian scope detail:
 
-   Paragraf 1 (2-3 kalimat): Jelaskan bidang usaha pengguna dan mengapa sertifikasi penting untuk industri mereka.
+KEYWORDS:<kata kunci 1>,<kata kunci 2>,<kata kunci 3>
+SUMMARY:<deskripsi singkat bisnis user dalam 1-2 kalimat>
+LANG:IDN
 
-   **Sertifikasi yang relevan:**
-   • **[Nama Standar 1]** — [1 kalimat alasan mengapa relevan]
-   • **[Nama Standar 2]** — [1 kalimat alasan mengapa relevan]
-   • (tambahkan jika ada yang relevan)
+(Ganti LANG:IDN dengan LANG:EN jika user menulis dalam bahasa Inggris)
 
-   Kalimat penutup singkat yang mengalir ke hasil pencarian scope. (contoh: "Berikut hasil pencarian scope sertifikasi yang tersedia di PT TSI untuk bisnis Anda:")
+---
 
-   THEN immediately after (no blank line), output:
-   KEYWORDS:<keyword1>,<keyword2>,<keyword3>
-   SUMMARY:<complete business description in 1-2 sentences>
-   LANG:IDN
+## ATURAN BAHASA:
+- Deteksi bahasa user secara otomatis (Indonesia atau Inggris)
+- Balas dalam bahasa yang SAMA dengan user
+- Tag KEYWORDS/SUMMARY/LANG harus tetap ada meski user pakai bahasa Inggris
 
-   FORMATTING RULES:
-   - Use **bold** for standard names (ISO 9001, HACCP, etc.) and section headers
-   - Use bullet points (•) for listing standards
-   - Keep each bullet concise — max 1 sentence
-   - The closing sentence must naturally lead into the scope results shown below it
-   - Only mention standards from the PT TSI available list above
-   - Adapt language (IDN/EN) to match user's language
+---
 
-3. If already 2 Q&A rounds, MUST conclude with explanation + KEYWORDS/SUMMARY/LANG now.
-${mustConclude && !hasShownResults ? '\n⚠️ MANDATORY: Write formatted explanation then output KEYWORDS, SUMMARY, and LANG right now.' : ''}
-${hasShownResults ? `
-4. Scope results have already been shown. Continue the conversation naturally:
-   - Answer confirmation or clarification questions about the found scope
-   - If user wants a different scope, output new KEYWORDS/SUMMARY/LANG
-   - Do NOT show numbered choices for follow-ups, just answer directly` : ''}`;
+## ATURAN PENTING:
+- JANGAN selalu tanya balik — putuskan sendiri apa yang user butuhkan
+- JANGAN sebut standar yang tidak ada di katalog PT TSI (jangan karang-karang)
+- Jika user tanya standar yang tidak ada di katalog (misal ISO 50001), jelaskan PT TSI belum punya akreditasi untuk itu
+- Boleh pakai **bold**, bullet point, dan formatting markdown
+- Jawaban harus natural, to the point, dan tidak bertele-tele
+${hasShownResults ? `\n## KONTEKS: Hasil scope sudah ditampilkan sebelumnya. Lanjutkan percakapan secara natural. Jika user minta scope berbeda, output KEYWORDS/SUMMARY baru.` : ''}`;
 
     const aiText = await callAI(systemPrompt, messages);
 
@@ -162,7 +161,6 @@ ${hasShownResults ? `
         .replace(/LANG:[^\n\r]*/gi, '')
         .trim();
 
-      // Return AI text immediately + scope search info — frontend will fetch scope separately
       return NextResponse.json({
         phase: 'asking',
         chat_message: conversationMessage,
