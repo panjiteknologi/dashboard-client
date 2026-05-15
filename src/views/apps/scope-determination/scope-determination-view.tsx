@@ -9,7 +9,7 @@ import { useScopeDeterminationContext } from "@/context/scope-determination-cont
 
 // ─── Question Bottom Sheet ────────────────────────────────────────────────────
 const QuestionBottomSheet = () => {
-  const { chatMessages, chatPhase, isChatLoading, sendChatMessage, selectedLang } =
+  const { chatMessages, chatPhase, isChatLoading, isScopeLoading, sendChatMessage, selectedLang } =
     useScopeDeterminationContext();
 
   const [blocks, setBlocks] = useState<QuestionBlock[]>([]);
@@ -23,7 +23,8 @@ const QuestionBottomSheet = () => {
     const shouldShow =
       lastMsg?.role === "assistant" &&
       chatPhase === "asking" &&
-      !isChatLoading;
+      !isChatLoading &&
+      !isScopeLoading;
 
     if (shouldShow) {
       const parsed = extractQuestionBlocks(lastMsg.content);
