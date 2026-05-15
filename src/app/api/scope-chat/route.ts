@@ -45,25 +45,59 @@ async function callAI(
   return (data.choices?.[0]?.message?.content as string)?.trim() || '';
 }
 
-function buildTSICatalog(): string {
+function buildFullCatalogResponse(isIDN: boolean): string {
+  type ScopeRef = Record<string, unknown>;
+  const ref = scopeTSI.scope_reference as ScopeRef;
+  const lines: string[] = [];
+
+  lines.push(isIDN
+    ? '📋 **Berikut seluruh produk/standar sertifikasi yang dimiliki PT TSI:**\n'
+    : '📋 **Here are all certification products/standards held by PT TSI:**\n'
+  );
+
+  let index = 1;
+  for (const [std, entry] of Object.entries(ref)) {
+    lines.push(`**${index}. ${std}**`);
+
+    if (Array.isArray(entry)) {
+      const scopes = entry as Array<{ iaf_code: number; scope: string }>;
+      scopes.forEach(s => lines.push(`   • IAF ${s.iaf_code}: ${s.scope}`));
+    } else {
+      const e = entry as { description?: string; scopes?: Array<{ scope: string; code?: string }> };
+      if (e.description) lines.push(`   _${e.description}_`);
+      if (e.scopes && e.scopes.length > 0) {
+        e.scopes.forEach(s => lines.push(`   • ${s.scope}${s.code ? ` (${s.code})` : ''}`));
+      } else {
+        lines.push(isIDN ? `   _(Berlaku untuk semua organisasi)_` : `   _(Applicable to all organizations)_`);
+      }
+    }
+
+    lines.push('');
+    index++;
+  }
+
+  lines.push('---');
+  lines.push(isIDN
+    ? '💡 Ketik nama industri atau bidang usaha Anda untuk mencari scope sertifikasi yang paling sesuai.'
+    : '💡 Type your industry or business activity to find the most suitable certification scope.'
+  );
+
+  return lines.join('\n');
+}
+
+function buildCompactCatalogForPrompt(): string {
   type ScopeRef = Record<string, unknown>;
   const ref = scopeTSI.scope_reference as ScopeRef;
   const lines: string[] = [];
 
   for (const [std, entry] of Object.entries(ref)) {
     if (Array.isArray(entry)) {
-      const scopes = entry as Array<{ iaf_code: number; scope: string; nace_codes: string[] }>;
-      lines.push(`\n**${std}** (NACE-based, multi-industry):`);
-      scopes.forEach(s => lines.push(`  IAF ${s.iaf_code}: ${s.scope} — NACE: ${s.nace_codes.join(', ')}`));
+      const scopes = entry as Array<{ iaf_code: number; scope: string }>;
+      lines.push(`${std}: ${scopes.map(s => `IAF${s.iaf_code}=${s.scope}`).join(' | ')}`);
     } else {
       const e = entry as { description?: string; scopes?: Array<{ scope: string; code?: string }> };
-      lines.push(`\n**${std}**:`);
-      if (e.description) lines.push(`  ${e.description}`);
-      if (e.scopes && e.scopes.length > 0) {
-        e.scopes.forEach(s => lines.push(`  • ${s.scope}${s.code ? ` (code: ${s.code})` : ''}`));
-      } else {
-        lines.push(`  (Berlaku universal untuk semua organisasi)`);
-      }
+      const scopeList = e.scopes?.length ? e.scopes.map(s => s.scope).join(', ') : 'universal';
+      lines.push(`${std}: ${e.description ?? scopeList}`);
     }
   }
 
@@ -86,68 +120,69 @@ export async function POST(request: NextRequest) {
       (m) => m.role === 'assistant' && m.content.includes('NACE') && m.content.includes('IAF')
     );
 
-    const tsiCatalog = buildTSICatalog();
+    const compactCatalog = buildCompactCatalogForPrompt();
 
     const systemPrompt = `Kamu adalah AI Assistant milik PT TSI (TSI Sertifikasi Internasional), lembaga sertifikasi di Indonesia.
 
-Kamu adalah AI yang GENERATIF dan FLEKSIBEL. Kamu BOLEH menjawab pertanyaan apapun dari user — baik tentang sertifikasi, bisnis, pengetahuan umum, maupun topik lainnya. Jawab secara alami seperti asisten AI cerdas.
+Kamu adalah AI yang GENERATIF dan FLEKSIBEL. Kamu BOLEH menjawab pertanyaan apapun dari user — baik tentang sertifikasi, bisnis, pengetahuan umum, maupun topik di luar konteks aplikasi. Jawab secara alami seperti asisten AI cerdas.
 
-## KATALOG PRODUK/STANDAR PT TSI:
-${tsiCatalog}
+## KATALOG LENGKAP PRODUK PT TSI (${Object.keys(scopeTSI.scope_reference).length} standar):
+${compactCatalog}
 
 ---
 
 ## CARA MENGAMBIL KEPUTUSAN:
 
-### Jika user bertanya tentang produk/standar/scope PT TSI:
-→ Jawab LANGSUNG dari katalog di atas. Tampilkan daftar, jelaskan standar, bandingkan scope — sesuai kebutuhan user. JANGAN tanya balik.
+Ketika user ingin melihat SEMUA produk/standar/daftar sertifikasi PT TSI secara lengkap:
+→ Tulis [CATALOG] di dalam pesanmu. Sistem akan otomatis inject katalog lengkap yang akurat.
+→ Kamu TIDAK perlu mengetik ulang daftarnya — cukup tulis [CATALOG].
 
-### Jika user mendeskripsikan bisnis/industri mereka:
-→ Langsung analisis dan cari scope yang sesuai. JANGAN tanya-tanya lagi jika sudah cukup informasi.
-→ Jika benar-benar tidak jelas, boleh tanya SATU pertanyaan singkat saja.
-→ Setelah tahu scope-nya, output KEYWORDS dan SUMMARY di akhir pesan (lihat format di bawah).
+Ketika user bertanya tentang standar tertentu atau penjelasan sertifikasi:
+→ Jawab langsung dari pengetahuanmu berdasarkan katalog di atas.
 
-### Jika user bertanya hal umum di luar sertifikasi:
-→ Jawab secara natural dan helpful, layaknya chat AI biasa. Kamu boleh menjawab.
+Ketika user mendeskripsikan bisnis/industri mereka:
+→ Langsung analisis. Jika sudah cukup info, output KEYWORDS + SUMMARY di akhir pesan.
+→ Jika benar-benar ambigu, tanya SATU pertanyaan saja.
 
-### Jika user minta tampilkan/daftar/list produk TSI atau standar yang dimiliki:
-→ Tampilkan katalog lengkap dari data di atas. LANGSUNG tampilkan, jangan tanya balik.
+Ketika user bertanya hal umum di luar sertifikasi:
+→ Jawab secara natural dan helpful. Kamu boleh menjawab topik apapun.
 
 ---
 
-## FORMAT TRIGGER PENCARIAN SCOPE:
-Gunakan format ini DI AKHIR pesanmu ketika kamu sudah tahu bisnis/industri user dan ingin memicu pencarian scope detail:
+## TAG YANG BISA KAMU GUNAKAN:
 
-KEYWORDS:<kata kunci 1>,<kata kunci 2>,<kata kunci 3>
-SUMMARY:<deskripsi singkat bisnis user dalam 1-2 kalimat>
+**[CATALOG]** — tulis ini ketika kamu memutuskan perlu menampilkan seluruh daftar produk TSI. Backend akan inject data lengkap dari database secara otomatis.
+
+**KEYWORDS/SUMMARY/LANG** — tulis di akhir pesan untuk memicu pencarian scope detail:
+KEYWORDS:<kw1>,<kw2>,<kw3>
+SUMMARY:<deskripsi bisnis user>
 LANG:IDN
 
-(Ganti LANG:IDN dengan LANG:EN jika user menulis dalam bahasa Inggris)
-
 ---
 
-## ATURAN BAHASA:
-- Deteksi bahasa user secara otomatis (Indonesia atau Inggris)
-- Balas dalam bahasa yang SAMA dengan user
-- Tag KEYWORDS/SUMMARY/LANG harus tetap ada meski user pakai bahasa Inggris
-
----
-
-## ATURAN PENTING:
-- JANGAN selalu tanya balik — putuskan sendiri apa yang user butuhkan
-- JANGAN sebut standar yang tidak ada di katalog PT TSI (jangan karang-karang)
-- Jika user tanya standar yang tidak ada di katalog (misal ISO 50001), jelaskan PT TSI belum punya akreditasi untuk itu
-- Boleh pakai **bold**, bullet point, dan formatting markdown
-- Jawaban harus natural, to the point, dan tidak bertele-tele
-${hasShownResults ? `\n## KONTEKS: Hasil scope sudah ditampilkan sebelumnya. Lanjutkan percakapan secara natural. Jika user minta scope berbeda, output KEYWORDS/SUMMARY baru.` : ''}`;
+## ATURAN:
+- Putuskan sendiri apa yang user butuhkan — JANGAN selalu tanya balik
+- JANGAN sebut standar di luar katalog PT TSI
+- Jika standar tidak ada di katalog, jelaskan PT TSI belum punya akreditasi tersebut
+- Gunakan **bold**, bullet, markdown sesuai kebutuhan
+- Jawaban natural, ringkas, tidak bertele-tele
+- Balas dalam bahasa yang SAMA dengan user (IDN/EN)
+${hasShownResults ? `\nKONTEKS: Hasil scope sudah ditampilkan. Lanjutkan percakapan natural. Jika user minta scope berbeda, output KEYWORDS/SUMMARY baru.` : ''}`;
 
     const aiText = await callAI(systemPrompt, messages);
 
+    const langMatch = aiText.match(/LANG:(IDN|EN)/i);
+    const responseLang = (langMatch?.[1]?.toUpperCase() as 'IDN' | 'EN') ?? 'IDN';
+
+    // AI memutuskan tampilkan katalog lengkap — inject dari JSON, bukan dari output AI
+    if (aiText.includes('[CATALOG]')) {
+      const catalog = buildFullCatalogResponse(responseLang === 'IDN');
+      const message = aiText.replace(/\[CATALOG\]/gi, catalog).replace(/LANG:[^\n\r]*/gi, '').trim();
+      return NextResponse.json({ phase: 'asking', chat_message: message });
+    }
+
     const keywordsMatch = aiText.match(/KEYWORDS:([^\n\r]+)/i);
     const summaryMatch = aiText.match(/SUMMARY:([^\n\r]+)/i);
-    const langMatch = aiText.match(/LANG:(IDN|EN)/i);
-
-    const responseLang = (langMatch?.[1]?.toUpperCase() as 'IDN' | 'EN') ?? 'IDN';
 
     if (keywordsMatch || summaryMatch) {
       const keywords = keywordsMatch
